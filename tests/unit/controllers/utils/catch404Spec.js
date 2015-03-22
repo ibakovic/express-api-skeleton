@@ -22,6 +22,3 @@ describe('controllers/utils/catch404', function () {
   });
 
 });
-
-
-

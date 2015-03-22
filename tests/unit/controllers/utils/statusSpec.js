@@ -17,6 +17,3 @@ describe('controllers/utils/status', function () {
   });
 
 });
-
-
-
