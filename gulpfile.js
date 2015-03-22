@@ -17,18 +17,18 @@ var paths = {
   }
 };
 
-gulp.task('lint', function () {
-    return gulp.src(paths.lint.src)
-        .pipe(eslint())
-        .pipe(eslint.format())
-        .pipe(eslint.failOnError());
+gulp.task('lint', function() {
+  return gulp.src(paths.lint.src)
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failOnError());
 });
 
-gulp.task('test-unit', function (cb) {
+gulp.task('test-unit', function(cb) {
   gulp.src(['src/**/*.js'])
     .pipe(istanbul())
     .pipe(istanbul.hookRequire())
-    .on('finish', function () {
+    .on('finish', function() {
       gulp.src(['tests/unit/**/*.js'])
         .pipe(mocha())
         .pipe(istanbul.writeReports())
