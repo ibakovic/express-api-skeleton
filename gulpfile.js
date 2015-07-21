@@ -10,9 +10,9 @@ var istanbul = require('gulp-istanbul');
 var mocha = require('gulp-mocha');
 
 var paths = {
-  src: ['./test/**/*.js', './src/**/*.js', './config/*.js'],
+  src: ['./controllers/**/*.js', './routes/*.js'],
   lint: {
-    src: ['gulpfile.js', 'app.js', './src/**/*.js', './config/*.js'],
+    src: ['gulpfile.js', 'app.js', './controllers/**/*.js', './routes/*.js'],
     test: ['./test/**/*.js']
   }
 };
