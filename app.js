@@ -98,5 +98,8 @@ app.use(function(err, req, res, next) {
     });
 });
 
+app.use(routes);
+// include error handlers
+errors(app);
 
 module.exports = app;
