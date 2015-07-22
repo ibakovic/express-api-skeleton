@@ -1,18 +1,19 @@
 'use strict';
-var mongoose = require("mongoose");
-var Auth = mongoose.model("Auth");
-var jwt = require("jsonwebtoken");
-var async = require("async");
+var mongoose = require('mongoose');
+var Auth = mongoose.model('Auth');
+var Post = mongoose.model('Post');
+var jwt = require('jsonwebtoken');
+var async = require('async');
 
 function logIn(req, res, next) {
     function findUser(callback) {
         var query = Auth.where({ 
-            username: req.body.username,
-            password: req.body.password
+            username: req.body.username, 
+            password: req.body.password 
         });
         query.find(function (err, user) {
-            if (err) { return next(err); }
-            if (user.length == 0) { return callback(new Error("Couldn\'t log in with these credentials")); }
+            if(err) return next(err); 
+            if(user.length == 0) return callback(new Error( 'Couldn\'t log in with these credentials' ));
 
             callback(null, user[0].username);
         });

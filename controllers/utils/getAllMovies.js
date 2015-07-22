@@ -1,6 +1,6 @@
 'use strict';
-var mongoose = require("mongoose");
-var Post = mongoose.model("Post");
+var mongoose = require('mongoose');
+var Post = mongoose.model('Post');
 
 function getAll(req, res, next) {
   Post.find(function(err, posts){

@@ -10,26 +10,26 @@ var istanbul = require('gulp-istanbul');
 var mocha = require('gulp-mocha');
 
 var paths = {
-  src: ['./controllers/**/*.js', './routes/*.js'],
+  routes: ['./test/**/*.js', './routes/*.js', './controllers/**/*.js'],
   lint: {
-    src: ['gulpfile.js', 'app.js', './controllers/**/*.js', './routes/*.js'],
+    routes: ['gulpfile.js', 'app.js', './routes/*.js', './controllers/**/*.js'],
     test: ['./test/**/*.js']
   }
 };
 
 gulp.task('lint', function() {
-  return gulp.src(paths.lint.src)
+  return gulp.routes(paths.lint.routes)
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failOnError());
 });
 
 gulp.task('test-unit', function(cb) {
-  gulp.src(['src/**/*.js'])
+  gulp.routes(['routes/*.js'])
     .pipe(istanbul())
     .pipe(istanbul.hookRequire())
     .on('finish', function() {
-      gulp.src(['tests/unit/**/*.js'])
+      gulp.routes(['tests/unit/**/*.js'])
         .pipe(mocha())
         .pipe(istanbul.writeReports())
         .on('end', cb);
