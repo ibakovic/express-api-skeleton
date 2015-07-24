@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var jwt = require('express-jwt');
-var controllers = require('../controllers');
+var controllers = require('./controllers');
 
 router.route('/users')
 .post(controllers.utils.register)

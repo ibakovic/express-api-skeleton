@@ -12,7 +12,7 @@ require('./models/auths');
 require('./models/token');
 mongoose.connect('mongodb://localhost/movies');
 
-var routes = require('./routes/index');
+var routes = require('./index');
 //var users = require('./routes/users');
 
 var app = express();
@@ -65,6 +65,6 @@ app.use(function(err, req, res, next) {
 
 app.use(routes);
 // include error handlers
-errors(app);
+//errors(app);
 
 module.exports = app;
