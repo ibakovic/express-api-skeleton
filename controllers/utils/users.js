@@ -1,9 +1,9 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var Auth = mongoose.model('Auth');
-var Post = mongoose.model('Post');
-var async = require('async');
+var mongoose = require("mongoose");
+var Auth = mongoose.model("Auth");
+var Post = mongoose.model("Post");
+var async = require("async");
 
 //register functions
 function register(req, res, next) {
@@ -13,7 +13,7 @@ function register(req, res, next) {
             if (err) return next(err);
 
             if (user) {
-                return callback(new Error('Username already exists.'));
+                return callback(new Error("Username already exists."));
             }
             var auth = new Auth(req.body);
             console.log(auth);
@@ -34,13 +34,13 @@ function register(req, res, next) {
 
     async.auto({
         findUser: findUser,
-        saveUser: ['findUser', saveUser]
-    }, function (err, results) { 
-        if(err) return res.status(400).json({ msg: 'Username already exists.' });
+        saveUser: ["findUser", saveUser]
+    }, function (err) { 
+        if(err) return res.status(400).json({ msg: "Username already exists." });
     });
 }
 
-function getAllUsers(req, res, next) { 
+function getAllUsers(req, res, next) {
     Post.find(function(err, posts){
     if(err){ return next(err); }
 

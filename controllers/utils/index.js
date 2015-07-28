@@ -1,8 +1,8 @@
 'use strict';
-var users = require('./users');
-var userId = require('./userId');
-var userMovies = require('./userMovies');
-var userMoviesId = require('./userMoviesId');
+var users = require("./users");
+var userId = require("./userId");
+var userMovies = require("./userMovies");
+var userMoviesId = require("./userMoviesId");
 
 module.exports = {
   register: users.register,
@@ -16,5 +16,5 @@ module.exports = {
   updateMovie: userMoviesId.updateMovie,
   getUserMovie: userMoviesId.getUserMovie,
   deleteMovie: userMoviesId.deleteMovie,
-  getAllMovies: require('./getAllMovies')
+  getAllMovies: require("./getAllMovies")
 };

@@ -1,24 +1,25 @@
 'use strict';
 
-var gulp = require('gulp');
-var eslint = require('gulp-eslint');
-var nodemon = require('gulp-nodemon');
-var shell = require('gulp-shell');
+var gulp = require("gulp");
+var eslint = require("gulp-eslint");
+var nodemon = require("gulp-nodemon");
+var shell = require("gulp-shell");
 
 var istanbul = require('gulp-istanbul');
 // We'll use mocha here, but any test framework will work
 var mocha = require('gulp-mocha');
 
 var paths = {
-  routes: ['./test/**/*.js', './routes/*.js', './controllers/**/*.js'],
+  //routes: ['./test/**/*.js', './routes/*.js', './controllers/**/*.js'],
+  src: ['./controllers/**/*.js'],
   lint: {
-    routes: ['gulpfile.js', 'app.js', './routes/*.js', './controllers/**/*.js'],
+    routes: ['./controllers/**/*.js'],
     test: ['./test/**/*.js']
   }
 };
 
 gulp.task('lint', function() {
-  return gulp.routes(paths.lint.routes)
+  return gulp.src(paths.lint.routes)
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failOnError());
