@@ -11,10 +11,10 @@ var mocha = require('gulp-mocha');
 
 var paths = {
   //routes: ['./test/**/*.js', './routes/*.js', './controllers/**/*.js'],
-  src: ['./controllers/**/*.js'],
+  src: ['./models/*.js', './test/*.js', './controllers/**/*.js', './index.js'],
   lint: {
     routes: ['./controllers/**/*.js'],
-    test: ['./test/**/*.js']
+    test: ['./test/*.js']
   }
 };
 
@@ -26,11 +26,11 @@ gulp.task('lint', function() {
 });
 
 gulp.task('test-unit', function(cb) {
-  gulp.routes(['routes/*.js'])
+  gulp.src(['./controllers/**/*.js', './models/*.js', './index.js'])
     .pipe(istanbul())
     .pipe(istanbul.hookRequire())
     .on('finish', function() {
-      gulp.routes(['tests/unit/**/*.js'])
+      gulp.src(['test/*.js'])
         .pipe(mocha())
         .pipe(istanbul.writeReports())
         .on('end', cb);

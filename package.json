@@ -21,7 +21,8 @@
     "jsonwebtoken": "^5.0.4",
     "mongoose": "^4.0.8",
     "morgan": "^1.5.3",
-    "serve-favicon": "^2.3.0"
+    "serve-favicon": "^2.3.0",
+    "supertest": "^1.0.1"
   },
   "devDependencies": {
     "gulp": "^3.8.11",
