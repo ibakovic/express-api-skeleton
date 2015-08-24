@@ -1,7 +1,6 @@
 var request = require('supertest');
 var app = require('../app');
 
-
 describe('../controllers/utils/getAllMovies', function () {
   it('shold return 200 response', function(done) {
     request(app)
