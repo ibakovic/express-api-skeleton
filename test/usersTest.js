@@ -365,6 +365,21 @@ describe('../controllers/utils/users', function () {
         });
     });
 
+    
+    describe('../controllers/utils/getAllMovies', function () {
+      it('shold return 200 response', function(done) {
+        request(app)
+          .get('/movies')
+          //.expect('Content-Type', /json/)
+          .expect(200)
+          .end(function(err, res){
+            if (err) throw err;
+            console.log(res.body);
+            done();
+        });
+      });
+    });
+
     describe('delete user2', function () {
         it('should return 200 and delete user2', function (done) {
             request(app)
