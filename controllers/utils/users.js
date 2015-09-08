@@ -7,6 +7,7 @@ var async = require("async");
 
 //register functions
 function register(req, res, next) {
+    if ((!req.body.username || !req.body.password) || (req.body.username == ' ' || req.body.password == ' ')) return res.status(400).json({message: 'Username and password required!!'});
     function findUser(callback) {
         var find = Auth.where({ username: req.body.username });
         find.findOne(function (err, user) {
@@ -16,19 +17,20 @@ function register(req, res, next) {
                 return callback(new Error("Username already exists."));
             }
             var auth = new Auth(req.body);
-            console.log(auth);
+            //console.log(auth);
             return callback(null, auth);
         });
     }
 
     function saveUser(callback, results) { 
         var auth = results.findUser;
-        console.log(auth);
+        //console.log(auth);
 
         auth.save(function (err, auth) {
             if (err) return next(err);
 
-            res.status(200).json(auth);
+            var msg = "Registration succsesful!"
+            res.status(200).json(msg);
         });
     }
 
@@ -41,7 +43,7 @@ function register(req, res, next) {
 }
 
 function getAllUsers(req, res, next) {
-    Post.find(function(err, posts){
+    Auth.find(function(err, posts){
     if(err){ return next(err); }
 
     res.json(posts);
