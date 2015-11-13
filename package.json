@@ -2,10 +2,10 @@
   "name": "skeleton",
   "version": "0.0.0",
   "private": true,
-  "scripts": {
-    "start": "supervisor ./bin/www"
-  },
-  "main": "./bin/www",
+"scripts": {
+  "start": "supervisor server.js"
+},
+"main": "server.js",
   "dependencies": {
     "async": "^1.4.0",
     "body-parser": "^1.12.4",
