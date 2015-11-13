@@ -109,7 +109,7 @@ describe('../controllers/utils/users no username and password', function () {
             if(err) throw err;
             done();
         });
-    })
+    });
 });
 
 describe('../controllers/utils/users username already exists', function () {

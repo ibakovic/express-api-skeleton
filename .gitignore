@@ -4,6 +4,7 @@
 node_modules/
 
 # ignore log files
+npm-debug.log
 *.log
 
 # ignore coverage directory

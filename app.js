@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-//var errors = require('./views/errors');
+//var errors = require('./views/error.ejs');
 
 //MongoDB
 var mongoose = require('mongoose');
@@ -14,7 +14,6 @@ require('./models/token');
 mongoose.connect('mongodb://localhost/movies');
 
 var routes = require('./index');
-//var users = require('./routes/users');
 
 var app = express();
 

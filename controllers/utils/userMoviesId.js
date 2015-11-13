@@ -11,15 +11,15 @@ function updateMovie(req, res, next) {
                 if (err) return next(err);
 
                 if (user2.length === 0) return callback(new Error("error"));
-
+		
                 Post.find({title: user2[0].title, user: user2[0].user}).remove().exec();
                 
-                callback(null, {title: req.body.update, user: user2[0].user});
+                callback(null, {title: req.body.update, link: user2[0].link, user: user2[0].user});
             });
         }
 
         function createNewVideo(callback, results) {
-            var update = new Post({title: results.del.title, user: results.del.user});
+            var update = new Post({title: results.del.title, link:results.del.link, user: results.del.user});
             
             update.save(function (err, update) {
                 if (err) return next(err);

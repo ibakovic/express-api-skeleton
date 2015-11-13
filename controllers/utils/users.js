@@ -7,7 +7,10 @@ var async = require("async");
 
 //register functions
 function register(req, res, next) {
-    if ((!req.body.username || !req.body.password) || (req.body.username == ' ' || req.body.password == ' ')) return res.status(400).json({message: 'Username and password required!!'});
+    if ((!req.body.username || !req.body.password) || (req.body.username == ' ' || req.body.password == ' ')) {
+	console.log(req.body);	
+	return res.status(400).json({message: 'Username and password required!!'});
+	}
     function findUser(callback) {
         var find = Auth.where({ username: req.body.username });
         find.findOne(function (err, user) {

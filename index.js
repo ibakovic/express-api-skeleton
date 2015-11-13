@@ -2,10 +2,17 @@ var express = require("express");
 var router = express.Router();
 var jwt = require("express-jwt");
 var controllers = require("./controllers");
+var bodyParser = require('body-parser');
+var app = express();
+
+var jsonParser = bodyParser.json();
+app.use(jsonParser);
+
+//app.post("/users", jsonParser, controllers.utils.register);
 
 router.route("/users")
-.post(controllers.utils.register)
-.get(controllers.utils.getAllUsers);
+.get(controllers.utils.getAllUsers)
+.post(jsonParser, controllers.utils.register);
 
 router.route("/login").post(controllers.utils.logIn);
 
