@@ -13,8 +13,7 @@ var http = require('http');
  */
 
 /*openshift server*/
-/*var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8081*/
-var server_port = 8081;
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080
 var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 
 var server = http.createServer(app);
@@ -22,10 +21,11 @@ var server = http.createServer(app);
 server.listen(server_port, server_ip_address, function(){
   console.log("Listening on " + server_ip_address + ", server_port " + server_port)
 });
-/*
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
-*/
+
+/*var port = normalizePort(process.env.PORT || '3000');*/
+app.set('port', server_port);
+app.set('ip', server_ip_address);
+
 /**
  * Create HTTP server.
  */
