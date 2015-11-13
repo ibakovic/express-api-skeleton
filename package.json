@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
 "scripts": {
-  "start": "supervisor ./bin/www"
+  "start": "supervisor server.js"
 },
-"main": "./bin/www",
+"main": "server.js",
   "dependencies": {
     "async": "^1.4.0",
     "body-parser": "^1.12.4",
