@@ -3,6 +3,25 @@
 <div>
 	<input type="text" id="username" placeholder="username"><br>
 	<input type="password" id="password" placeholder="password"><br>
-	<button>Register</button>
+	<button onclick="register()">Register</button>
 	<button>Log in</button>
+
+	<script>
+		function register(){
+			//alert(document.getElementById("username").value + " " + document.getElementById("password").value);
+			var xhttp = new XMLHttpRequest();
+			var credentials = {
+				username: document.getElementById('username').value,
+				password: document.getElementById("password").value
+			};
+			xhttp.open("POST", "http://localhost:8080/users", false);
+			xhttp.setRequestHeader("Content-type", "application/json");
+			xhttp.send(JSON.stringify(credentials));
+			
+			alert("Text " + xhttp.responseText);
+			/*
+			responseObject = JSON.parse(xhttp.responseText);
+			alert("Pojedinacni tekst: " + responseObject[0].username);*/
+		}
+	</script>
 </div>
