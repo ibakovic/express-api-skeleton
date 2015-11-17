@@ -6,13 +6,14 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var exphbs  = require('express-handlebars');
 //var errors = require('./views/error.ejs');
+var handlebars = require('handlebars');
+var templateTexts = require('./templates/moviesTemplate');
 
 //MongoDB
 var mongoose = require('mongoose');
 require('./models/posts');
 require('./models/auths');
 require('./models/token');
-require('./public/javascripts/handlebars');
 //mongoose.connect('mongodb://localhost/movies');
 
 var connection_string = 'localhost/movies';
@@ -28,18 +29,55 @@ if(process.env.OPENSHIFT_MONGODB_DB_PASSWORD){
 mongoose.connect('mongodb://'+connection_string);
 
 var routes = require('./index');
-
+var dbUsers;
 var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+/*app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');*/
+
+app.enable('view cache');
 
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
+var Auth = mongoose.model("Auth");
+/*
+app.get('/users', function(req, res){
+  Auth.find(function(err, posts){
+    if(err){ return next(err); }
+
+    dbUsers = posts;
+    res.json(dbUsers);
+  });
+});
+*/
+
+Auth.find(function(err, posts){
+  if(err){ return next(err); }
+
+  dbUsers = posts;
+});
+
 app.get('/', function (req, res) {
-    res.render('home');
+    res.render('home', {
+        showTitle: true,
+
+        // Override `foo` helper only for this rendering.
+        helpers: {
+            movies: function(){
+              var movieText = templateTexts.moviesTemplate;
+              var template = handlebars.compile(movieText);
+              return template({movies: [{title: "title1", user: "user1"},{title: "title2", user: "user2"},{title: "title3", user: "user3"},{title: "title4", user: "user4"}]});
+            },
+            users: function(){
+                var userText = templateTexts.usersTemplate;
+                console.log(userText);
+                var template = handlebars.compile(userText);
+                return template({users: dbUsers});
+            }
+        }
+    });
 });
 
 app.use(express.static('public'));
