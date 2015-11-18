@@ -20,7 +20,7 @@ function logIn(req, res, next) {
     }
 
     function createToken(callback, results) { 
-        var token = "Bearer "
+        var token = "Bearer ";
         token += jwt.sign({
                     username: results.findUser
                 },
@@ -99,8 +99,8 @@ function getUser(req, res, next) {
 	query.find(function(err, posts){
 	if(err){ return next(err); }
 
-	    res.json(posts);
-	  });
+	res.json(posts);
+	});
 }
 
 module.exports = {

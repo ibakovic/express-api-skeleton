@@ -4,8 +4,8 @@ var Post = mongoose.model('Post');
 var async = require('async');
 
 function updateMovie(req, res, next) {
-     if(!req.body.update || (req.body.update == '')) return res.status(400).json({ msg: "Movie title and updated title required!!" });
-     function del(callback) {
+    if(!req.body.update || (req.body.update == '')) return res.status(400).json({ msg: "Movie title and title update required!!" });
+    function del(callback) {
             var query = Post.where({ title: req.params.movieId, user: req.user.username });
             query.find(function (err, user2) {
                 if (err) return next(err);
@@ -31,7 +31,6 @@ function updateMovie(req, res, next) {
                     posts;
                     return res.status(200).json({msg: "Movie updated", data: posts});
                 });
-               //res.status(200).json(auth);
             });
         }
 
@@ -39,17 +38,16 @@ function updateMovie(req, res, next) {
             del: del,
             createNewVideo: ["del", createNewVideo]
         }, function (err) { 
-            if(err) res.status(400).json({ msg: "Couldn\'t update this user video" });
-
-            //res.status(200).json(results.createNewVideo);
+            if(err) res.status(400).json({ msg: "Couldn\'t update this user movie" });
         });
 }
 
 function getUserMovie(req, res, next) {
     var movie = Post.where({ title: req.params.movieId, user: req.user.username });
-    
+
     movie.find(function (err, movieId) {
         if(err) return next(err);
+        if(movieId.length == 0) return res.status(400).json("Title not found");
         
         res.status(200).json(movieId);
     });
@@ -61,7 +59,7 @@ function deleteMovie(req, res, next) {
         query.find(function (err, user2) {
             if (err) return next(err);
 
-            if (user2.length === 0) return res.status(400).json({ msg: "Couldn\'t find this user" });
+            if (user2.length === 0) return res.status(400).json({ msg: "Title not found" });
 
             Post.find({title: user2[0].title, user: user2[0].user}).remove().exec();
 

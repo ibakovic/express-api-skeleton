@@ -8,7 +8,7 @@ var async = require("async");
 //register functions
 function register(req, res, next) {
     if ((!req.body.username || !req.body.password) || (req.body.username == ' ' || req.body.password == ' ')) {
-	console.log(req.body);	
+	console.log(req.body);
 	return res.status(400).json({message: 'Username and password required!!'});
 	}
     function findUser(callback) {
@@ -32,7 +32,7 @@ function register(req, res, next) {
         auth.save(function (err, auth) {
             if (err) return next(err);
 
-            var msg = "Registration succsesful!"
+            var msg = "Registration succsesful!";
             res.status(200).json(msg);
         });
     }
