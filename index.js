@@ -4,15 +4,35 @@ var jwt = require("express-jwt");
 var controllers = require("./controllers");
 var bodyParser = require('body-parser');
 var app = express();
+var passport = require('passport');
+var expressSession = require('express-session');
+
+app.use(expressSession({secret: 'mySecretKey'}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+var flash = require('connect-flash');
+app.use(flash());
+
+var initPassport = require('./passport/init');
+initPassport(passport);
 
 var jsonParser = bodyParser.json();
 app.use(jsonParser);
 
-//app.post("/users", jsonParser, controllers.utils.register);
+var isAuthenticated = function (req, res, next) {
+	// if user is authenticated in the session, call the next() to call the next request handler 
+	// Passport adds this method to request object. A middleware is allowed to add properties to
+	// request and response objects
+	if (req.isAuthenticated())
+		return next();
+	// if the user is not authenticated then redirect him to the login page
+	res.redirect('/');
+};
 
 router.route("/users")
 .get(controllers.utils.getAllUsers)
-.post(jsonParser, controllers.utils.register);
+.post(passport.authenticate('register'));
 
 router.route("/login").post(controllers.utils.logIn);
 

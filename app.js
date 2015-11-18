@@ -5,9 +5,21 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var exphbs  = require('express-handlebars');
-//var errors = require('./views/error.ejs');
 var handlebars = require('handlebars');
 var templateTexts = require('./templates/moviesTemplate');
+var passport = require('passport');
+var expressSession = require('express-session');
+var app = express();
+
+app.use(expressSession({secret: 'mySecretKey'}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+var flash = require('connect-flash');
+app.use(flash());
+
+var initPassport = require('./passport/init.js');
+initPassport(passport);
 
 //MongoDB
 var mongoose = require('mongoose');
@@ -30,7 +42,6 @@ mongoose.connect('mongodb://'+connection_string);
 
 var routes = require('./index');
 var dbUsers;
-var app = express();
 
 // view engine setup
 /*app.set('views', path.join(__dirname, 'views'));
@@ -42,22 +53,6 @@ app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
 var Auth = mongoose.model("Auth");
-/*
-app.get('/users', function(req, res){
-  Auth.find(function(err, posts){
-    if(err){ return next(err); }
-
-    dbUsers = posts;
-    res.json(dbUsers);
-  });
-});
-*/
-
-Auth.find(function(err, posts){
-  if(err){ return next(err); }
-
-  dbUsers = posts;
-});
 
 app.get('/', function (req, res) {
     res.render('home', {
@@ -72,7 +67,12 @@ app.get('/', function (req, res) {
             },
             users: function(){
                 var userText = templateTexts.usersTemplate;
-                console.log(userText);
+
+                Auth.find(function(err, posts){
+                  if(err){ return next(err); }
+
+                  dbUsers = posts;
+                });
                 var template = handlebars.compile(userText);
                 return template({users: dbUsers});
             }
@@ -103,7 +103,7 @@ app.use(function(req, res, next) {
 
 // development error handler
 // will print stacktrace
-if (app.get('env') === 'development') {
+/*if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
@@ -111,17 +111,17 @@ if (app.get('env') === 'development') {
             error: err
         });
     });
-}
+}*/
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+/*app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,
         error: {}
     });
-});
+});*/
 
 app.use(routes);
 // include error handlers
