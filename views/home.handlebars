@@ -3,6 +3,7 @@
 <div>
 	<input type="text" id="username" placeholder="username"><br>
 	<input type="password" id="password" placeholder="password"><br>
+	<div id="responseContainer"></div>
 	<button onclick="register()">Register</button>
 	<button>Log in</button>
 
@@ -14,14 +15,11 @@
 				username: document.getElementById('username').value,
 				password: document.getElementById("password").value
 			};
-			xhttp.open("POST", "http://nodeapp-ibakovic.rhcloud.com/users", false);
+			xhttp.open("POST", "http://localhost:8080/users");
 			xhttp.setRequestHeader("Content-type", "application/json");
 			xhttp.send(JSON.stringify(credentials));
-			
-			alert("Text " + xhttp.responseText);
-			/*
-			responseObject = JSON.parse(xhttp.responseText);
-			alert("Pojedinacni tekst: " + responseObject[0].username);*/
+			document.getElementById('responseContainer').innerHTML = xhttp.responseText;
+			alert(xhttp.responseText);
 		}
 	</script>
 </div>

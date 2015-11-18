@@ -32,9 +32,19 @@ var isAuthenticated = function (req, res, next) {
 
 router.route("/users")
 .get(controllers.utils.getAllUsers)
-.post(passport.authenticate('register'));
+.post(passport.authenticate('register', {
+	successRedirect: 'localhost:8080/users/'
+}),
+ function(req, res) {
+    if(isAuthenticated) {
+    res.status(200).json({msg: "Registation completed"});
+}
+ });
 
-router.route("/login").post(controllers.utils.logIn);
+router.route("/login").post(passport.authenticate('login'),
+ function(req, res) {
+    if(isAuthenticated) res.status(200).json({msg: "Log in completed"});
+ });
 
 router.route("/users/:userId")
 .post(jwt({secret: "secret"}), controllers.utils.updateUser)

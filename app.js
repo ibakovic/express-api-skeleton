@@ -54,6 +54,12 @@ app.set('view engine', 'handlebars');
 
 var Auth = mongoose.model("Auth");
 
+Auth.find(function(err, posts){
+  if(err){ return next(err); }
+
+  dbUsers = posts;
+});
+
 app.get('/', function (req, res) {
     res.render('home', {
         showTitle: true,
@@ -68,11 +74,6 @@ app.get('/', function (req, res) {
             users: function(){
                 var userText = templateTexts.usersTemplate;
 
-                Auth.find(function(err, posts){
-                  if(err){ return next(err); }
-
-                  dbUsers = posts;
-                });
                 var template = handlebars.compile(userText);
                 return template({users: dbUsers});
             }
