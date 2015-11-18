@@ -5,11 +5,19 @@ var Post = mongoose.model("Post");
 
 function addMovie(req, res, next) {
     if (!req.body.title || (req.body.title == '') || (req.body.title == ' ')) return res.status(400).json({msg: 'Title missing!'});
-    var videos = new Post({ title: req.body.title, link: req.body.link, user: req.user.username });
-    videos.save(function (err, videos) {
-        if (err) return next(err);
+    var exists = Post.where({ title: req.body.title });
 
-        res.status(200).json(videos);
+    exists.find(function (err, videos){
+        if(err) return next(err);
+        if(videos.length != 0) return res.status(400).json("Title already exists");
+
+        
+        var videos = new Post({ title: req.body.title, link: req.body.link, user: req.user.username });
+        videos.save(function (err, videos) {
+            if (err) return next(err);
+
+            res.status(200).json(videos);
+        });
     });
 }
 
