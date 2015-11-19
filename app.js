@@ -37,7 +37,9 @@ if(process.env.OPENSHIFT_MONGODB_DB_PASSWORD){
 
 mongoose.connect('mongodb://'+connection_string);
 
-var routes = require('./index');
+var routes = require('./routes/mainRoutes');
+var credentialsRoute = require('./routes/credentialsRoute');
+var userMoviesRoutes = require('./routes/userMoviesRoutes');
 var dbUsers;
 
 // view engine setup
@@ -122,6 +124,8 @@ app.use('/', routes);
 });*/
 
 app.use(routes);
+app.use(credentialsRoute);
+app.use(userMoviesRoutes);
 // include error handlers
 //errors(app);
 
