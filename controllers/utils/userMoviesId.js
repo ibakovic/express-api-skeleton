@@ -4,6 +4,7 @@ var Post = mongoose.model('Post');
 var async = require('async');
 
 function updateMovie(req, res, next) {
+    if(req.user.username != req.params.userId) return res.status(400).json({ msg: "Error: wrong URL, expected: " + req.user.username + ", got: " + req.params.userId });
     if(!req.body.update || (req.body.update == '')) return res.status(400).json({ msg: "Movie title and title update required!!" });
     function del(callback) {
             var query = Post.where({ title: req.params.movieId, user: req.user.username });
@@ -43,6 +44,7 @@ function updateMovie(req, res, next) {
 }
 
 function getUserMovie(req, res, next) {
+    if(req.user.username != req.params.userId) return res.status(400).json({ msg: "Error: wrong URL, expected: " + req.user.username + ", got: " + req.params.userId });
     var movie = Post.where({ title: req.params.movieId, user: req.user.username });
 
     movie.find(function (err, movieId) {
@@ -54,6 +56,7 @@ function getUserMovie(req, res, next) {
 }
 
 function deleteMovie(req, res, next) {
+    if(req.user.username != req.params.userId) return res.status(400).json({ msg: "Error: wrong URL, expected: " + req.user.username + ", got: " + req.params.userId });
     var query = Post.where({ title: req.params.movieId, user: req.user.username });
     
         query.find(function (err, user2) {

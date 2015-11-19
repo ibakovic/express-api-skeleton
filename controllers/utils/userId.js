@@ -36,6 +36,7 @@ function logIn(req, res, next) {
 }
 
 function updateUser(req, res, next) {
+    if(req.user.username != req.params.userId) return res.status(400).json({ msg: "Error: wrong URL, expected: " + req.user.username + ", got: " + req.params.userId });
     function del(callback) {
         var query = Auth.where({ username: req.user.username });
 
@@ -54,6 +55,7 @@ function updateUser(req, res, next) {
     }
  
     function createNewUser(callback, results) { 
+        if(req.user.username != req.params.userId) return res.status(400).json({ msg: "Error: wrong URL, expected: " + req.user.username + ", got: " + req.params.userId });
         var auth = results.del;
         console.log('updated: ' + auth);
 
@@ -76,6 +78,7 @@ function updateUser(req, res, next) {
 }
 
 function deleteUser(req, res, next) { 
+    if(req.user.username != req.params.userId) return res.status(400).json({ msg: "Error: wrong URL, expected: " + req.user.username + ", got: " + req.params.userId });
         var query = Auth.where({ username: req.body.delUsername });
 
         query.find(function (err, user2) {
