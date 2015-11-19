@@ -12,6 +12,10 @@ var jwtoken = require('jsonwebtoken');
 var jsonParser = bodyParser.json();
 app.use(jsonParser);
 
+var isAuthenticated = function(){
+    return passport.authenticate('passJwt', { session: false});
+};
+
 router.route("/users")
 .get(controllers.utils.getAllUsers)
 .post(passport.authenticate('register', {
@@ -34,27 +38,18 @@ router.route("/login").post(passport.authenticate('login'),
  );
 
 router.route("/users/:userId")
-.all(passport.authenticate('passJwt', { session: false}),
-    function(req, res, next) {
-        return next();
-    })
+.all(isAuthenticated())
 .post(controllers.utils.updateUser)
 .get(controllers.utils.getUser)
 .delete(controllers.utils.deleteUser);
 
 router.route("/users/:userId/movies")
-.all(passport.authenticate('passJwt', { session: false}),
-    function(req, res, next) {
-        return next();
-    })
+.all(isAuthenticated())
 .post(controllers.utils.addMovie)
 .get(controllers.utils.getAllUserMovies);
 
 router.route("/users/:userId/movies/:movieId")
-.all(passport.authenticate('passJwt', { session: false}),
-    function(req, res, next) {
-        return next();
-    })
+.all(isAuthenticated())
 .post(controllers.utils.updateMovie)
 .get(controllers.utils.getUserMovie)
 .delete(controllers.utils.deleteMovie);
