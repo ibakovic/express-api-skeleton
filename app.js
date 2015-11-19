@@ -8,19 +8,16 @@ var exphbs  = require('express-handlebars');
 var handlebars = require('handlebars');
 var templateTexts = require('./templates/moviesTemplate');
 var passport = require('passport');
-var expressSession = require('express-session');
 var app = express();
-
-app.use(expressSession({secret: 'mySecretKey'}));
+//app.use(expressSession({secret: 'mySecretKey'}));
 app.use(passport.initialize());
-app.use(passport.session());
+//app.use(passport.session());
 
 var flash = require('connect-flash');
 app.use(flash());
 
-var initPassport = require('./passport/init.js');
+var initPassport = require('./passport/init');
 initPassport(passport);
-
 //MongoDB
 var mongoose = require('mongoose');
 require('./models/posts');
@@ -94,12 +91,12 @@ app.use('/', routes);
 //app.use('/users', users);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+/*app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
-
+*/
 // error handlers
 
 // development error handler

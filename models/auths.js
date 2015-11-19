@@ -5,4 +5,4 @@ var AuthSchema = new mongoose.Schema({
   password: String
 });
 
-mongoose.model('Auth', AuthSchema);
+module.exports = mongoose.model('Auth', AuthSchema);
