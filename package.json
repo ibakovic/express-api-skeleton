@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "supervisor ./bin/www"
+    "start": "supervisor ./bin/www",
+    "debug": "node-debug --port 8181 ./bin/www"
   },
   "main": "./bin/www",
   "dependencies": {
@@ -29,6 +30,7 @@
     "mongoose": "^4.0.8",
     "morgan": "^1.5.3",
     "passport": "^0.3.2",
+    "passport-jwt": "^1.2.1",
     "passport-local": "^1.0.0",
     "serve-favicon": "^2.3.0",
     "supertest": "^1.0.1"

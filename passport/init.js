@@ -1,5 +1,6 @@
 var login = require('./login');
 var register = require('./register');
+var jwtStrategy = require('./jwtStrategy');
 var mongoose = require('mongoose');
 var User = mongoose.model('Auth');
 
@@ -18,4 +19,5 @@ module.exports = function(passport){
 
     login(passport);
     register(passport);
+    jwtStrategy(passport);
 };
