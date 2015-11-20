@@ -1,14 +1,30 @@
-var express = require("express");
+'use strict';
+
+var express = require('express');
 var router = express.Router();
-var jwt = require("express-jwt");
-var controllers = require("../controllers");
-var bodyParser = require('body-parser');
+var movies = require('../models/posts');
+var auth = require('../models/auths');
 var passport = require('passport');
-var passJwt = require('passport-jwt');
 var jwtoken = require('jsonwebtoken');
 
+function getAllMovies(req, res, next){
+    movies.find(function(err, mov){
+        if(err) return next(err);
+        if(!mov || (mov.length == 0)) return res.status(400).json({ msg: 'No movies found!' });
+        return res.status(200).json({ data: mov });
+    });
+};
+
+function getAllUsers(req, res, next){
+    auth.find(function(err, auth){
+        if(err) return next(err);
+        if(!auth || auth.length == 0) return res.status(400).json({ msg: "No users found!" });
+        return res.status(200).json({ data: auth });
+    });
+};
+
 router.route("/users")
-.get(controllers.utils.getAllUsers)
+.get(getAllUsers)
 .post(passport.authenticate('register', {
 	successRedirect: '/'
 }),
@@ -28,8 +44,10 @@ router.route("/login").post(passport.authenticate('login'),
     }
  );
 
+router.route('/movies').get(getAllMovies);
+/*
 router.get("/", function(req, res) {
   res.render("index", { title: "Express" });
 });
-
+*/
 module.exports = router;

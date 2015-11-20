@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -38,8 +40,9 @@ if(process.env.OPENSHIFT_MONGODB_DB_PASSWORD){
 mongoose.connect('mongodb://'+connection_string);
 
 var routes = require('./routes/mainRoutes');
-var credentialsRoute = require('./routes/credentialsRoute');
+var usersRoute = require('./routes/usersRoute');
 var userMoviesRoutes = require('./routes/userMoviesRoutes');
+var moviesRUDRoutes = require('./routes/moviesRUDRoutes');
 var dbUsers;
 
 // view engine setup
@@ -124,8 +127,9 @@ app.use('/', routes);
 });*/
 
 app.use(routes);
-app.use(credentialsRoute);
-app.use(userMoviesRoutes);
+app.use('/users/loggedin', usersRoute);
+app.use('/users/loggedin/movies', userMoviesRoutes);
+app.use('/users/loggedin/movies', moviesRUDRoutes);
 // include error handlers
 //errors(app);
 
