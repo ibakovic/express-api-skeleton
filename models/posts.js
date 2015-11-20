@@ -6,4 +6,4 @@ var PostSchema = new mongoose.Schema({
   user: String
 });
 
-mongoose.model('Post', PostSchema);
+module.exports = mongoose.model('Post', PostSchema);

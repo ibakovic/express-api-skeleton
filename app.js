@@ -11,9 +11,8 @@ var handlebars = require('handlebars');
 var templateTexts = require('./templates/moviesTemplate');
 var passport = require('passport');
 var app = express();
-//app.use(expressSession({secret: 'mySecretKey'}));
+
 app.use(passport.initialize());
-//app.use(passport.session());
 
 var flash = require('connect-flash');
 app.use(flash());
@@ -25,16 +24,23 @@ var mongoose = require('mongoose');
 require('./models/posts');
 require('./models/auths');
 require('./models/token');
-//mongoose.connect('mongodb://localhost/movies');
+
+var connectionStr = 'localhost/movies';
 
 var connection_string = 'localhost/movies';
-// if OPENSHIFT env variables are present, use the available connection info:
-if(process.env.OPENSHIFT_MONGODB_DB_PASSWORD){
-  connection_string = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
-  process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
-  process.env.OPENSHIFT_MONGODB_DB_HOST + ':' +
-  process.env.OPENSHIFT_MONGODB_DB_PORT + '/' +
-  process.env.OPENSHIFT_APP_NAME;
+if (process.env.OPENSHIFT_MONGODB_DB_PASSWORD){
+  connectionStr = util.format('mongodb://%s:%s@%s:%d/%s',
+    process.env.OPENSHIFT_MONGODB_DB_USERNAME,
+    process.env.OPENSHIFT_MONGODB_DB_PASSWORD,
+    process.env.OPENSHIFT_MONGODB_DB_HOST,
+    process.env.OPENSHIFT_MONGODB_DB_PORT,
+    process.env.OPENSHIFT_APP_NAME);
+
+  // connection_string = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
+  // process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
+  // process.env.OPENSHIFT_MONGODB_DB_HOST + ':' +
+  // process.env.OPENSHIFT_MONGODB_DB_PORT + '/' +
+  // process.env.OPENSHIFT_APP_NAME;
 }
 
 mongoose.connect('mongodb://'+connection_string);
@@ -62,7 +68,7 @@ Auth.find(function(err, posts){
   dbUsers = posts;
 });
 
-app.get('/', function (req, res) {
+app.get('/', function getRoot(req, res) {
     res.render('home', {
         showTitle: true,
 
@@ -126,10 +132,13 @@ app.use('/', routes);
     });
 });*/
 
-app.use(routes);
-app.use('/users/loggedin', usersRoute);
-app.use('/users/loggedin/movies', userMoviesRoutes);
-app.use('/users/loggedin/movies', moviesRUDRoutes);
+app
+  .use(routes)
+  // api
+  .use('/users/loggedin',        usersRoute)
+  .use('/users/loggedin/movies', userMoviesRoutes)
+  .use('/users/loggedin/movies', moviesRUDRoutes);
+
 // include error handlers
 //errors(app);
 

@@ -45,9 +45,5 @@ router.route("/login").post(passport.authenticate('login'),
  );
 
 router.route('/movies').get(getAllMovies);
-/*
-router.get("/", function(req, res) {
-  res.render("index", { title: "Express" });
-});
-*/
+
 module.exports = router;

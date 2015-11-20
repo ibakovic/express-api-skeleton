@@ -2,33 +2,70 @@
 
 var express = require("express");
 var router = express.Router();
-var posts = require('../models/posts');
+var Movie = require('../models/posts');
 var isAuthenticated = require('../isAuthenticated');
 
-function getUserMovies(req, res, next){
-	var movies = posts.where({ user: req.user.username });
-	movies.find(function(err, data){
-		if(err) return next(err);
-		if(!data) return res.status(400).json({ msg: "Couldn't get your movies " + req.user.username });
-		if(data.length == 0)return res.status(200).json({ msg: "No movies to display" });
-		return res.status(200).json({ data: data });
+function getUserMovies(req, res, next) {
+	Movie.find({ user: req.user.username }, function(err, movie) {
+		if (err)
+			return next(err);
+
+		var status = 200;
+		var resMovie = {};
+
+		resMovie.success = true;
+		resMovie.msg = 'Your movies are ready';
+
+		if (!movie) {
+			resMovie.success = false;
+			resMovie.msg = 'Movie not found';
+			status = 400;
+		}
+		else
+			resMovie.data = movie;
+
+		res.status(status).json(resMovie);
 	});
 }
 
-function addMovie(req, res, next){
-	if((req.body.title == '') || (req.body.title == ' ') || !req.body.title) return res.status(400).json({ msg: "Title required!!" });
-	if(!req.body.link) req.body.link = "";
-	var checkTitle = posts.where({ title: req.body.title, user: req.user.username });
-	checkTitle.find(function(err, title){
-		if(err) return next(err);
-		if(title.length != 0) return res.status(400).json({ msg: req.body.title + " already exists!" });
-		var movie = new posts({ title: req.body.title, link: req.body.link, user: req.user.username });
-		movie.save(function(err, data){
-			if(err) return next(err);
-			if(!data) return res.status(400).json({ msg: "Movie not saved!!!" });
-			return res.status(200).json({ msg: data.title + " added", data: data });
-		});
-	}); 
+function addMovie(req, res, next) {
+	Movie.findOne({ title:req.body.title, user: req.user.username }, function(err, movie) {
+		if (err)
+			return next(err);
+
+		var status = 200;
+		var addData = {};
+
+		addData.success = true;
+		addData.msg = 'Movie added';
+
+		if (!movie) {
+			if (!req.body.title || req.body.title === '') {
+				status = 400;
+				addData.success = false;
+				addData.msg = 'Title field empty';
+			}
+			else {
+				movie = new Movie({ title: req.body.title, link: req.body.link, user: req.user.username });
+				addData.data = movie;
+				movie.save(function(err, data) {
+					if (err)
+						return next(err);
+					if (!data) {
+						status = 400;
+						addData.success = false;
+						addData.msg = 'Failed to save your movie';
+					}
+				});
+			}
+		}
+		else {
+			status = 401;
+			addData.success = false;
+			addData.msg = 'This title already exists';
+		}
+		res.status(status).json(addData);
+	});
 }
 
 router
