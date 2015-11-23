@@ -12,12 +12,13 @@ var router = express.Router();
 var isAuthenticated = require('../isAuthenticated.js');
 var bCrypt = require('bcrypt-nodejs');
 var User = require('../models/auths.js');
+var Message = require('../strings.json');
 
 /**
  * @typedef ApiResponse
- * @param {String} msg       server message
- * @param {Boolean} success	 status flag
- * @param {Object} data      server sent data
+ * @param {String} message		server message
+ * @param {Boolean} success		status flag
+ * @param {Object} respData		server sent data
  */
 
 /**
@@ -49,7 +50,7 @@ function fetchUser(req, res, next) {
 
 		if (!user) {
 			respData.success = false;
-			respData.msg = 'User not found!';
+			respData.msg = Message.UserNotFound;
 		}
 
 		return res.status(200).json(respData);
@@ -58,7 +59,7 @@ function fetchUser(req, res, next) {
 
 /**
  * Deletes user (handles DELETE)
- * Additionally deletes all movies with user's username
+ * Additionally deletes all of his movies
  * 
  * @param  {HttpRequest} req
  * @param  {HttpResponse} res
@@ -68,7 +69,7 @@ function fetchUser(req, res, next) {
 function deleteUser(req, res, next) {
 	var resData = {};
 	
-	resData.msg = 'Movie deleted';
+	resData.msg = Message.UserDeleted;
 	resData.success = true;
 	
 	User.findOneAndRemove(createUserQuery(req), function(err) {
@@ -92,21 +93,21 @@ function deleteUser(req, res, next) {
  */
 function changePassword(req, res, next) {
 	var resData = {};
-	resData.msg = 'Update required!';
+	resData.msg = Message.UpdateRequired;
 	resData.success = false;
+
 	if (!req.body.update)
 		return res.status(400).json(resData);
 
 	var updatedPassword = bCrypt.hashSync(req.body.update, bCrypt.genSaltSync(10), null);
-	var passwordQuery = {
-		password: updatedPassword
-	};
+	var passwordQuery = {password: updatedPassword};
+
 	User.findOneAndUpdate(createUserQuery(req), passwordQuery, {'new': true}, function(err, data) {
 		if (err)
 			return next(err);
 
 		var resData = {};
-		resData.msg = 'Password updated!';
+		resData.msg = Message.PasswordUpdated;
 		resData.success = true;
 		resData.data = data;
 
@@ -114,10 +115,11 @@ function changePassword(req, res, next) {
 	});
 }
 
+// routing table
 router
-	.use(isAuthenticated())
-	.post('/',   changePassword)
-	.get('/',    fetchUser)
-	.delete('/', deleteUser);
+	.use(isAuthenticated())     // HTTP *      /users/loggedin
+	.get('/', fetchUser)        // HTTP GET    /users/loggedin
+	.post('/', changePassword)  // HTTP POST   /users/loggedin
+	.delete('/', deleteUser);   // HTTP DELETE /users/loggedin
 
 module.exports = router;

@@ -12,6 +12,7 @@ var express = require("express");
 var router = express.Router();
 var Movie = require('../models/posts.js');
 var isAuthenticated = require('../isAuthenticated.js');
+var Message = require('../strings.json');
 
 /**
  * @typedef ApiResponse
@@ -46,12 +47,12 @@ function getMovie(req, res, next) {
 		var status = 200;
 		var resData = {};
 
-		resData.msg = 'Movie found!';
+		resData.msg = Message.MovieFound;
 		resData.success = true;
 
 		if (!movie) {
 			status = 400;
-			resData.msg = 'Movie not found!';
+			resData.msg = Message.MovieNotFound;
 			resData.success = false;
 		}
 		else
@@ -71,7 +72,7 @@ function getMovie(req, res, next) {
  */
 function deleteMovie(req, res, next) {
 	var resData = {};
-	resData.msg = 'Movie deleted';
+	resData.msg = Message.MovieDeleted;
 	resData.success = true;
 	Movie.findOneAndRemove(createMovieQuery(req), function(err) {
 		if (err)
@@ -93,7 +94,7 @@ function updateMovie(req, res, next) {
 	var status = 400;
 	
 	if (!req.body.update) {
-		resData.msg = 'Update required!';
+		resData.msg = Message.UpdateRequired;
 		return res.status(status).json(resData);
 	}
 
@@ -105,7 +106,7 @@ function updateMovie(req, res, next) {
 
 		// handle duplicated title
 		if (duplicatedMovie) {
-			resData.msg = 'Title already exists';
+			resData.msg = Message.TitleAlreadyExists;
 			return res.status(status).json(resData);
 		}
 
@@ -114,7 +115,7 @@ function updateMovie(req, res, next) {
 				return next(err);
 
 			resData.data = data;
-			resData.msg = 'Movie updated';
+			resData.msg = Message.MovieUpdated;
 			status = 200;
 
 			return res.status(status).json(resData);

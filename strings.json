@@ -1,0 +1,19 @@
+{
+	"UserNotFound": "User not found!",
+	"UserDeleted": "User deleted",
+	"MovieDeleted": "Movie deleted",
+	"UpdateRequired": "Update required",
+	"PasswordUpdated": "Password updated",
+	"MovieFound": "Movie found",
+	"MovieNotFound": "Movie not found",
+	"TitleAlreadyExists" : "Title already exists",
+	"MovieUpdated": "Movie updated",
+	"MoviesReady": "Movies are ready",
+	"NoMoviesFound": "No movies found",
+	"UsersReady": "Users are ready",
+	"NoUsersFound": "No users found",
+	"RegistrationComplete": "Registation completed",
+	"MovieAdded": "Movie added",
+	"TitleEmpty": "Title field empty",
+	"NotSaved": "Failed to save your movie"
+}

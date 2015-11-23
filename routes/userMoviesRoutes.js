@@ -10,6 +10,7 @@ var express = require("express");
 var router = express.Router();
 var Movie = require('../models/posts.js');
 var isAuthenticated = require('../isAuthenticated.js');
+var Message = require('../strings.json');
 
 /**
  * @typedef ApiResponse
@@ -36,11 +37,11 @@ function getUserMovies(req, res, next) {
 		var resMovie = {};
 
 		resMovie.success = true;
-		resMovie.msg = 'Your movies are ready';
+		resMovie.msg = Message.MoviesReady;
 
 		if (!movie) {
 			resMovie.success = false;
-			resMovie.msg = 'Movie not found';
+			resMovie.msg = Message.NoMoviesFound;
 			status = 400;
 		}
 		else
@@ -72,13 +73,13 @@ function addMovie(req, res, next) {
 		var addData = {};
 
 		addData.success = true;
-		addData.msg = 'Movie added';
+		addData.msg = Message.MovieAdded;
 
 		if (!movie) {
 			if (!req.body.title || req.body.title === '') {
 				status = 400;
 				addData.success = false;
-				addData.msg = 'Title field empty';
+				addData.msg = Message.TitleEmpty;
 			}
 			else {
 				movie = new Movie({ title: req.body.title, link: req.body.link, user: req.user.username });
@@ -89,7 +90,7 @@ function addMovie(req, res, next) {
 					if (!data) {
 						status = 400;
 						addData.success = false;
-						addData.msg = 'Failed to save your movie';
+						addData.msg = Message.NotSaved;
 					}
 				});
 			}
@@ -97,7 +98,7 @@ function addMovie(req, res, next) {
 		else {
 			status = 401;
 			addData.success = false;
-			addData.msg = 'This title already exists';
+			addData.msg = Message.TitleAlreadyExists;
 		}
 		res.status(status).json(addData);
 	});

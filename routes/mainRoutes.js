@@ -12,6 +12,7 @@ var Movie = require('../models/posts.js');
 var User = require('../models/auths.js');
 var passport = require('passport');
 var jwtoken = require('jsonwebtoken');
+var Message = require('../strings.json');
 
 /**
  * @typedef ApiResponse
@@ -36,10 +37,10 @@ function getAllMovies(req, res, next) {
         var resData = {};
 
         resData.success = true;
-        resData.msg = 'Movies are ready';
+        resData.msg = Message.MoviesReady;
 
         if (!movies) {
-            resData.msg = 'No movies found';
+            resData.msg = Message.NoMoviesFound;
             resData.success = false;
             status = 400;
         }
@@ -67,10 +68,10 @@ function getAllUsers(req, res, next) {
         var resData = {};
 
         resData.success = true;
-        resData.msg = 'Users are ready';
+        resData.msg = Message.UsersReady;
 
         if (!users) {
-            resData.msg = 'No users found';
+            resData.msg = Message.NoUsersFound;
             resData.success = false;
             status = 400;
         }
@@ -87,7 +88,7 @@ router.route("/users")
 	successRedirect: '/'
 }),
  function(req, res) {
-    res.status(200).json({msg: "Registation completed"});
+    res.status(200).json({msg: Message.RegistrationComplete});
  });
 
 router.route("/login").post(passport.authenticate('login'),
