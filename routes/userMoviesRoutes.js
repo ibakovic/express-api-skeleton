@@ -46,7 +46,8 @@ function getUserMovies(req, res, next) {
 		else
 			resMovie.data = movie;
 
-		res.status(status).json(resMovie);
+		res.redirect('/authorized');
+		//res.status(status).json(resMovie);
 	});
 }
 
