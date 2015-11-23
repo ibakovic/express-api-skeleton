@@ -13,11 +13,9 @@ module.exports = function(passport){
                 return done(err, false);
             }
             if (user) {
-
                 done(null, user);
             } else {
                 done(null, false);
-                // or you could create a new account
             }
         });
     }));

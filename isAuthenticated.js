@@ -1,8 +1,9 @@
+'use strict';
+
 var passJwt = require('passport-jwt');
-var jwtoken = require('jsonwebtoken');
 var passport = require('passport');
 
-var isAuthenticated = function(){
+var isAuthenticated = function() {
     return passport.authenticate('passJwt', { session: false});
 };
 

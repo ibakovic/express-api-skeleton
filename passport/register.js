@@ -1,3 +1,5 @@
+'use strict';
+
 var LocalStrategy   = require('passport-local').Strategy;
 var mongoose = require('mongoose');
 var User = mongoose.model('Auth');
@@ -9,11 +11,11 @@ module.exports = function(passport){
         },
         function(req, username, password, done) {
             console.log("username: " + username);
-            findOrCreateUser = function(){
+            var findOrCreateUser = function() {
                 // find a user in Mongo with provided username
                 User.findOne({ 'username' :  username }, function(err, user) {
                     // In case of any error, return using the done method
-                    if (err){
+                    if (err) {
                         console.log('Error in SignUp: '+err);
                         return done(err);
                     }
@@ -32,7 +34,7 @@ module.exports = function(passport){
                        
                         // save the user
                         newUser.save(function(err) {
-                            if (err){
+                            if (err) {
                                 console.log('Error in Saving user: '+err);  
                                 throw err;  
                             }

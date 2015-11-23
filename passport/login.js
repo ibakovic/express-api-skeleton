@@ -1,3 +1,5 @@
+'use strict';
+
 var LocalStrategy   = require('passport-local').Strategy;
 var User = require('../models/auths');
 var bCrypt = require('bcrypt-nodejs');
@@ -15,12 +17,12 @@ module.exports = function(passport){
                     if (err)
                         return done(err);
                     // Username does not exist, log the error and redirect back
-                    if (!user){
+                    if (!user) {
                         console.log('User Not Found with username '+username);
                         return done(null, false);                 
                     }
                     // User exists but wrong password, log the error 
-                    if (!isValidPassword(user, password)){
+                    if (!isValidPassword(user, password)) {
                         console.log('Invalid Password');
                         return done(null, false); // redirect back to login page
                     }
@@ -33,7 +35,7 @@ module.exports = function(passport){
         })
     );
 
-    var isValidPassword = function(user, password){
+    var isValidPassword = function(user, password) {
         return bCrypt.compareSync(password, user.password);
     };
 };

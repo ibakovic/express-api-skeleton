@@ -1,12 +1,34 @@
+/**
+ * userMoviesRoutes.js
+ */
 'use strict';
 
+/**
+ * Module dependencies
+ */
 var express = require("express");
 var router = express.Router();
-var Movie = require('../models/posts');
-var isAuthenticated = require('../isAuthenticated');
+var Movie = require('../models/posts.js');
+var isAuthenticated = require('../isAuthenticated.js');
 
+/**
+ * @typedef ApiResponse
+ * @param {String} msg       server message
+ * @param {Boolean} success	 status flag
+ * @param {Object} data      server sent data
+ */
+
+/**
+ * Gets all user movies (handles GET)
+ * 
+ * @param  {HttpRequest} req
+ * @param  {HttpResponse} res
+ * @param  {Function(req, res, next)} next
+ * @augments res using ApiResponse format
+ */
 function getUserMovies(req, res, next) {
-	Movie.find({ user: req.user.username }, function(err, movie) {
+	var query = { user: req.user.username };
+	Movie.find(query, function(err, movie) {
 		if (err)
 			return next(err);
 
@@ -28,8 +50,20 @@ function getUserMovies(req, res, next) {
 	});
 }
 
+/**
+ * Adds a new user movie (handles POST)
+ * 
+ * @param {HttpRequest} req
+ * @param {HttpResponse} res
+ * @param {Function(req, res, next)} next
+ * @augments res using ApiResponse format
+ */
 function addMovie(req, res, next) {
-	Movie.findOne({ title:req.body.title, user: req.user.username }, function(err, movie) {
+	var movieQuery = {
+		title:req.body.title,
+		user: req.user.username
+	};
+	Movie.findOne(movieQuery, function(err, movie) {
 		if (err)
 			return next(err);
 

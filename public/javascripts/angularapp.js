@@ -20,7 +20,7 @@ app.factory('posts', ['$http', function ($http) {
         });
     };
     videos.getAll = function () {
-        return $http.get('/posts').success(function (data) {
+        return $http.get('/users').success(function (data) {
             angular.copy(data, videos.posts);        
             });
             };
@@ -44,7 +44,7 @@ app.factory('auths', ['$http', function($http){
         });
       };
       obj.create = function(auth) {
-          return $http.post('/register', auth).success(function(){
+          return $http.post('/users', auth).success(function(){
             alert('Register successful');
           });
     };
@@ -58,7 +58,7 @@ app.controller('AuthCtrl', [
 '$state',
 '$http',
 function($scope, auths, $state, $http){
-    
+    $scope.test= "testiranje da li radi";
     $scope.register = function () {
         auths.create({
             username: $scope.username,

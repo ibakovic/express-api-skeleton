@@ -1,27 +1,85 @@
+/**
+ * mainRoutes.js
+ */
 'use strict';
 
+/**
+ * Module dependencies
+ */
 var express = require('express');
 var router = express.Router();
-var movies = require('../models/posts');
-var auth = require('../models/auths');
+var Movie = require('../models/posts.js');
+var User = require('../models/auths.js');
 var passport = require('passport');
 var jwtoken = require('jsonwebtoken');
 
-function getAllMovies(req, res, next){
-    movies.find(function(err, mov){
-        if(err) return next(err);
-        if(!mov || (mov.length == 0)) return res.status(400).json({ msg: 'No movies found!' });
-        return res.status(200).json({ data: mov });
-    });
-};
+/**
+ * @typedef ApiResponse
+ * @param {String} msg       server message
+ * @param {Boolean} success  status flag
+ * @param {Object} data      server sent data
+ */
 
-function getAllUsers(req, res, next){
-    auth.find(function(err, auth){
-        if(err) return next(err);
-        if(!auth || auth.length == 0) return res.status(400).json({ msg: "No users found!" });
-        return res.status(200).json({ data: auth });
+/**
+ * Gets all movies (handles GET)
+ * 
+ * @param  {HttpRequest} req
+ * @param  {HttpResponse} res
+ * @param  {Function(req, res, next)} next
+ * @augments res using ApiResponse format
+ */
+function getAllMovies(req, res, next) {
+    Movie.find(function(err, movies) {
+        if (err)
+            return next(err);
+        var status = 200;
+        var resData = {};
+
+        resData.success = true;
+        resData.msg = 'Movies are ready';
+
+        if (!movies) {
+            resData.msg = 'No movies found';
+            resData.success = false;
+            status = 400;
+        }
+        else
+            resData.data = movies;
+            
+        return res.status(200).json(resData);
     });
-};
+}
+
+/**
+ * Gets all users (handles GET)
+ * 
+ * @param  {HttpRequest} req
+ * @param  {HttpResponse} res
+ * @param  {Function(req, res, next)} next
+ * @augments res using ApiResponse format
+ */
+function getAllUsers(req, res, next) {
+    User.find(function(err, users) {
+        if (err)
+            return next(err);
+
+        var status = 200;
+        var resData = {};
+
+        resData.success = true;
+        resData.msg = 'Users are ready';
+
+        if (!users) {
+            resData.msg = 'No users found';
+            resData.success = false;
+            status = 400;
+        }
+        else
+            resData.data = users;
+            
+        return res.status(200).json(resData);
+    });
+}
 
 router.route("/users")
 .get(getAllUsers)
@@ -33,6 +91,12 @@ router.route("/users")
  });
 
 router.route("/login").post(passport.authenticate('login'),
+    /**
+     * Creates token
+     * 
+     * @param  {HttpRequest} req
+     * @param  {HttpResponse} res
+     */
     function(req, res) {
     	var token = "Bearer ";
         token += jwtoken.sign({
