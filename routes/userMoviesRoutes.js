@@ -41,7 +41,7 @@ function getUserMovies(req, res, next) {
 
 		if (!movie) {
 			resMovie.success = false;
-			resMovie.msg = Message.NoMoviesFound;
+			resMovie.msg = Message.MoviesNotFound;
 			status = 400;
 		}
 		else

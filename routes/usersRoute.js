@@ -25,9 +25,7 @@ var Message = require('../strings.json');
  * Creates a query to find the user with username
  */
 function createUserQuery (req) {
-	return { 
-		username: req.user.username 
-	};
+	return { username: req.user.username };
 }
 
 /**
@@ -72,16 +70,17 @@ function deleteUser(req, res, next) {
 	resData.msg = Message.UserDeleted;
 	resData.success = true;
 	
+	var Movie = require('../models/posts.js');
+	var movieQuery = { user: req.user.username };
+	Movie.remove(movieQuery, function(err) {
+		if (err)
+			return next(err);
+	});
+
 	User.findOneAndRemove(createUserQuery(req), function(err) {
 		if (err)
 			return next(err);
 		res.status(200).json(resData);
-	});
-
-	var Movie = require('../models/posts.js');
-	Movie.remove(createUserQuery(req), function(err) {
-		if (err)
-			return next(err);
 	});
 }
 

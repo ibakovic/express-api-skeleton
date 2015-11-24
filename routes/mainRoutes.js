@@ -40,7 +40,7 @@ function getAllMovies(req, res, next) {
         resData.msg = Message.MoviesReady;
 
         if (!movies) {
-            resData.msg = Message.NoMoviesFound;
+            resData.msg = Message.MoviesNotFound;
             resData.success = false;
             status = 400;
         }
@@ -71,7 +71,7 @@ function getAllUsers(req, res, next) {
         resData.msg = Message.UsersReady;
 
         if (!users) {
-            resData.msg = Message.NoUsersFound;
+            resData.msg = Message.UsersNotFound;
             resData.success = false;
             status = 400;
         }
