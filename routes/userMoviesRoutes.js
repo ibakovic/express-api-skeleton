@@ -47,8 +47,8 @@ function getUserMovies(req, res, next) {
 		else
 			resMovie.data = movie;
 
-		res.redirect('/authorized');
-		//res.status(status).json(resMovie);
+		//res.redirect('/authorized');
+		res.status(status).json(resMovie);
 	});
 }
 
@@ -79,7 +79,7 @@ function addMovie(req, res, next) {
 			if (!req.body.title || req.body.title === '') {
 				status = 400;
 				addData.success = false;
-				addData.msg = Message.TitleEmpty;
+				addData.msg = Message.MovieTitleEmpty;
 			}
 			else {
 				movie = new Movie({ title: req.body.title, link: req.body.link, user: req.user.username });
@@ -90,7 +90,7 @@ function addMovie(req, res, next) {
 					if (!data) {
 						status = 400;
 						addData.success = false;
-						addData.msg = Message.NotSaved;
+						addData.msg = Message.MovieNotSaved;
 					}
 				});
 			}
@@ -98,7 +98,7 @@ function addMovie(req, res, next) {
 		else {
 			status = 401;
 			addData.success = false;
-			addData.msg = Message.TitleAlreadyExists;
+			addData.msg = Message.MovieDuplicated;
 		}
 		res.status(status).json(addData);
 	});

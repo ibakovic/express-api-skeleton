@@ -2,11 +2,12 @@
 	"UserNotFound": "User not found!",
 	"UserDeleted": "User deleted",
 	"MovieDeleted": "Movie deleted",
-	"UpdateRequired": "Update required",
-	"PasswordUpdated": "Password updated",
+	"UserPasswordUpdateRequired": "Password update required",
+	"MovieTitleUpdateRequired": "Title update required",
+	"UserPasswordUpdated": "Password updated",
 	"MovieFound": "Movie found",
 	"MovieNotFound": "Movie not found",
-	"TitleAlreadyExists" : "Title already exists",
+	"MovieDuplicated" : "Title already exists",
 	"MovieUpdated": "Movie updated",
 	"MoviesReady": "Movies are ready",
 	"NoMoviesFound": "No movies found",
@@ -14,6 +15,6 @@
 	"NoUsersFound": "No users found",
 	"RegistrationComplete": "Registation completed",
 	"MovieAdded": "Movie added",
-	"TitleEmpty": "Title field empty",
-	"NotSaved": "Failed to save your movie"
+	"MovieTitleEmpty": "Title field empty",
+	"MovieNotSaved": "Failed to save your movie"
 }

@@ -94,7 +94,7 @@ function updateMovie(req, res, next) {
 	var status = 400;
 	
 	if (!req.body.update) {
-		resData.msg = Message.UpdateRequired;
+		resData.msg = Message.MovieTitleUpdateRequired;
 		return res.status(status).json(resData);
 	}
 
@@ -106,7 +106,7 @@ function updateMovie(req, res, next) {
 
 		// handle duplicated title
 		if (duplicatedMovie) {
-			resData.msg = Message.TitleAlreadyExists;
+			resData.msg = Message.MovieDuplicated;
 			return res.status(status).json(resData);
 		}
 

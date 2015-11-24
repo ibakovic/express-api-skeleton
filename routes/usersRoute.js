@@ -93,7 +93,7 @@ function deleteUser(req, res, next) {
  */
 function changePassword(req, res, next) {
 	var resData = {};
-	resData.msg = Message.UpdateRequired;
+	resData.msg = Message.UserPasswordUpdateRequired;
 	resData.success = false;
 
 	if (!req.body.update)
@@ -107,7 +107,7 @@ function changePassword(req, res, next) {
 			return next(err);
 
 		var resData = {};
-		resData.msg = Message.PasswordUpdated;
+		resData.msg = Message.UserPasswordUpdated;
 		resData.success = true;
 		resData.data = data;
 
