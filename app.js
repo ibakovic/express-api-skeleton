@@ -13,7 +13,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var exphbs  = require('express-handlebars');
-//var handlebars = require('handlebars');
 var passport = require('passport');
 var app = express();
 var hbFunc = require('./handlebars/hbFunc.js');

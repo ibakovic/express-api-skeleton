@@ -1,6 +1,5 @@
 'use strict';
 
-var passJwt = require('passport-jwt');
 var passport = require('passport');
 
 var isAuthenticated = function() {
