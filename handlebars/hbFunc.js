@@ -1,6 +1,6 @@
 'use strict';
 
-var User = require('../models/auths.js');
+var User = require('../models/users.js');
 var handlebars = require('handlebars');
 var templateTexts = require('../templates/moviesTemplate.js');
 var dbUsers;
@@ -11,7 +11,7 @@ var mongoUsers;
     });
 
 module.exports = function hbFunc (req, res, next) {
-	res.render('home', {
+  res.render('home', {
         showTitle: true,
 
     helpers: {
@@ -22,7 +22,7 @@ module.exports = function hbFunc (req, res, next) {
         },
         users: function() {
             var userText = templateTexts.usersTemplate;
-	
+
             var template = handlebars.compile(userText);
             return template({users: mongoUsers});
         }

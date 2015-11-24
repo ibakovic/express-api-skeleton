@@ -3,11 +3,10 @@
 var login = require('./login');
 var register = require('./register');
 var jwtStrategy = require('./jwtStrategy');
-var mongoose = require('mongoose');
-var User = mongoose.model('Auth');
+var User = require('../models/users.js');
 
 module.exports = function(passport){
-	passport.serializeUser(function(user, done) {
+  passport.serializeUser(function(user, done) {
         console.log('serializing user: ');
         console.log(user);
         done(null, user._id);

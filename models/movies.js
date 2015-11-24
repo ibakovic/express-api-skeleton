@@ -2,10 +2,10 @@
 
 var mongoose = require('mongoose');
 
-var PostSchema = new mongoose.Schema({
+var MovieSchema = new mongoose.Schema({
   title: String,
   link: String,
   user: String
 });
 
-module.exports = mongoose.model('Post', PostSchema);
+module.exports = mongoose.model('Post', MovieSchema);

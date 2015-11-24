@@ -2,7 +2,7 @@
 
 var JwtStrategy = require('passport-jwt').Strategy;
 var opts = {};
-var User = require('../models/auths');
+var User = require('../models/users.js');
 opts.secretOrKey = 'secret';
 opts.authScheme = 'Bearer';
 

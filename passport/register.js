@@ -1,12 +1,11 @@
 'use strict';
 
-var LocalStrategy   = require('passport-local').Strategy;
-var mongoose = require('mongoose');
-var User = mongoose.model('Auth');
+var LocalStrategy = require('passport-local').Strategy;
+var User = require('../models/users.js');
 var bCrypt = require('bcrypt-nodejs');
 
 module.exports = function(passport){
-	passport.use('register', new LocalStrategy({
+  passport.use('register', new LocalStrategy({
             passReqToCallback : true // allows us to pass back the entire request to the callback
         },
         function(req, username, password, done) {
@@ -16,7 +15,7 @@ module.exports = function(passport){
                 User.findOne({ 'username' :  username }, function(err, user) {
                     // In case of any error, return using the done method
                     if (err) {
-                        console.log('Error in SignUp: '+err);
+                        console.log('Error in SignUp: ' + err);
                         return done(err);
                     }
                     // already exists
@@ -31,14 +30,13 @@ module.exports = function(passport){
                         // set the user's local credentials
                         newUser.username = username;
                         newUser.password = createHash(password);
-                       
                         // save the user
                         newUser.save(function(err) {
                             if (err) {
-                                console.log('Error in Saving user: ' + err);  
-                                throw err;  
+                                console.log('Error in Saving user: ' + err);
+                                throw err;
                             }
-                            console.log('User Registration succesful');    
+                            console.log('User Registration succesful');
                             return done(null, newUser);
                         });
                     }
