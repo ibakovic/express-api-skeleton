@@ -21,10 +21,6 @@ var format = require('string-template');
 
 //Initialize module passport
 app.use(passport.initialize());
-
-var flash = require('connect-flash');
-app.use(flash());
-
 var initPassport = require('./passport/init.js');
 initPassport(passport);
 
@@ -62,61 +58,25 @@ app.set('view engine', 'ejs');*/
 app.enable('view cache');
 
 app
+//set handlebars engine and default view
 .engine('handlebars', exphbs({defaultLayout: 'main'}))
-.set('view engine', 'handlebars');
-
-app
-  .get('/', hbFunc)
-  .get('/authorized', loginFunc)
-  .use(express.static('public'))
+.set('view engine', 'handlebars')
+//ger frontend
+.get('/', hbFunc)
+.get('/authorized', loginFunc)
+.use(express.static('public'))
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
-  .use(logger('dev'))
-  .use(bodyParser.json())
-  .use(bodyParser.urlencoded({ extended: false }))
-  .use(cookieParser())
-  .use(express.static(path.join(__dirname, 'public')))
-  .use('/', routes);
-
-// catch 404 and forward to error handler
-/*app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
-});
-*/
-// error handlers
-
-// development error handler
-// will print stacktrace
-/*if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
-}*/
-
-// production error handler
-// no stacktraces leaked to user
-/*app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
-});*/
-
-app
-  .use(routes)
-  // api
-  .use('/users/loggedin',        usersRoute)
-  .use('/users/loggedin/movies', userMoviesRoutes)
-  .use('/users/loggedin/movies', moviesRUDRoutes);
-
-// include error handlers
-//errors(app);
+.use(logger('dev'))
+.use(bodyParser.json())
+.use(bodyParser.urlencoded({ extended: false }))
+.use(cookieParser())
+.use(express.static(path.join(__dirname, 'public')))
+//api
+.use('/', routes)
+.use(routes)
+.use('/users/loggedin',        usersRoute)
+.use('/users/loggedin/movies', userMoviesRoutes)
+.use('/users/loggedin/movies', moviesRUDRoutes);
 
 module.exports = app;

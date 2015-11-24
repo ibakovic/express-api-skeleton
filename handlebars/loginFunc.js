@@ -1,7 +1,6 @@
 'use strict';
 
 var Movie = require('../models/posts.js');
-var exphbs  = require('express-handlebars');
 var handlebars = require('handlebars');
 var templateTexts = require('../templates/moviesTemplate.js');
 var mongoMovies;

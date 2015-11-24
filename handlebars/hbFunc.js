@@ -1,7 +1,6 @@
 'use strict';
 
 var User = require('../models/auths.js');
-var exphbs  = require('express-handlebars');
 var handlebars = require('handlebars');
 var templateTexts = require('../templates/moviesTemplate.js');
 var dbUsers;
