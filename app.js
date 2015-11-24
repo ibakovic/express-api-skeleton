@@ -13,7 +13,7 @@ var passport = require('passport');
 var app = express();
 var hbFunc = require('./handlebars/hbFunc.js');
 var loginFunc = require('./handlebars/loginFunc.js');
-var util = require('util');
+var format = require('string-template');
 
 app.use(passport.initialize());
 
@@ -37,11 +37,19 @@ if (process.env.OPENSHIFT_MONGODB_DB_PASSWORD){
     process.env.OPENSHIFT_MONGODB_DB_HOST,
     process.env.OPENSHIFT_MONGODB_DB_PORT,
     process.env.OPENSHIFT_APP_NAME);*/
-connection_string = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
+var formatString = 'mongodb://{username}:{password}@{host}:{port}/{appName}';
+connection_string = format(formatString, {
+  username: process.env.OPENSHIFT_MONGODB_DB_USERNAME,
+  password: process.env.OPENSHIFT_MONGODB_DB_PASSWORD,
+  host:     process.env.OPENSHIFT_MONGODB_DB_HOST,
+  port:     process.env.OPENSHIFT_MONGODB_DB_PORT,
+  appName:  process.env.OPENSHIFT_APP_NAME
+});
+/*process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
   process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
   process.env.OPENSHIFT_MONGODB_DB_HOST + ':' +
   process.env.OPENSHIFT_MONGODB_DB_PORT + '/' +
-  process.env.OPENSHIFT_APP_NAME;
+  process.env.OPENSHIFT_APP_NAME;*/
 }
 
 mongoose.connect('mongodb://'+connection_string);
