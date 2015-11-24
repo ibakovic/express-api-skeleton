@@ -13,6 +13,7 @@ var passport = require('passport');
 var app = express();
 var hbFunc = require('./handlebars/hbFunc.js');
 var loginFunc = require('./handlebars/loginFunc.js');
+var util = require('util');
 
 app.use(passport.initialize());
 
@@ -66,7 +67,7 @@ app
   .use(bodyParser.urlencoded({ extended: false }))
   .use(cookieParser())
   .use(express.static(path.join(__dirname, 'public')))
-  .use('/', routes)
+  .use('/', routes);
 
 // catch 404 and forward to error handler
 /*app.use(function(req, res, next) {
