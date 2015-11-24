@@ -1,5 +1,11 @@
+/**
+ * app.js
+ */
 'use strict';
 
+/**
+ * Module dependencies
+ */
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -7,14 +13,14 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var exphbs  = require('express-handlebars');
-var handlebars = require('handlebars');
-var templateTexts = require('./templates/moviesTemplate.js');
+//var handlebars = require('handlebars');
 var passport = require('passport');
 var app = express();
 var hbFunc = require('./handlebars/hbFunc.js');
 var loginFunc = require('./handlebars/loginFunc.js');
 var format = require('string-template');
 
+//Initialize module passport
 app.use(passport.initialize());
 
 var flash = require('connect-flash');
@@ -22,38 +28,29 @@ app.use(flash());
 
 var initPassport = require('./passport/init.js');
 initPassport(passport);
+
 //MongoDB
 var mongoose = require('mongoose');
 require('./models/posts.js');
 require('./models/auths.js');
 
-var connectionStr = 'localhost/movies';
-
+//MongoDB connection
 var connection_string = 'localhost/movies';
 if (process.env.OPENSHIFT_MONGODB_DB_PASSWORD){
-  /*connectionStr = util.format('mongodb://%s:%s@%s:%d/%s',
-    process.env.OPENSHIFT_MONGODB_DB_USERNAME,
-    process.env.OPENSHIFT_MONGODB_DB_PASSWORD,
-    process.env.OPENSHIFT_MONGODB_DB_HOST,
-    process.env.OPENSHIFT_MONGODB_DB_PORT,
-    process.env.OPENSHIFT_APP_NAME);*/
-var formatString = 'mongodb://{username}:{password}@{host}:{port}/{appName}';
-connection_string = format(formatString, {
-  username: process.env.OPENSHIFT_MONGODB_DB_USERNAME,
-  password: process.env.OPENSHIFT_MONGODB_DB_PASSWORD,
-  host:     process.env.OPENSHIFT_MONGODB_DB_HOST,
-  port:     process.env.OPENSHIFT_MONGODB_DB_PORT,
-  appName:  process.env.OPENSHIFT_APP_NAME
-});
-/*process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
-  process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
-  process.env.OPENSHIFT_MONGODB_DB_HOST + ':' +
-  process.env.OPENSHIFT_MONGODB_DB_PORT + '/' +
-  process.env.OPENSHIFT_APP_NAME;*/
+  var formatString = 'mongodb://{username}:{password}@{host}:{port}/{appName}';
+
+  connection_string = format(formatString, {
+    username: process.env.OPENSHIFT_MONGODB_DB_USERNAME,
+    password: process.env.OPENSHIFT_MONGODB_DB_PASSWORD,
+    host:     process.env.OPENSHIFT_MONGODB_DB_HOST,
+    port:     process.env.OPENSHIFT_MONGODB_DB_PORT,
+    appName:  process.env.OPENSHIFT_APP_NAME
+  });
 }
 
 mongoose.connect('mongodb://'+connection_string);
 
+//Routes modules
 var routes = require('./routes/mainRoutes.js');
 var usersRoute = require('./routes/usersRoute.js');
 var userMoviesRoutes = require('./routes/userMoviesRoutes.js');
