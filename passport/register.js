@@ -3,24 +3,26 @@
 var LocalStrategy = require('passport-local').Strategy;
 var User = require('../models/users.js');
 var bCrypt = require('bcrypt-nodejs');
+var log = require('minilog')('app');
+require('minilog').enable();
 
 module.exports = function(passport){
   passport.use('register', new LocalStrategy({
             passReqToCallback : true // allows us to pass back the entire request to the callback
         },
         function(req, username, password, done) {
-            console.log("username: " + username);
+            log.log("username: " + username);
             var findOrCreateUser = function() {
                 // find a user in Mongo with provided username
                 User.findOne({ 'username' :  username }, function(err, user) {
                     // In case of any error, return using the done method
                     if (err) {
-                        console.log('Error in SignUp: ' + err);
+                        log.log('Error in SignUp: ' + err);
                         return done(err);
                     }
                     // already exists
                     if (user) {
-                        console.log('User already exists with username: '+username);
+                        log.log('User already exists with username: '+username);
                         return done(null, false);
                     } else {
                         // if there is no user with that email
@@ -33,10 +35,10 @@ module.exports = function(passport){
                         // save the user
                         newUser.save(function(err) {
                             if (err) {
-                                console.log('Error in Saving user: ' + err);
+                                log.log('Error in Saving user: ' + err);
                                 throw err;
                             }
-                            console.log('User Registration succesful');
+                            log.log('User Registration succesful');
                             return done(null, newUser);
                         });
                     }

@@ -1,25 +1,24 @@
 <h1>Example App: Home</h1>
 
 <div>
-	<input type="text" id="username" placeholder="username"><br>
-	<input type="password" id="password" placeholder="password"><br>
-	<div id="responseContainer"></div>
-	<button onclick="register()">Register</button>
-	<button>Log in</button>
+  <input type="text" id="username" placeholder="username"><br>
+  <input type="password" id="password" placeholder="password"><br>
+  <div id="responseContainer"></div>
+  <button onclick="register()">Register</button>
+  <button>Log in</button>
 
-	<script>
-		function register(){
-			//alert(document.getElementById("username").value + " " + document.getElementById("password").value);
-			var xhttp = new XMLHttpRequest();
-			var credentials = {
-				username: document.getElementById('username').value,
-				password: document.getElementById("password").value
-			};
-			xhttp.open("POST", "http://localhost:8080/users");
-			xhttp.setRequestHeader("Content-type", "application/json");
-			xhttp.send(JSON.stringify(credentials));
-			document.getElementById('responseContainer').innerHTML = xhttp.responseText;
-			alert(xhttp.responseText);
-		}
-	</script>
+  <script>
+    function register(){
+      var xhttp = new XMLHttpRequest();
+      var credentials = {
+        username: document.getElementById('username').value,
+        password: document.getElementById("password").value
+      };
+      xhttp.open("POST", "http://localhost:8080/users");
+      xhttp.setRequestHeader("Content-type", "application/json");
+      xhttp.send(JSON.stringify(credentials));
+      document.getElementById('responseContainer').innerHTML = xhttp.responseText;
+      alert(xhttp.responseText);
+    }
+  </script>
 </div>

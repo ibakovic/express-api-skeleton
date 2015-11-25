@@ -1,76 +1,59 @@
-/**
-  * app.js
-  */
 'use strict';
 
-/**
-  * Module dependencies
-  */
 var express = require('express');
-var path = require('path');
+var Path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var exphbs = require('express-handlebars');
+var handlebars = require('express-handlebars');
 var passport = require('passport');
+
+
+// create server
 var app = express();
+
+// init passport
+app.use(passport.initialize());
+require('./passport/init.js')(passport);
+
+// init mongoose
+require('./models/init.js')();
+
+// set handlebars engine and default view
+app.enable('view cache');
+app
+  .engine('handlebars', handlebars({defaultLayout: 'main'}))
+  .set('view engine', 'handlebars');
+
+// serve frontend
 var hbFunc = require('./handlebars/hbFunc.js');
 var loginFunc = require('./handlebars/loginFunc.js');
-var format = require('string-template');
 
-// Initialize module passport
-app.use(passport.initialize());
-var initPassport = require('./passport/init.js');
-initPassport(passport);
+app
+  //.get('/', hbFunc),
+  //.get('/authorized', loginFunc)
 
-// MongoDB
-var mongoose = require('mongoose');
+// serve static assets
+app
+  .use(express.static(Path.join(__dirname, 'public')));
+  // uncomment after placing your favicon in /public
+  //.use(favicon(__dirname + '/public/favicon.ico'));
 
-// MongoDB connection
-var connection_string = 'localhost/movies';
-if (process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
-  var formatString = 'mongodb://{username}:{password}@{host}:{port}/{appName}';
+// logging
+app.use(logger('dev'));
 
-connection_string = format(formatString, {
-    username: process.env.OPENSHIFT_MONGODB_DB_USERNAME,
-    password: process.env.OPENSHIFT_MONGODB_DB_PASSWORD,
-    host:     process.env.OPENSHIFT_MONGODB_DB_HOST,
-    port:     process.env.OPENSHIFT_MONGODB_DB_PORT,
-    appName:  process.env.OPENSHIFT_APP_NAME
-  });
-}
+// handling HTTP request payload
+app
+  .use(bodyParser.json())
+  .use(bodyParser.urlencoded({extended: false}));
 
-mongoose.connect('mongodb://' + connection_string);
-
-//Routes modules
-
+// routers
 var usersRoutes = require('./routes/usersRoutes.js');
 var logRegRoutes = require('./routes/logRegRoutes.js');
 
-// view engine setup
-/*app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');*/
-
-app.enable('view cache');
-
+// API endpoints
 app
-// set handlebars engine and default view
-.engine('handlebars', exphbs({defaultLayout: 'main'}))
-.set('view engine', 'handlebars')
-//ger frontend
-//.get('/', hbFunc)
-//.get('/authorized', loginFunc)
-.use(express.static('public'))
-// uncomment after placing your favicon in /public
-// app.use(favicon(__dirname + '/public/favicon.ico'));
-.use(logger('dev'))
-.use(bodyParser.json())
-.use(bodyParser.urlencoded({ extended: false }))
-.use(cookieParser())
-.use(express.static(path.join(__dirname, 'public')))
-// api
-.use('/', logRegRoutes)
-.use('/', usersRoutes);
+  .use('/', logRegRoutes)
+  .use('/', usersRoutes);
 
 module.exports = app;

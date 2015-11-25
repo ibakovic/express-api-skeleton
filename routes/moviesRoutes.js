@@ -1,8 +1,6 @@
-/**
-  * moviesRoutes.js
-  */
 'use script';
 
+var _ = require('lodash');
 var router = require('express').Router();
 var isAuthenticated = require('../isAuthenticated.js');
 var Movie = require('../models/movies.js');
@@ -16,12 +14,12 @@ var Message = require('../strings.json');
   */
 
 /**
-  * Creates a query to find a movie with title and username
+  * Creates a query to find a movie with title and addedBy
   */
 function createMovieQuery (req) {
   return {
-    title: req.params.movieId,
-    user:  req.user.username
+    _id: req.params.movieId,
+    addedBy: req.user.id
   };
 }
 
@@ -45,7 +43,7 @@ function addMovie (req, res, next) {
 
   var duplicateQuery = {
     title: req.body.title,
-    user:  req.user.username
+    addedBy: req.user.id
   };
 
   Movie.findOne(duplicateQuery, function(err, duplicatedMovie) {
@@ -58,13 +56,13 @@ function addMovie (req, res, next) {
       return res.status(400).json(resData);
     }
 
-    var saveQuery = new Movie({
+    var movie = new Movie({
       title: req.body.title,
       link: req.body.link,
-      user: req.user.username
+      addedBy: req.user.id
     });
 
-    saveQuery.save(function (err, movie) {
+    movie.save(function (err, movie) {
       if (err)
         return next(err);
 
@@ -86,7 +84,7 @@ function addMovie (req, res, next) {
   * @augments res using ApiResponse format
   */
 function listMovies (req, res, next) {
-  var allUserMoviesQuery = { user: req.user.username };
+  var allUserMoviesQuery = { addedBy: req.user.id };
   Movie.find(allUserMoviesQuery, function(err, movies) {
     if (err)
       return next(err);
@@ -101,28 +99,39 @@ function listMovies (req, res, next) {
       return res.status(400).json(resData);
     }
 
-    resData.data = movies;
+    resData.data = _.invoke(movies, 'toObject');
+
     return res.status(200).json(resData);
   });
 }
 
 function showMovie (req, res, next) {
-  Movie.findOne(createMovieQuery(req), function (err, movie) {
-    if (err)
-      return next();
+  var movieQuery = {
+    addedBy: req.user.id,
+    _id: req.params.movieId
+  };
 
+  Movie.findOne(movieQuery, function(err, movie) {
+    if (err)
+      return next(err);
+
+    var status;
     var resData = {};
-    resData.msg = Message.MovieFound;
-    resData.success = true;
 
     if (!movie) {
       resData.msg = Message.MovieNotFound;
       resData.success = false;
-      return res.status(400).json(resData);
+      status = 400;
+
+      return res.status(status).json(resData);
     }
 
-    resData.data = movie;
-    return res.status(200).json(resData);
+    resData.msg = Message.MovieFound;
+    resData.success = true;
+    resData.data = movie.toObject();
+    status = 200;
+
+    return res.status(status).json(resData);
   });
 }
 
@@ -172,11 +181,12 @@ function updateMovie (req, res, next) {
     return res.status(400).json(resData);
   }
 
-  var duplcateQuery = {
+  var duplicateQuery = {
     title: req.body.update,
-    user: req.user.username
+    addedBy: req.user.id
   };
-  Movie.findOne(duplcateQuery, function (err, duplicatedMovie) {
+
+  Movie.findOne(duplicateQuery, function (err, duplicatedMovie) {
     if (err)
       return next(err);
 
@@ -184,7 +194,7 @@ function updateMovie (req, res, next) {
       resData.msg = Message.MovieDuplicated;
       resData.success = false;
 
-      return res.status(status).json(resData);
+      return res.status(400).json(resData);
     }
 
     var updateQuery = { title: req.body.update };

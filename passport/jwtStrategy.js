@@ -8,7 +8,7 @@ opts.authScheme = 'Bearer';
 
 module.exports = function(passport){
     passport.use('passJwt' , new JwtStrategy(opts, function(jwt_payload, done) {
-        User.findOne({ username: jwt_payload.username }, function(err, user) {
+       User.findById(jwt_payload.id, function(err, user) {
             if (err) {
                 return done(err, false);
             }

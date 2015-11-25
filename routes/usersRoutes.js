@@ -1,12 +1,5 @@
-/**
-  * usersRoutes.js
-  */
-
 'use strict';
 
-/**
-  * Module dependencies
-  */
 var express = require('express');
 var router = express.Router();
 var isAuthenticated = require('../isAuthenticated.js');
@@ -14,6 +7,7 @@ var bCrypt = require('bcrypt-nodejs');
 var User = require('../models/users.js');
 var Message = require('../strings.json');
 var moviesController = require('./moviesRoutes.js');
+var _ = require('lodash');
 
 /**
   * @typedef ApiResponse
@@ -26,7 +20,7 @@ var moviesController = require('./moviesRoutes.js');
   * Creates a query to find the user with username
   */
 function createUserQuery (req) {
-return { username: req.user.username };
+  return {_id: req.user.id};
 }
 
 /**
@@ -44,13 +38,14 @@ function showUser(req, res, next) {
 
     var respData = {};
 
-    respData.success = true;
-    respData.data = user;
-
     if (!user) {
       respData.success = false;
       respData.msg = Message.UserNotFound;
+      return res.status(400).json(respData);
     }
+
+    respData.success = true;
+    respData.data = user.toObject();
 
     return res.status(200).json(respData);
   });
@@ -104,7 +99,7 @@ function deleteUser (req, res, next) {
   resData.success = true;
 
   var Movie = require('../models/movies.js');
-  var movieQuery = { user: req.user.username };
+  var movieQuery = { userId: req.user.id };
   Movie.remove(movieQuery, function(err) {
     if (err)
       return next(err);
@@ -117,10 +112,10 @@ function deleteUser (req, res, next) {
   });
 }
 
-router // app.use('/users', router)
+router
   .use(isAuthenticated())
   .get('/',     showUser)
-  .put('/',     updateUser) // (change password, update user info)
+  .put('/',     updateUser)
   .delete('/',    deleteUser)
   .use('/movies', moviesController);
 
