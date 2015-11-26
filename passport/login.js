@@ -1,40 +1,49 @@
 'use strict';
 
-var LocalStrategy   = require('passport-local').Strategy;
+var LocalStrategy = require('passport-local').Strategy;
 var User = require('../models/users.js');
 var bCrypt = require('bcrypt-nodejs');
-var log = require('minilog')('app');
-require('minilog').enable();
+var format = require('string-template');
+var logger = require('minilog')('login');
 
-function isValidPassword(user, password) {
-  return bCrypt.compareSync(password, user.password);
-};
+/**
+ * Compares hashed passwords
+ * @param  {String} password1 first password
+ * @param  {String} password2 second password
+ * @return {Boolean}          return value indicating whether original passwords match
+ */
+function matchPassword(password1, password2) {
+  return bCrypt.compareSync(password2, password1);
+}
 
-function processLogin(req, username, password, done)  {
-  // check in mongo if a user with username exists or not
+/**
+ * Verifies given credentials by consulting database
+ * @param  {HTTPRequest}           req      login request coming from API
+ * @param  {String}                username provided username
+ * @param  {String}                password provided password
+ * @param  {Function(error, user)} done     callback
+ */
+function processLogin(req, username, password, done) {
   User.findOne({username:  username}, function(err, user) {
-    // In case of any error, return using the done method
     if (err)
       return done(err);
 
-    // Username does not exist, log the error and redirect back
     if (!user) {
-      log.log('User Not Found with username '+username);
+      logger.error(format('Error: Login failed, user "{username}" is not found!', {username: username}));
       return done(null, false);
     }
 
-    // User exists but wrong password, log the error
-    if (!isValidPassword(user, password)) {
-      log.log('Invalid Password');
-      return done(null, false); // redirect back to login page
+    if (!matchPassword(user.password, password)) {
+      logger.error('Error: Login failed, invalid password provided!', 'user:', user);
+      return done(null, false);
     }
 
     // User and password both match, return user from done method
     // which will be treated like success
-    return done(null, user);
+    done(null, user);
   });
 }
 
-module.exports = function(passport){
+module.exports = function initLogin(passport){
   passport.use('login', new LocalStrategy({passReqToCallback : true}, processLogin));
 };

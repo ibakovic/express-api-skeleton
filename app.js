@@ -8,6 +8,8 @@ var bodyParser = require('body-parser');
 var handlebars = require('express-handlebars');
 var passport = require('passport');
 
+// setup logging
+require('minilog').enable();
 
 // create server
 var app = express();
@@ -22,7 +24,7 @@ require('./models/init.js')();
 // set handlebars engine and default view
 app.enable('view cache');
 app
-  .engine('handlebars', handlebars({defaultLayout: 'main'}))
+  .engine('handlebars', handlebars({defaultLayout: 'loginPage'}))
   .set('view engine', 'handlebars');
 
 // serve frontend
@@ -30,7 +32,7 @@ var hbFunc = require('./handlebars/hbFunc.js');
 var loginFunc = require('./handlebars/loginFunc.js');
 
 app
-  .get('/frontend', hbFunc);
+  .get('/loginPage', hbFunc);
   //.get('/authorized', loginFunc)
 
 // serve static assets
@@ -39,7 +41,7 @@ app
   // uncomment after placing your favicon in /public
   //.use(favicon(__dirname + '/public/favicon.ico'));
 
-// logging
+// HTTP traffic logging
 app.use(logger('dev'));
 
 // handling HTTP request payload

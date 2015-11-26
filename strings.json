@@ -1,21 +1,24 @@
 {
-    "UserNotFound": "User not found!",
-    "UserDeleted": "User deleted",
-    "MovieDeleted": "Movie deleted",
-    "UserPasswordUpdateRequired": "Password update required",
-    "MovieTitleUpdateRequired": "Title update required",
-    "UserPasswordUpdated": "Password updated",
+    "MoviesPresent": "Movie entries are found",
+    "MoviesNotFound": "No movies found",
+
     "MovieFound": "Movie found",
     "MovieNotFound": "Movie not found",
+    "MovieTitleParameterRequired": "Title parameter is required",
+    "MovieNotSaved": "Failed to save your movie",
     "MovieDuplicated" : "Title already exists",
     "MovieUpdated": "Movie updated",
-    "MoviesReady": "Movies are ready",
-    "MoviesNotFound": "No movies found",
-    "UsersReady": "Users are ready",
-    "UsersNotFound": "No users found",
-    "RegistrationComplete": "Registation completed",
+    "MovieDeleted": "Movie deleted",
     "MovieAdded": "Movie added",
-    "MovieTitleEmpty": "Title field empty",
-    "MovieNotSaved": "Failed to save your movie",
+
+    "UsersPresent": "User entries are ready",
+    "UsersNotFound": "No users found",
+
+    "UserNotFound": "User not found!",
+    "UserPasswordParameterRequired": "Password parameter is required",
+    "UserPasswordUpdated": "Password updated",
+    "UserDeleted": "User deleted",
+
+    "RegistrationComplete": "Registation completed",
     "TokenCreated": "Token created"
 }

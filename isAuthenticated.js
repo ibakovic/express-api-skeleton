@@ -2,8 +2,6 @@
 
 var passport = require('passport');
 
-var isAuthenticated = function() {
-    return passport.authenticate('passJwt', { session: false});
+module.exports = function isAuthenticated() {
+    return passport.authenticate('passJwt', {session: false});
 };
-
-module.exports = isAuthenticated;

@@ -7,15 +7,15 @@ var Movie = require('../models/movies.js');
 var Message = require('../strings.json');
 
 /**
-  * @typedef ApiResponse
-  * @param {String} msg       server message
-  * @param {Boolean} success  status flag
-  * @param {Object} data      server sent data
-  */
+ * @typedef ApiResponse
+ * @param {String} msg       server message
+ * @param {Boolean} success  status flag
+ * @param {Object} data      server sent data
+ */
 
 /**
-  * Creates a query to find a movie with title and addedBy
-  */
+ * Creates a query to find a movie with title and addedBy
+ */
 function createMovieQuery (req) {
   return {
     _id: req.params.movieId,
@@ -24,18 +24,18 @@ function createMovieQuery (req) {
 }
 
 /**
-  * Adds a new user movie (handles PUT)
-  *
-  * @param {HttpRequest} req
-  * @param {HttpResponse} res
-  * @param {Function(req, res, next)} next
-  * @augments res using ApiResponse format
-  */
+ * Adds a new user movie (handles PUT)
+ *
+ * @param {HttpRequest} req
+ * @param {HttpResponse} res
+ * @param {Function(req, res, next)} next
+ * @augments res using ApiResponse format
+ */
 function addMovie (req, res, next) {
   var resData = {};
 
   if(!req.body.title) {
-    resData.msg = Message.MovieTitleEmpty;
+    resData.msg = Message.MovieTitleParameterRequired;
     resData.success = false;
 
     res.status(400).json(resData);
@@ -76,13 +76,12 @@ function addMovie (req, res, next) {
 }
 
 /**
-  * Gets all user movies (handles GET)
-  *
-  * @param  {HttpRequest} req
-  * @param  {HttpResponse} res
-  * @param  {Function(req, res, next)} next
-  * @augments res using ApiResponse format
-  */
+ * Gets all user movies (handles GET)
+ * @param  {HttpRequest} req
+ * @param  {HttpResponse} res
+ * @param  {Function(req, res, next)} next
+ * @augments res using ApiResponse format
+ */
 function listMovies (req, res, next) {
   var allUserMoviesQuery = { addedBy: req.user.id };
   Movie.find(allUserMoviesQuery, function(err, movies) {
@@ -90,7 +89,7 @@ function listMovies (req, res, next) {
       return next(err);
 
     var resData = {};
-    resData.msg = Message.MoviesReady;
+    resData.msg = Message.MoviesPresent;
     resData.success = true;
 
     if (!movies) {
@@ -105,6 +104,14 @@ function listMovies (req, res, next) {
   });
 }
 
+/**
+ * Shows movie description
+ * @param  {HTTPRequest}              req                  api request
+ * @param  {String}                   req.params.movieId   movie id
+ * @param  {HTTPResponse}             res
+ * @param  {Function(req, res, next)} next                 next middleware
+ * @augments res using ApiResponse format
+ */
 function showMovie (req, res, next) {
   var movieQuery = {
     addedBy: req.user.id,
@@ -136,13 +143,13 @@ function showMovie (req, res, next) {
 }
 
 /**
-  * Deletes a movie (handles DELETE)
-  *
-  * @param  {HttpRequest} req
-  * @param  {HttpResponse} res
-  * @param  {Function(req, res, next)} next
-  * @augments res using ApiResponse format
-  */
+ * Deletes a movie (handles DELETE)
+ * @param  {HTTPRequest}              req                  api request
+ * @param  {String}                   req.params.movieId   movie id
+ * @param  {HTTPResponse}             res
+ * @param  {Function(req, res, next)} next                 next middleware
+ * @augments res using ApiResponse format
+ */
 function deleteMovie (req, res, next) {
   var resData = {};
   resData.msg = Message.MovieDeleted;
@@ -164,18 +171,18 @@ function deleteMovie (req, res, next) {
 }
 
 /**
-  * Updates movies (handles PUT)
-  *
-  * @param  {HttpRequest} req
-  * @param  {HttpResponse} res
-  * @param  {Function(req, res, next)} next
-  * @augments res using ApiResponse format
-  */
+ * Updates movies (handles PUT)
+ *
+ * @param  {HttpRequest} req
+ * @param  {HttpResponse} res
+ * @param  {Function(req, res, next)} next
+ * @augments res using ApiResponse format
+ */
 function updateMovie (req, res, next) {
   var resData = {};
 
   if (!req.body.update) {
-    resData.msg = Message.MovieTitleUpdateRequired;
+    resData.msg = Message.MovieTitleParameterRequired;
     res.success = false;
 
     return res.status(400).json(resData);
@@ -218,12 +225,13 @@ function updateMovie (req, res, next) {
   });
 }
 
+
 router
   .use(isAuthenticated())
-  .post('/',       addMovie)     // C
-  .get('/',      listMovies)
-  .get('/:movieId',    showMovie)    // R
-  .delete('/:movieId', deleteMovie)  // D
-  .put('/:movieId',  updateMovie); // U
+  .post('/', addMovie)
+  .get('/', listMovies)
+  .get('/:movieId', showMovie)
+  .delete('/:movieId', deleteMovie)
+  .put('/:movieId', updateMovie);
 
 module.exports = router;

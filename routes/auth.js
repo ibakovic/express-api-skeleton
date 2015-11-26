@@ -3,52 +3,50 @@
 var chain = require('connect-chain');
 var passport = require('passport');
 var jwtoken = require('jsonwebtoken');
-var Message = require('../strings.json');
-var format = require('string-template');
 var User = require('../models/users.js');
+var Message = require('../strings.json');
 var _ = require('lodash');
-var log = require('minilog')('login');
-require('minilog').enable();
+var format = require('string-template');
+var logger = require('minilog')('auth');
 
 /**
   * Creates token from user's login username
-  *
-  * @param  {HttpRequest}         req
-  * @param  {Httpresponse}        res
+  * @param  {HttpRequest}              req
+  * @param  {Httpresponse}             res
   * @param  {Function(req, res, next)} next
   */
-function createToken (req, res, next) {
-  var resData= {};
-  var userQuery = { username: req.user.username };
+function createToken(req, res, next) {
+  var username = req.user.username;
 
-  User.findOne(userQuery, function (err, users) {
+  var resData = {};
+  var userQuery = {username: username};
+
+  User.findOne(userQuery, function(err, user) {
     if (err)
       return next(err);
+
     resData.msg = Message.TokenCreated;
     resData.success = true;
 
-    users = users.toObject();
-    resData.data = users;
+    user = user.toObject();
+    resData.data = user;
 
-    var tokenString = 'Bearer {token}';
-    resData.token = format(tokenString, {
-      token: jwtoken.sign({
-                  id: users.id
-              },
-              'secret',
-              { expiresIn: 6000000000000000 })
-      });
+    var token = jwtoken.sign({id: user.id},
+      'secret', {expiresIn: 6000000000000000 });
 
+    logger.info('New JWT token issued for',
+      'username:', username,
+      'token:', token);
+
+    resData.token = format('Bearer {token}', {token: token});
     return res.status(200).json(resData);
   });
 }
 
-
 /**
-  * Responses to a succesful registration
-  *
-  * @param  {HttpRequest}         req
-  * @param  {Httpresponse}        res
+  * Responds to a succesful registration
+  * @param  {HttpRequest}             req
+  * @param  {Httpresponse}            res
   * @param  {Function(req, res, next)} next
   */
 function registrationResponse(req, res, next) {

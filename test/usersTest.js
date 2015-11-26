@@ -1,5 +1,6 @@
 var request = require('supertest');
 var app = require('../app');
+var logger = require('minilog')('usersTests');
 var mongoose = require('mongoose');
 var Auth = mongoose.model("Auth");
 var Post = mongoose.model("Post");
@@ -10,9 +11,9 @@ var Post = mongoose.model("Post");
     };
     var dbData = new Auth(testData);
 
-        dbData.save(function (err, next) { 
+        dbData.save(function (err, next) {
             if(err) return Error('error with user creation');
-            console.log("data send to database in userTest: " + next);
+            logger.log("data send to database in userTest: " + next);
         });
 
     testData = {
@@ -21,20 +22,20 @@ var Post = mongoose.model("Post");
     };
     var dbData = new Auth(testData);
 
-        dbData.save(function (err, next) { 
+        dbData.save(function (err, next) {
             if(err) return Error('error with user creation');
-            console.log("data send to database in userTest: " + next);
+            logger.log("data send to database in userTest: " + next);
         });
-    
+
     testData = {
         username: 'user4',
         password: 'pass4'
     };
     var dbData = new Auth(testData);
 
-        dbData.save(function (err, next) { 
+        dbData.save(function (err, next) {
             if(err) return Error('error with user creation');
-            console.log("data send to database in userTest: " + next);
+            logger.log("data send to database in userTest: " + next);
         });
 
     var testData = {
@@ -44,9 +45,9 @@ var Post = mongoose.model("Post");
     };
     var dbData = new Post(testData);
 
-        dbData.save(function (err, next) { 
+        dbData.save(function (err, next) {
             if(err) return Error('error with user creation');
-            console.log("data send to posts in userTest: " + next);
+            logger.log("data send to posts in userTest: " + next);
         });
 
     var testData = {
@@ -56,9 +57,9 @@ var Post = mongoose.model("Post");
     };
     var dbData = new Post(testData);
 
-        dbData.save(function (err, next) { 
+        dbData.save(function (err, next) {
             if(err) return Error('error with user creation');
-            console.log("data send to posts in userTest: " + next);
+            logger.log("data send to posts in userTest: " + next);
         });
 
     var testData = {
@@ -68,9 +69,9 @@ var Post = mongoose.model("Post");
     };
     var dbData = new Post(testData);
 
-        dbData.save(function (err, next) { 
+        dbData.save(function (err, next) {
             if(err) return Error('error with user creation');
-            console.log("data send to posts in userTest: " + next);
+            logger.log("data send to posts in userTest: " + next);
         });
 
     var testData = {
@@ -80,9 +81,9 @@ var Post = mongoose.model("Post");
     };
     var dbData = new Post(testData);
 
-        dbData.save(function (err, next) { 
+        dbData.save(function (err, next) {
             if(err) return Error('error with user creation');
-            console.log("data send to posts in userTest: " + next);
+            logger.log("data send to posts in userTest: " + next);
         });
 
 describe('../controllers/utils/users', function () {
@@ -93,7 +94,7 @@ describe('../controllers/utils/users', function () {
       .expect(200)
       .end(function(err, res){
         if (err) throw err;
-        console.log(res.body);
+        logger.log(res.body);
         done();
     });
   });
@@ -105,7 +106,7 @@ describe('../controllers/utils/users no username and password', function () {
         request(app)
         .post('/users')
         .expect(400)
-        .end(function (err, res) { 
+        .end(function (err, res) {
             if(err) throw err;
             done();
         });
@@ -121,7 +122,7 @@ describe('../controllers/utils/users username already exists', function () {
             password: 'pass2'
         })
         .expect(400)
-        .end(function (err, res) { 
+        .end(function (err, res) {
             if(err) throw err;
             done();
         });
@@ -138,7 +139,7 @@ describe('../controllers/utils/users', function () {
         })
         .expect(200)
         .expect('Content-Type', /json/)
-        .end(function (err, res) { 
+        .end(function (err, res) {
             if(err) throw err;
             done();
         });
@@ -148,7 +149,7 @@ describe('../controllers/utils/users', function () {
 //userId.js
 
     describe('userId Log in', function () {
-        it('shold return 200 response when logged in', function(done) { 
+        it('shold return 200 response when logged in', function(done) {
             request(app)
             .post('/login')
             .send({
@@ -160,13 +161,13 @@ describe('../controllers/utils/users', function () {
             .end(function(err, res){
             if (err) throw err;
             token = res.body.tokens;
-            console.log(res.body);
+            logger.log(res.body);
             done();
         });
         });
     });
     describe('userId Log in', function () {
-        it('shold return 400 response with wrong credentials', function(done) { 
+        it('shold return 400 response with wrong credentials', function(done) {
             request(app)
             .post('/login')
             .send({
@@ -176,7 +177,7 @@ describe('../controllers/utils/users', function () {
             .expect(400)
             .end(function(err, res){
             if (err) throw err;
-            console.log(res.body);
+            logger.log(res.body);
             done();
         });
         });
@@ -190,12 +191,12 @@ describe('../controllers/utils/users', function () {
             .expect(200)
             .end(function (err, res) {
                 if (err) throw err;
-                console.log(res.body);
+                logger.log(res.body);
                 done();
             });
         });
     });
-    
+
     describe('update user', function () {
         it('should return 400 without an updated password', function (done) {
             request(app)
@@ -204,7 +205,7 @@ describe('../controllers/utils/users', function () {
             .expect(400)
             .end(function (err, res) {
                 if (err) throw err;
-                console.log(res.body);
+                logger.log(res.body);
                 done();
             });
         });
@@ -219,7 +220,7 @@ describe('../controllers/utils/users', function () {
             .expect(200)
             .end(function (err, res) {
                 if (err) throw err;
-                console.log(res.body);
+                logger.log(res.body);
                 done();
             });
         });
@@ -233,7 +234,7 @@ describe('../controllers/utils/users', function () {
             .expect(400)
             .end(function (err, res) {
                 if (err) throw err;
-                console.log(res.body);
+                logger.log(res.body);
                 done();
             });
         });
@@ -251,12 +252,12 @@ describe('../controllers/utils/users', function () {
             .expect(200)
             .end(function (err, res) {
                 if (err) throw err;
-                console.log(res.body);
+                logger.log(res.body);
                 done();
             });
         });
     });
-    
+
     describe('get a user2 movie', function () {
         it('should return 200 and get a user2 movie', function (done) {
             request(app)
@@ -265,12 +266,12 @@ describe('../controllers/utils/users', function () {
             .expect(200)
             .end(function (err, res) {
                 if (err) throw err;
-                console.log(res.body);
+                logger.log(res.body);
                 done();
             });
         });
     });
-    
+
     describe('update movie', function () {
         it('should return 200 and updated title', function (done) {
             request(app)
@@ -282,7 +283,7 @@ describe('../controllers/utils/users', function () {
             .expect(200)
             .end(function (err, res) {
                 if (err) throw err;
-                console.log(res.body);
+                logger.log(res.body);
                 done();
             });
         });
@@ -297,7 +298,7 @@ describe('../controllers/utils/users', function () {
             .expect(400)
             .end(function (err, res) {
                 if (err) throw err;
-                console.log(res.body);
+                logger.log(res.body);
                 done();
             });
         });
@@ -312,7 +313,7 @@ describe('../controllers/utils/users', function () {
             .expect(400)
             .end(function (err, res) {
                 if (err) throw err;
-                console.log(res.body);
+                logger.log(res.body);
                 done();
             });
         });
@@ -328,7 +329,7 @@ describe('../controllers/utils/users', function () {
             .expect(400)
             .end(function (err, res) {
                 if (err) throw err;
-                console.log(res.body);
+                logger.log(res.body);
                 done();
             });
         });
@@ -344,7 +345,7 @@ describe('../controllers/utils/users', function () {
             .expect(200)
             .end(function (err, res) {
                 if (err) throw err;
-                console.log(res.body);
+                logger.log(res.body);
                 done();
             });
         });
@@ -357,15 +358,15 @@ describe('../controllers/utils/users', function () {
             .set({ 'Authorization': token })
             .expect(200)
             .end(function (err, res) {
-                console.log(res.body);
+                logger.log(res.body);
                 if (err) throw err;
-                
+
                 done();
             });
         });
     });
 
-    
+
     describe('../controllers/utils/getAllMovies', function () {
       it('shold return 200 response', function(done) {
         request(app)
@@ -374,7 +375,7 @@ describe('../controllers/utils/users', function () {
           .expect(200)
           .end(function(err, res){
             if (err) throw err;
-            console.log(res.body);
+            logger.log(res.body);
             done();
         });
       });
@@ -388,7 +389,7 @@ describe('../controllers/utils/users', function () {
             .expect(200)
             .end(function (err, res) {
                 if (err) throw err;
-                console.log(res.body);
+                logger.log(res.body);
                 Auth.find().remove().exec();
                 Post.find().remove().exec();
                 done();

@@ -1,27 +1,28 @@
 'use strict';
 
+var logger = require('minilog')('Passport');
+var User = require('../models/users.js');
 var login = require('./login');
 var register = require('./register');
 var jwtStrategy = require('./jwtStrategy');
-var User = require('../models/users.js');
 
-module.exports = function(passport){
-  passport.serializeUser(function(user, done) {
-      debugger;
-        console.log('serializing user: ');
-        console.log(user);
-        done(null, user._id);
-    });
+function serializeUser(user, done) {
+  logger.log('Serializing user: ', user);
+  done(null, user._id);
+}
 
-    passport.deserializeUser(function(id, done) {
-      debugger;
-        User.findById(id, function(err, user) {
-            console.log('deserializing user:', user);
-            done(err, user);
-        });
-    });
+function deserializeUser(id, done) {
+  User.findById(id, function(err, user) {
+    logger.log('Deserializing user:', user);
+    done(err, user);
+  });
+}
 
-    login(passport);
-    register(passport);
-    jwtStrategy(passport);
+module.exports = function initPassport(passport) {
+  passport.serializeUser(serializeUser);
+  passport.deserializeUser(deserializeUser);
+
+  login(passport);
+  register(passport);
+  jwtStrategy(passport);
 };

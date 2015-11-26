@@ -10,27 +10,27 @@ var moviesController = require('./moviesRoutes.js');
 var _ = require('lodash');
 
 /**
-  * @typedef ApiResponse
-  * @param {String} message   server message
-  * @param {Boolean} success    status flag
-  * @param {Object} respData    server sent data
-  */
+ * @typedef ApiResponse
+ * @param {String} message   server message
+ * @param {Boolean} success    status flag
+ * @param {Object} respData    server sent data
+ */
 
 /**
-  * Creates a query to find the user with username
-  */
+ * Creates a query to find the user with username
+ */
 function createUserQuery (req) {
   return {_id: req.user.id};
 }
 
 /**
-  * Finds a user with username from a token (handles GET)
-  *
-  * @param  {HttpRequest} req
-  * @param  {HttpResponse} res
-  * @param  {Function(req, res, next)} next
-  * @augments res using ApiResponse format
-  */
+ * Finds a user with username from a token (handles GET)
+ *
+ * @param  {HttpRequest} req
+ * @param  {HttpResponse} res
+ * @param  {Function(req, res, next)} next
+ * @augments res using ApiResponse format
+ */
 function showUser(req, res, next) {
   User.findOne(createUserQuery(req), function (err, user) {
     if (err)
@@ -52,14 +52,14 @@ function showUser(req, res, next) {
 }
 
 /**
-  * Changes user password
-  *
-  * @param  {HttpRequest} req
-  * @param  {HttpResponse} res
-  * @param  {Function(req, res, next)} next
-  * @augments res using ApiResponse format
-  */
-function updateUser (req, res, next) {
+ * Changes user password
+ *
+ * @param  {HttpRequest} req
+ * @param  {HttpResponse} res
+ * @param  {Function(req, res, next)} next
+ * @augments res using ApiResponse format
+ */
+function updateUser(req, res, next) {
   var resData = {};
   resData.msg = Message.UserPasswordUpdateRequired;
   resData.success = false;
@@ -84,15 +84,15 @@ function updateUser (req, res, next) {
 }
 
 /**
-  * Deletes user (handles DELETE)
-  * Additionally deletes all of his movies
-  *
-  * @param  {HttpRequest} req
-  * @param  {HttpResponse} res
-  * @param  {Function(req, res, next)} next
-  * @augments res using ApiResponse format
-  */
-function deleteUser (req, res, next) {
+ * Deletes user (handles DELETE)
+ * Additionally deletes all of his movies
+ *
+ * @param  {HttpRequest} req
+ * @param  {HttpResponse} res
+ * @param  {Function(req, res, next)} next
+ * @augments res using ApiResponse format
+ */
+function deleteUser(req, res, next) {
   var resData = {};
 
   resData.msg = Message.UserDeleted;
@@ -114,9 +114,9 @@ function deleteUser (req, res, next) {
 
 router
   .use(isAuthenticated())
-  .get('/',     showUser)
-  .put('/',     updateUser)
-  .delete('/',    deleteUser)
+  .get('/', showUser)
+  .put('/', updateUser)
+  .delete('/', deleteUser)
   .use('/movies', moviesController);
 
 module.exports = router;
