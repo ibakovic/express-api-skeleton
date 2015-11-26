@@ -38,7 +38,7 @@ function addMovie (req, res, next) {
     resData.msg = Message.MovieTitleParameterRequired;
     resData.success = false;
 
-    res.status(400).json(resData);
+    return res.status(400).json(resData);
   }
 
   var duplicateQuery = {

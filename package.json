@@ -22,6 +22,7 @@
     "gulp-nodemon": "^2.0.3",
     "gulp-shell": "^0.4.2",
     "handlebars": "^4.0.4",
+    "jQuery": "^1.7.4",
     "jsonwebtoken": "^5.0.4",
     "lodash": "^3.10.1",
     "minilog": "^2.1.0",

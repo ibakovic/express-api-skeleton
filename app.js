@@ -37,7 +37,9 @@ app
 
 // serve static assets
 app
-  .use(express.static(Path.join(__dirname, 'public')));
+  .use(express.static(Path.join(__dirname, 'public')))
+  .use(express.static(Path.join(__dirname + '/jquery')));
+
   // uncomment after placing your favicon in /public
   //.use(favicon(__dirname + '/public/favicon.ico'));
 

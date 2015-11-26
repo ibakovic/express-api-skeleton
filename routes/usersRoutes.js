@@ -61,7 +61,7 @@ function showUser(req, res, next) {
  */
 function updateUser(req, res, next) {
   var resData = {};
-  resData.msg = Message.UserPasswordUpdateRequired;
+  resData.msg = Message.UserPasswordParameterRequired;
   resData.success = false;
 
   if (!req.body.update)
@@ -77,7 +77,7 @@ function updateUser(req, res, next) {
     var resData = {};
     resData.msg = Message.UserPasswordUpdated;
     resData.success = true;
-    resData.data = data;
+    resData.data = data.toObject();
 
     return res.status(200).json(resData);
   });
