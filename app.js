@@ -7,6 +7,7 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 var handlebars = require('express-handlebars');
 var passport = require('passport');
+var docs = require('./docs.js');
 
 // setup logging
 require('minilog').enable();
@@ -32,8 +33,12 @@ var hbFunc = require('./handlebars/hbFunc.js');
 var loginFunc = require('./handlebars/loginFunc.js');
 
 app
-  .get('/loginPage', hbFunc);
+  .get('/login', hbFunc);
   //.get('/authorized', loginFunc)
+
+//Docs
+app
+  .use('/docs', docs);
 
 // serve static assets
 app
