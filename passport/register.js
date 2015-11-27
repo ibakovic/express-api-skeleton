@@ -30,7 +30,7 @@ function createUser(username, password, done) {
 
     if (user) {
       logger.error(format('Error: User "{username}" already exists.', {username: username}));
-      return done(null, false);
+      return done(null, false, {msg: 'Error: User this username already exists.'});
     }
 
     // if there is no user
@@ -48,7 +48,7 @@ function createUser(username, password, done) {
       }
 
       logger.log('User "{username}" successfully registered', {username: username});
-      done(null, newUser);
+      done(null, newUser, {msg: 'User successfully registered'});
     });
   });
 }
@@ -67,6 +67,6 @@ function processRegistration(req, username, password, done) {
 
 module.exports = function initRegistration(passport){
   passport.use('register', new LocalStrategy({
-    passReqToCallback: true // allows us to pass back the entire request to the callback
+    passReqToCallback: true
   }, processRegistration));
 };

@@ -30,12 +30,12 @@ function processLogin(req, username, password, done) {
 
     if (!user) {
       logger.error(format('Error: Login failed, user "{username}" is not found!', {username: username}));
-      return done(null, false);
+      return done(null, false, {msg: 'Username not found!'});
     }
 
     if (!matchPassword(user.password, password)) {
       logger.error('Error: Login failed, invalid password provided!', 'user:', user);
-      return done(null, false);
+      return done(null, false, {msg: 'Invalid password!'});
     }
 
     // User and password both match, return user from done method

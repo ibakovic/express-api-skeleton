@@ -15,31 +15,8 @@ var logger = require('minilog')('auth');
   * @param  {Httpresponse}             res
   * @param  {Function(req, res, next)} next
   */
-function createToken(req, res, next) {
-  var username = req.user.username;
-
-  var resData = {};
-  var userQuery = {username: username};
-
-  User.findOne(userQuery, function(err, user) {
-    if (err)
-      return next(err);
-
-    resData.msg = Message.TokenCreated;
-    resData.success = true;
-
-    user = user.toObject();
-    resData.data = req.user;
-
-    /*var token = jwtoken.sign({id: user.id},
-      'secret', {expiresIn: 6000000000000000 });*/
-
-    logger.info('New JWT token issued for',
-      'username:', username);
-
-    //resData.token = format('Bearer {token}', {token: token});
-    return res.status(200).json(resData);
-  });
+function successResponse(req, res, next) {
+    return res.status(200).json({msg: 'Logged in successfully!'});
 }
 
 /**
@@ -53,6 +30,6 @@ function registrationResponse(req, res, next) {
 }
 
 module.exports = {
-  login:    chain(passport.authenticate('login'), createToken),
+  login:    chain(passport.authenticate('login'), successResponse),
   register: chain(passport.authenticate('register'), registrationResponse)
 };
