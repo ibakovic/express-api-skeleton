@@ -5,9 +5,12 @@ var Path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 var handlebars = require('express-handlebars');
 var passport = require('passport');
 var docs = require('./docs.js');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 
 // setup logging
 require('minilog').enable();
@@ -15,12 +18,16 @@ require('minilog').enable();
 // create server
 var app = express();
 
-// init passport
-app.use(passport.initialize());
-require('./passport/init.js')(passport);
-
 // init mongoose
-require('./models/init.js')();
+var mongooseConnection = require('./models/init.js')();
+
+// init session
+app.use(session({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: true,
+  store: new MongoStore({mongooseConnection: mongooseConnection})
+}));
 
 // set handlebars engine and default view
 app.enable('view cache');
@@ -35,10 +42,6 @@ var loginFunc = require('./handlebars/loginFunc.js');
 app
   .get('/login', hbFunc);
   //.get('/authorized', loginFunc)
-
-//Docs
-app
-  .use('/docs', docs);
 
 // serve static assets
 app
@@ -56,6 +59,14 @@ app
   .use(bodyParser.json())
   .use(bodyParser.urlencoded({extended: false}));
 
+app.use(cookieParser());
+
+// init passport
+app
+  .use(passport.initialize())
+  .use(passport.session());
+require('./passport/init.js')(passport);
+
 // routers
 var usersRoutes = require('./routes/usersRoutes.js');
 var logRegRoutes = require('./routes/logRegRoutes.js');
@@ -64,5 +75,9 @@ var logRegRoutes = require('./routes/logRegRoutes.js');
 app
   .use('/', logRegRoutes)
   .use('/', usersRoutes);
+
+// docs
+app
+  .use('/docs', docs);
 
 module.exports = app;

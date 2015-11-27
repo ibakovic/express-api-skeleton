@@ -2,9 +2,9 @@
 
 var _ = require('lodash');
 var router = require('express').Router();
-var isAuthenticated = require('../isAuthenticated.js');
 var Movie = require('../models/movies.js');
 var Message = require('../strings.json');
+var logger = require('minilog')('moviesRoutes');
 
 /**
  * @typedef ApiResponse
@@ -226,8 +226,18 @@ function updateMovie (req, res, next) {
 }
 
 
+function isAuthenticate(req, res, next) {
+  if (req.isAuthenticated()) {
+    next();
+  }
+  else {
+    logger.error('error', 'You must be logged in to do that.');
+    res.redirect('/login');
+  }
+}
+
 router
-  .use(isAuthenticated())
+  .use(isAuthenticate)
   .post('/', addMovie)
   .get('/', listMovies)
   .get('/:movieId', showMovie)

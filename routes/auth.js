@@ -29,16 +29,15 @@ function createToken(req, res, next) {
     resData.success = true;
 
     user = user.toObject();
-    resData.data = user;
+    resData.data = req.user;
 
-    var token = jwtoken.sign({id: user.id},
-      'secret', {expiresIn: 6000000000000000 });
+    /*var token = jwtoken.sign({id: user.id},
+      'secret', {expiresIn: 6000000000000000 });*/
 
     logger.info('New JWT token issued for',
-      'username:', username,
-      'token:', token);
+      'username:', username);
 
-    resData.token = format('Bearer {token}', {token: token});
+    //resData.token = format('Bearer {token}', {token: token});
     return res.status(200).json(resData);
   });
 }

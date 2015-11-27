@@ -44,6 +44,6 @@ function processLogin(req, username, password, done) {
   });
 }
 
-module.exports = function initLogin(passport){
+module.exports = function initLogin(passport) {
   passport.use('login', new LocalStrategy({passReqToCallback : true}, processLogin));
 };

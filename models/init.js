@@ -23,4 +23,5 @@ function getConnectionString() {
 
 module.exports = function init() {
   mongoose.connect(getConnectionString());
+  return mongoose.connection;
 };

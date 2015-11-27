@@ -5,6 +5,7 @@ var User = require('../models/users.js');
 var login = require('./login');
 var register = require('./register');
 var jwtStrategy = require('./jwtStrategy');
+var localStrategy = require('./localStrategy.js');
 
 function serializeUser(user, done) {
   logger.log('Serializing user: ', user);
@@ -24,5 +25,6 @@ module.exports = function initPassport(passport) {
 
   login(passport);
   register(passport);
-  jwtStrategy(passport);
+  //jwtStrategy(passport);
+  localStrategy(passport);
 };

@@ -2,12 +2,12 @@
 
 var express = require('express');
 var router = express.Router();
-var isAuthenticated = require('../isAuthenticated.js');
 var bCrypt = require('bcrypt-nodejs');
 var User = require('../models/users.js');
 var Message = require('../strings.json');
 var moviesController = require('./moviesRoutes.js');
 var _ = require('lodash');
+var logger = require('minilog')('usersRoutes');
 
 /**
  * @typedef ApiResponse
@@ -112,8 +112,18 @@ function deleteUser(req, res, next) {
   });
 }
 
+function isAuthenticate(req, res, next) {
+  if (req.isAuthenticated()) {
+    next();
+  }
+  else {
+    logger.error('error', 'You must be logged in to do that.');
+    res.redirect('/login');
+  }
+}
+
 router
-  .use(isAuthenticated())
+  .use(isAuthenticate)
   .get('/', showUser)
   .put('/', updateUser)
   .delete('/', deleteUser)
