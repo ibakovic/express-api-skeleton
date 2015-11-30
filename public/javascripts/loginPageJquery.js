@@ -24,8 +24,6 @@ $('document').ready(function() {
     });
   });
 
-  //console.log('cookie', checkCookie());
-
   var MovieModel = Backbone.Model.extend({
     url: '/movies'
   });
@@ -79,11 +77,18 @@ $('document').ready(function() {
       $('ul', this.el).append('<li>Title: ' + item.get('title') + '<br>Added by: ' + item.get('addedBy') + '<br><button class="deleteMovie">Delete</button></li><br>');
     },
 
+    getCurrentUser: function() {
+      var currentUser =  document.cookie.split('=');
+      return currentUser[1];
+    },
+
     addMovie: function() {
+      var self = this;
+
       var movie = new MovieModel({
         title: $('#title').val(),
         link: $('#link').val(),
-        addedBy: document.cookie
+        addedBy: self.getCurrentUser()
       });
       //movie = lodash.invoke(movie, 'toObject');
       console.log(movie);
