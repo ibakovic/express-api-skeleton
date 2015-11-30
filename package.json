@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "start": "supervisor ./bin/www",
-    "debug": "node-debug --port 8181 ./bin/www"
+    "debug": "node-debug --port 8181 ./bin/www",
+    "watchify": "watchify ./public/javascripts/loginPageJquery.js -o ./public/bundle.js -v"
   },
   "main": "./bin/www",
   "dependencies": {
+    "backbone": "^1.2.3",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.14.1",
     "connect-chain": "0.0.1",
@@ -26,6 +28,7 @@
     "gulp-nodemon": "^2.0.3",
     "gulp-shell": "^0.4.2",
     "handlebars": "^4.0.4",
+    "jquery": "^2.1.4",
     "jsonwebtoken": "^5.0.4",
     "lodash": "^3.10.1",
     "minilog": "^2.1.0",
@@ -39,7 +42,8 @@
     "short-mongo-id": "^0.1.1",
     "shortid": "^2.2.4",
     "string-template": "^0.2.1",
-    "supertest": "^1.0.1"
+    "supertest": "^1.0.1",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "gulp": "^3.8.11",

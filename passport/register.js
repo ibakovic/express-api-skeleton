@@ -30,7 +30,7 @@ function createUser(username, password, done) {
 
     if (user) {
       logger.error(format('Error: User "{username}" already exists.', {username: username}));
-      return done(null, false, {msg: 'Error: User this username already exists.'});
+      return done(null, false);
     }
 
     // if there is no user
@@ -48,7 +48,7 @@ function createUser(username, password, done) {
       }
 
       logger.log('User "{username}" successfully registered', {username: username});
-      done(null, newUser, {msg: 'User successfully registered'});
+      done(null, newUser);
     });
   });
 }
