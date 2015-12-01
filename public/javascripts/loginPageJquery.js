@@ -2,6 +2,7 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
 var lodash = require('lodash');
+var format = require('string-template');
 
 $('document').ready(function() {
   $('#register').click(function() {
@@ -25,7 +26,19 @@ $('document').ready(function() {
   });
 
   var MovieModel = Backbone.Model.extend({
-    url: '/movies'
+    urlRoot: '/movies',
+    id: '',
+
+    parse: function(model) {
+      var attr = {
+        id: model.data._id,
+        title: model.data.title,
+        addedBy: model.data.addedBy,
+        link: model.data.link
+      };
+
+      return attr;
+    }
   });
 
   var MovieCollection = Backbone.Collection.extend({
@@ -33,48 +46,95 @@ $('document').ready(function() {
     url: '/movies'
   });
 
+  Movies = new MovieCollection();
+
   var MovieView = Backbone.View.extend({
+    model: Movies,
+
     el: $('#responseContainer'),
 
     events: {
-      'click button#addMovie': 'addMovie'
+      'click button#addMovie': 'addMovie',
+      'click .deleteMovie': 'deleteMovie'
     },
 
     initialize: function() {
-      this.listenTo(this.collection, 'change', this.render);
+      var self = this;
 
-      _.bindAll(this, 'render', 'appendMovies', 'addMovie');
-      this.collection = new MovieCollection();
-      this.collection.on('add', this.appendMovies);
-      this.collection.fetch();
-      this.render();
+      _.bindAll(this, 'render', 'addMovie', 'getDeleteButton', 'appendItem', 'deleteMovie');
+
+      var arrayCollection = new MovieCollection();
+
+      arrayCollection.fetch({success: function(collection, response) {
+        self.collection = new MovieCollection(response.data);
+
+        self.listenTo(self.collection, 'remove', self.render);
+        self.listenTo(self.collection, 'add', self.render);
+
+        self.render();
+      }});
     },
+
+/*    _idHelper: function(data) {
+      data.id = data._id;
+      return data;
+    },*/
 
     render: function() {
       var self = this;
-
-      _(this.collection.models).each(function(item){
-        self.appendItem(item);
-      }, this);
 
       var insertTitle = '<input id="title" placeholder="Insert movie title here" /><br>';
       var insertLink = '<input id="link" placeholder="Insert movie link here" /><br>';
       var addMovie = '<button id="addMovie">Add <br>a movie</button><br><br><br<br><br>';
 
-      $(this.el).append(insertTitle + insertLink + addMovie);
-    },
-
-    appendMovies: function(item){
-      console.log('item', item);
-      var self = this;
-      item.get('data').forEach(function(movie) {
-        console.log(movie);
-        $(self.el).append('<li>Title: ' + movie.title + '<br>Added by:' + movie.addedBy + '<br><button class="deleteMovie">Delete</button></li><br>');
+      $(self.$el).empty();
+      $(self.el).append(insertTitle + insertLink + addMovie);
+      self.collection.models.forEach(function(movie) {
+        $(self.$el).append(format('{titleTag} {title} {idTag} {id} {addedByTag} {addedBy} </div> {updateMovieTag} {deleteButton}', {
+          titleTag: self.getTitleTag(),
+          title: movie.get('title'),
+          idTag: self.getMovieIdTag(),
+          id: movie.get('id'),
+          addedByTag: self.getAddedByTag(),
+          addedBy: movie.get('addedBy'),
+          updateMovieTag: self.getUpdateMovieTag(),
+          deleteButton: self.getDeleteButton()
+        }));
       });
     },
 
-    appendItem: function(item){
-      $('ul', this.el).append('<li>Title: ' + item.get('title') + '<br>Added by: ' + item.get('addedBy') + '<br><button class="deleteMovie">Delete</button></li><br>');
+    getUpdateMovieTag: function() {
+      return '<br><input class="updatedTitle" placeholder="change title"> <button id="updateMovie"></button>';
+    },
+
+    getDeleteButton: function() {
+      var deleteButton = '<br><button class="deleteMovie">Delete</button></li><br>';
+      return deleteButton;
+    },
+
+    getTitleTag: function() {
+      return '<li>Title: <div class="movieTitle">';
+    },
+
+    getMovieIdTag: function() {
+      return '</div><div hidden class="movieId">';
+    },
+
+    getAddedByTag: function() {
+      return '</div><br>Added by:<div class="addedBy">';
+    },
+
+    appendItem: function(movie) {
+      var self = this;
+      $(self.$el).append(format('{titleTag} {title} {idTag} {id} {addedByTag} {addedBy} </div> {deleteButton}', {
+          titleTag: self.getTitleTag(),
+          title: movie.get('title'),
+          idTag: self.getMovieIdTag(),
+          id: movie.get('id'),
+          addedByTag: self.getAddedByTag(),
+          addedBy: movie.get('addedBy'),
+          deleteButton: self.getDeleteButton()
+        }));
     },
 
     getCurrentUser: function() {
@@ -90,14 +150,23 @@ $('document').ready(function() {
         link: $('#link').val(),
         addedBy: self.getCurrentUser()
       });
-      //movie = lodash.invoke(movie, 'toObject');
-      console.log(movie);
-      movie.save();
-      this.collection.off('add', this.appendMovies);
-      this.collection.bind('add', this.appendItem);
-      this.collection.add(movie);
-      this.collection.off('add', this.appendItem);
-      this.collection.on('add', this.appendMovies);
+      movie.save(null, {success: function(model, response) {
+        console.log('Success!', response, model);
+        self.collection.add(model);
+      }});
+    },
+
+    deleteMovie: function(e) {
+      var self = this;
+      var movieTitle = $(e.currentTarget).parent().children('div.movieTitle').text().trim('string');
+      var movieParent = $(e.currentTarget).parent();
+
+      var movie = self.collection.findWhere({
+        title: movieTitle,
+        addedBy: self.getCurrentUser()
+      });
+
+      movie.destroy();
     }
   });
 
