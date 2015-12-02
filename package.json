@@ -12,6 +12,7 @@
     "backbone": "^1.2.3",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.14.1",
+    "browserify-handlebars": "^1.0.0",
     "connect-chain": "0.0.1",
     "connect-mongo": "^0.8.2",
     "cookie-parser": "^1.4.0",
