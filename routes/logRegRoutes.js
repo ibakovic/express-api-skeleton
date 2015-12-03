@@ -7,7 +7,7 @@ function logout(req, res, next) {
   //req.session.destroy();
   req.logout();
   req.session.destroy(function(err) {
-    res.status(200).redirect('/movieApp');
+    res.status(200).json({msg: 'Logging out...', redirect: '/movieApp'});
   });
 }
 

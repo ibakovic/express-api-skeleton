@@ -22,7 +22,7 @@ $('document').ready(function() {
   var Router = Backbone.Router.extend({
       routes: {
         '': 'loginPage',
-        'login': 'returnToLogin',
+        'login/:redirect': 'returnToLogin',
         'movies': 'startApp'
       },
 
@@ -30,17 +30,8 @@ $('document').ready(function() {
         loginView = new LoginView();
       },
 
-      returnToLogin: function() {
-        alert('Logging off');
-        if(usersView)
-          usersView.$el.hide();
-
-        if(moviesView)
-          moviesView.$el.hide();
-
-        //var newLoginView = new LoginView();
-
-        loginView.$el.show();
+      returnToLogin: function(redirect) {
+        document.location = redirect;
       },
 
       startApp: function() {
@@ -229,8 +220,16 @@ $('document').ready(function() {
     logout: function() {
       var logOut = new LogoutModel();
 
-      router.navigate('login', true);
-      logOut.fetch();
+      //router.navigate('login', true);
+      logOut.fetch({
+        success: function(model, res, opt) {
+          alert('Success', res.msg);
+          router.navigate('login' + res.redirect, {trigger: true});
+        },
+        error: function(model, res, opt) {
+          console.log('Error! ', res);
+        }
+      });
     }
   });
 
