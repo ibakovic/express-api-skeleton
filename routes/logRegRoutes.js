@@ -4,8 +4,10 @@ var router = require('express').Router();
 var authenticate = require('./auth.js');
 
 function logout(req, res, next) {
+  //req.session.destroy();
   req.logout();
-  res.redirect('/login');
+  res.clearCookie('sid');
+  res.status(200).redirect('/login');
 }
 
 router

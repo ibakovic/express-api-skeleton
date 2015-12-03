@@ -26541,8 +26541,8 @@ $('document').ready(function() {
         usersView.$el.show();
         moviesView.$el.show();
 
-        if(loginView)
-          loginView.$el.hide();
+        loginView = new LoginView();
+        loginView.$el.hide();
       }
   });
   // Initiate the router
