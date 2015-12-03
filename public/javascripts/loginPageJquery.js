@@ -6,26 +6,133 @@ var format = require('string-template');
 var moviesTemplate = require('../../templates/moviesTemplate.handlebars');
 var usersTemplate = require('../../templates/usersTemplate.handlebars');
 var getInfoTemplate = require('../../templates/getInfoTemplate.handlebars');
+var loginTemplate = require('../../templates/loginTemplate.handlebars');
+var addMovieTemplate = require('../../templates/addMovieTemplate.handlebars');
+var Radio = require('backbone.radio');
 
 $('document').ready(function() {
-  $('#register').click(function() {
-    $.post('/register', {
-      username: $('#username').val(),
-      password: $('#password').val()
-    },
-    function(data, status) {
-      alert('Message: ' + data.msg + '\nStatus: ' + status);
-    });
+  //var moviesChannel = Radio.channel('movies');
+  var usersView;
+  var moviesView;
+  var loginView;
+  var LoginView;
+  var MovieView;
+  var UserView;
+
+  var Router = Backbone.Router.extend({
+      routes: {
+        '': 'loginPage',
+        'login': 'returnToLogin',
+        'movies': 'startApp'
+      },
+
+      loginPage: function() {
+        loginView = new LoginView();
+      },
+
+      returnToLogin: function() {
+        alert('Logging off');
+        if(usersView)
+          usersView.$el.hide();
+
+        if(moviesView)
+          moviesView.$el.hide();
+
+        //var newLoginView = new LoginView();
+
+        loginView.$el.show();
+      },
+
+      startApp: function() {
+        usersView = new UserView();
+        moviesView = new MovieView();
+
+        usersView.$el.show();
+        moviesView.$el.show();
+
+        if(loginView)
+          loginView.$el.hide();
+      }
+  });
+  // Initiate the router
+  var router = new Router();
+
+  var LoginModel = Backbone.Model.extend({
+    url: '/login'
   });
 
-  $('#login').click(function() {
-    $.post('/login', {
-      username: $('#username').val(),
-      password: $('#password').val()
+  var LoginCollection = Backbone.Collection.extend({
+    model: LoginModel
+  });
+
+  var LogoutModel = Backbone.Model.extend({
+    url: '/logout'
+  });
+
+  var RegisterModel = Backbone.Model.extend({
+    url: '/register'
+  });
+
+  var Login = new LoginCollection();
+
+  LoginView = Backbone.View.extend({
+    el: $('#loginWrapper'),
+
+    events: {
+      'click #login': 'login',
+      'click #register': 'register'
     },
-    function(data, status) {
-      alert('Data: ' + data.msg + '\nStatus: ' + status);
-    });
+
+    initialize: function() {
+      _.bindAll(this, 'render', 'login', 'register');
+      var self = this;
+
+      this.render(loginTemplate());
+    },
+
+    render: function(content) {
+      var self = this;
+      $(self.$el).html(content);
+    },
+
+    login: function() {
+      var self = this;
+      var credentials = new LoginModel({
+        username: $('#username').val().trim('string'),
+        password: $('#password').val().trim('string')
+      });
+      credentials.save(null, {
+        success: function(model, response) {
+          alert(response.msg);
+          router.navigate('movies', true);
+        },
+        error: function() {
+          alert('Log in not successful!');
+        }
+      });
+    },
+
+    register: function() {
+      var self = this;
+      var credentials = new RegisterModel({
+        username: $('#username').val().trim('string'),
+        password: $('#password').val().trim('string')
+      });
+
+      credentials.save(null, {
+        success: function(model, res) {
+          alert(res.msg);
+        },
+        error: function(model, res) {
+          alert('Register not successful!');
+        }
+      });
+    },
+
+    getUserId: function() {
+      var currentUser =  document.cookie.split('=');
+      return currentUser[1];
+    }
   });
 
   var UserModel = Backbone.Model.extend({
@@ -39,7 +146,7 @@ $('document').ready(function() {
 
   var Users = new UserCollection();
 
-  var UserView = Backbone.View.extend({
+  UserView = Backbone.View.extend({
     el: $('#userInfo'),
     contentEl: $('#userContent'),
     getInfoEl: $('#getUserInfo'),
@@ -47,12 +154,13 @@ $('document').ready(function() {
     events: {
       'click #getUserInfo': 'getUserInfo',
       'click #hideUserInfo': 'hideUserInfo',
-      'click #updatePassword': 'updatePassword'
+      'click #updatePassword': 'updatePassword',
+      'click #logout': 'logout'
     },
 
     initialize: function() {
       var self = this;
-      _.bindAll(this, 'render', 'getUserInfo', 'hideUserInfo', 'updatePassword');
+      _.bindAll(this, 'render', 'getUserInfo', 'hideUserInfo', 'updatePassword', 'logout');
 
       var serverResponse = new UserCollection();
 
@@ -63,6 +171,10 @@ $('document').ready(function() {
       }});
 
       this.render(getInfoTemplate());
+    },
+
+    test: function() {
+      console.log('test213213');
     },
 
     render: function(content) {
@@ -112,10 +224,15 @@ $('document').ready(function() {
           self.collection.set(model);
         }
       });
+    },
+
+    logout: function() {
+      var logOut = new LogoutModel();
+
+      router.navigate('login', true);
+      logOut.fetch();
     }
   });
-
-  var userView = new UserView();
 
   var MovieModel = Backbone.Model.extend({
     urlRoot: '/movies',
@@ -140,7 +257,7 @@ $('document').ready(function() {
 
   Movies = new MovieCollection();
 
-  var MovieView = Backbone.View.extend({
+  MovieView = Backbone.View.extend({
     userCollection: Users,
 
     el: $('#mainContainer'),
@@ -183,16 +300,9 @@ $('document').ready(function() {
     render: function() {
       var self = this;
 
-      if(!self.getCurrentUser){
-        $(self.$el).empty();
-
-        $(self.el).append(self.loginEl);
-        return self;
-      }
-
       $(self.$el).empty();
 
-      $(self.$el).append(self.addEl);
+      $(self.$el).append(addMovieTemplate());
 
       self.collection.models.forEach(function(movie) {self.appendItem(movie);});
     },
@@ -257,6 +367,6 @@ $('document').ready(function() {
       movie.save();
     }
   });
-
-var movieView = new MovieView();
+// Start Backbone history a necessary step for bookmarkable URL's
+Backbone.history.start();
 });
