@@ -6,8 +6,9 @@ var authenticate = require('./auth.js');
 function logout(req, res, next) {
   //req.session.destroy();
   req.logout();
-  res.clearCookie('sid');
-  res.status(200).redirect('/login');
+  req.session.destroy(function(err) {
+    res.status(200).redirect('/movieApp');
+  });
 }
 
 router
