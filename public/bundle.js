@@ -1,341 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-// Backbone.Radio v1.0.2
-(function (global, factory) {
-  typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory(require("underscore"), require("backbone")) : typeof define === "function" && define.amd ? define(["underscore", "backbone"], factory) : global.Backbone.Radio = factory(global._, global.Backbone);
-})(this, function (_, Backbone) {
-  "use strict";
-
-  var previousRadio = Backbone.Radio;
-
-  var Radio = Backbone.Radio = {};
-
-  Radio.VERSION = "1.0.2";
-
-  // This allows you to run multiple instances of Radio on the same
-  // webapp. After loading the new version, call `noConflict()` to
-  // get a reference to it. At the same time the old version will be
-  // returned to Backbone.Radio.
-  Radio.noConflict = function () {
-    Backbone.Radio = previousRadio;
-    return this;
-  };
-
-  // Whether or not we're in DEBUG mode or not. DEBUG mode helps you
-  // get around the issues of lack of warnings when events are mis-typed.
-  Radio.DEBUG = false;
-
-  // Format debug text.
-  Radio._debugText = function (warning, eventName, channelName) {
-    return warning + (channelName ? " on the " + channelName + " channel" : "") + ": \"" + eventName + "\"";
-  };
-
-  // This is the method that's called when an unregistered event was called.
-  // By default, it logs warning to the console. By overriding this you could
-  // make it throw an Error, for instance. This would make firing a nonexistent event
-  // have the same consequence as firing a nonexistent method on an Object.
-  Radio.debugLog = function (warning, eventName, channelName) {
-    if (Radio.DEBUG && console && console.warn) {
-      console.warn(Radio._debugText(warning, eventName, channelName));
-    }
-  };
-
-  var eventSplitter = /\s+/;
-
-  // An internal method used to handle Radio's method overloading for Requests.
-  // It's borrowed from Backbone.Events. It differs from Backbone's overload
-  // API (which is used in Backbone.Events) in that it doesn't support space-separated
-  // event names.
-  Radio._eventsApi = function (obj, action, name, rest) {
-    if (!name) {
-      return false;
-    }
-
-    var results = {};
-
-    // Handle event maps.
-    if (typeof name === "object") {
-      for (var key in name) {
-        var result = obj[action].apply(obj, [key, name[key]].concat(rest));
-        eventSplitter.test(key) ? _.extend(results, result) : results[key] = result;
-      }
-      return results;
-    }
-
-    // Handle space separated event names.
-    if (eventSplitter.test(name)) {
-      var names = name.split(eventSplitter);
-      for (var i = 0, l = names.length; i < l; i++) {
-        results[names[i]] = obj[action].apply(obj, [names[i]].concat(rest));
-      }
-      return results;
-    }
-
-    return false;
-  };
-
-  // An optimized way to execute callbacks.
-  Radio._callHandler = function (callback, context, args) {
-    var a1 = args[0],
-        a2 = args[1],
-        a3 = args[2];
-    switch (args.length) {
-      case 0:
-        return callback.call(context);
-      case 1:
-        return callback.call(context, a1);
-      case 2:
-        return callback.call(context, a1, a2);
-      case 3:
-        return callback.call(context, a1, a2, a3);
-      default:
-        return callback.apply(context, args);
-    }
-  };
-
-  // A helper used by `off` methods to the handler from the store
-  function removeHandler(store, name, callback, context) {
-    var event = store[name];
-    if ((!callback || (callback === event.callback || callback === event.callback._callback)) && (!context || context === event.context)) {
-      delete store[name];
-      return true;
-    }
-  }
-
-  function removeHandlers(store, name, callback, context) {
-    store || (store = {});
-    var names = name ? [name] : _.keys(store);
-    var matched = false;
-
-    for (var i = 0, length = names.length; i < length; i++) {
-      name = names[i];
-
-      // If there's no event by this name, log it and continue
-      // with the loop
-      if (!store[name]) {
-        continue;
-      }
-
-      if (removeHandler(store, name, callback, context)) {
-        matched = true;
-      }
-    }
-
-    return matched;
-  }
-
-  /*
-   * tune-in
-   * -------
-   * Get console logs of a channel's activity
-   *
-   */
-
-  var _logs = {};
-
-  // This is to produce an identical function in both tuneIn and tuneOut,
-  // so that Backbone.Events unregisters it.
-  function _partial(channelName) {
-    return _logs[channelName] || (_logs[channelName] = _.partial(Radio.log, channelName));
-  }
-
-  _.extend(Radio, {
-
-    // Log information about the channel and event
-    log: function log(channelName, eventName) {
-      var args = _.rest(arguments, 2);
-      console.log("[" + channelName + "] \"" + eventName + "\"", args);
-    },
-
-    // Logs all events on this channel to the console. It sets an
-    // internal value on the channel telling it we're listening,
-    // then sets a listener on the Backbone.Events
-    tuneIn: function tuneIn(channelName) {
-      var channel = Radio.channel(channelName);
-      channel._tunedIn = true;
-      channel.on("all", _partial(channelName));
-      return this;
-    },
-
-    // Stop logging all of the activities on this channel to the console
-    tuneOut: function tuneOut(channelName) {
-      var channel = Radio.channel(channelName);
-      channel._tunedIn = false;
-      channel.off("all", _partial(channelName));
-      delete _logs[channelName];
-      return this;
-    }
-  });
-
-  /*
-   * Backbone.Radio.Requests
-   * -----------------------
-   * A messaging system for requesting data.
-   *
-   */
-
-  function makeCallback(callback) {
-    return _.isFunction(callback) ? callback : function () {
-      return callback;
-    };
-  }
-
-  Radio.Requests = {
-
-    // Make a request
-    request: function request(name) {
-      var args = _.rest(arguments);
-      var results = Radio._eventsApi(this, "request", name, args);
-      if (results) {
-        return results;
-      }
-      var channelName = this.channelName;
-      var requests = this._requests;
-
-      // Check if we should log the request, and if so, do it
-      if (channelName && this._tunedIn) {
-        Radio.log.apply(this, [channelName, name].concat(args));
-      }
-
-      // If the request isn't handled, log it in DEBUG mode and exit
-      if (requests && (requests[name] || requests["default"])) {
-        var handler = requests[name] || requests["default"];
-        args = requests[name] ? args : arguments;
-        return Radio._callHandler(handler.callback, handler.context, args);
-      } else {
-        Radio.debugLog("An unhandled request was fired", name, channelName);
-      }
-    },
-
-    // Set up a handler for a request
-    reply: function reply(name, callback, context) {
-      if (Radio._eventsApi(this, "reply", name, [callback, context])) {
-        return this;
-      }
-
-      this._requests || (this._requests = {});
-
-      if (this._requests[name]) {
-        Radio.debugLog("A request was overwritten", name, this.channelName);
-      }
-
-      this._requests[name] = {
-        callback: makeCallback(callback),
-        context: context || this
-      };
-
-      return this;
-    },
-
-    // Set up a handler that can only be requested once
-    replyOnce: function replyOnce(name, callback, context) {
-      if (Radio._eventsApi(this, "replyOnce", name, [callback, context])) {
-        return this;
-      }
-
-      var self = this;
-
-      var once = _.once(function () {
-        self.stopReplying(name);
-        return makeCallback(callback).apply(this, arguments);
-      });
-
-      return this.reply(name, once, context);
-    },
-
-    // Remove handler(s)
-    stopReplying: function stopReplying(name, callback, context) {
-      if (Radio._eventsApi(this, "stopReplying", name)) {
-        return this;
-      }
-
-      // Remove everything if there are no arguments passed
-      if (!name && !callback && !context) {
-        delete this._requests;
-      } else if (!removeHandlers(this._requests, name, callback, context)) {
-        Radio.debugLog("Attempted to remove the unregistered request", name, this.channelName);
-      }
-
-      return this;
-    }
-  };
-
-  /*
-   * Backbone.Radio.channel
-   * ----------------------
-   * Get a reference to a channel by name.
-   *
-   */
-
-  Radio._channels = {};
-
-  Radio.channel = function (channelName) {
-    if (!channelName) {
-      throw new Error("You must provide a name for the channel.");
-    }
-
-    if (Radio._channels[channelName]) {
-      return Radio._channels[channelName];
-    } else {
-      return Radio._channels[channelName] = new Radio.Channel(channelName);
-    }
-  };
-
-  /*
-   * Backbone.Radio.Channel
-   * ----------------------
-   * A Channel is an object that extends from Backbone.Events,
-   * and Radio.Requests.
-   *
-   */
-
-  Radio.Channel = function (channelName) {
-    this.channelName = channelName;
-  };
-
-  _.extend(Radio.Channel.prototype, Backbone.Events, Radio.Requests, {
-
-    // Remove all handlers from the messaging systems of this channel
-    reset: function reset() {
-      this.off();
-      this.stopListening();
-      this.stopReplying();
-      return this;
-    }
-  });
-
-  /*
-   * Top-level API
-   * -------------
-   * Supplies the 'top-level API' for working with Channels directly
-   * from Backbone.Radio.
-   *
-   */
-
-  var channel,
-      args,
-      systems = [Backbone.Events, Radio.Commands, Radio.Requests];
-
-  _.each(systems, function (system) {
-    _.each(system, function (method, methodName) {
-      Radio[methodName] = function (channelName) {
-        args = _.rest(arguments);
-        channel = this.channel(channelName);
-        return channel[methodName].apply(channel, args);
-      };
-    });
-  });
-
-  Radio.reset = function (channelName) {
-    var channels = !channelName ? this._channels : [this._channels[channelName]];
-    _.invoke(channels, "reset");
-  };
-
-  var backbone_radio = Radio;
-
-  return backbone_radio;
-});
-
-},{"backbone":2,"underscore":26}],2:[function(require,module,exports){
 (function (global){
 //     Backbone.js 1.2.3
 
@@ -2233,7 +1896,7 @@
 }));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"jquery":23,"underscore":3}],3:[function(require,module,exports){
+},{"jquery":22,"underscore":2}],2:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -3783,7 +3446,7 @@
   }
 }.call(this));
 
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -3852,7 +3515,7 @@ exports['default'] = inst;
 module.exports = exports['default'];
 
 
-},{"./handlebars/base":5,"./handlebars/exception":8,"./handlebars/no-conflict":18,"./handlebars/runtime":19,"./handlebars/safe-string":20,"./handlebars/utils":21}],5:[function(require,module,exports){
+},{"./handlebars/base":4,"./handlebars/exception":7,"./handlebars/no-conflict":17,"./handlebars/runtime":18,"./handlebars/safe-string":19,"./handlebars/utils":20}],4:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -3958,7 +3621,7 @@ exports.createFrame = _utils.createFrame;
 exports.logger = _logger2['default'];
 
 
-},{"./decorators":6,"./exception":8,"./helpers":9,"./logger":17,"./utils":21}],6:[function(require,module,exports){
+},{"./decorators":5,"./exception":7,"./helpers":8,"./logger":16,"./utils":20}],5:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -3976,7 +3639,7 @@ function registerDefaultDecorators(instance) {
 }
 
 
-},{"./decorators/inline":7}],7:[function(require,module,exports){
+},{"./decorators/inline":6}],6:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -4007,7 +3670,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":21}],8:[function(require,module,exports){
+},{"../utils":20}],7:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -4049,7 +3712,7 @@ exports['default'] = Exception;
 module.exports = exports['default'];
 
 
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -4097,7 +3760,7 @@ function registerDefaultHelpers(instance) {
 }
 
 
-},{"./helpers/block-helper-missing":10,"./helpers/each":11,"./helpers/helper-missing":12,"./helpers/if":13,"./helpers/log":14,"./helpers/lookup":15,"./helpers/with":16}],10:[function(require,module,exports){
+},{"./helpers/block-helper-missing":9,"./helpers/each":10,"./helpers/helper-missing":11,"./helpers/if":12,"./helpers/log":13,"./helpers/lookup":14,"./helpers/with":15}],9:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -4138,7 +3801,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":21}],11:[function(require,module,exports){
+},{"../utils":20}],10:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -4234,7 +3897,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":8,"../utils":21}],12:[function(require,module,exports){
+},{"../exception":7,"../utils":20}],11:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -4261,7 +3924,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":8}],13:[function(require,module,exports){
+},{"../exception":7}],12:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -4292,7 +3955,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":21}],14:[function(require,module,exports){
+},{"../utils":20}],13:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -4320,7 +3983,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],15:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -4334,7 +3997,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],16:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -4369,7 +4032,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":21}],17:[function(require,module,exports){
+},{"../utils":20}],16:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -4418,7 +4081,7 @@ exports['default'] = logger;
 module.exports = exports['default'];
 
 
-},{"./utils":21}],18:[function(require,module,exports){
+},{"./utils":20}],17:[function(require,module,exports){
 (function (global){
 /* global window */
 'use strict';
@@ -4441,7 +4104,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],19:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -4735,7 +4398,7 @@ function executeDecorators(fn, prog, container, depths, data, blockParams) {
 }
 
 
-},{"./base":5,"./exception":8,"./utils":21}],20:[function(require,module,exports){
+},{"./base":4,"./exception":7,"./utils":20}],19:[function(require,module,exports){
 // Build out our basic SafeString type
 'use strict';
 
@@ -4752,7 +4415,7 @@ exports['default'] = SafeString;
 module.exports = exports['default'];
 
 
-},{}],21:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -4878,12 +4541,12 @@ function appendContextPath(contextPath, id) {
 }
 
 
-},{}],22:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":4}],23:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":3}],22:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.4
  * http://jquery.com/
@@ -14095,7 +13758,7 @@ return jQuery;
 
 }));
 
-},{}],24:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -26450,7 +26113,7 @@ return jQuery;
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],25:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 var nargs = /\{([0-9a-zA-Z]+)\}/g
 var slice = Array.prototype.slice
 
@@ -26486,9 +26149,9 @@ function template(string) {
     })
 }
 
-},{}],26:[function(require,module,exports){
-arguments[4][3][0].apply(exports,arguments)
-},{"dup":3}],27:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
+arguments[4][2][0].apply(exports,arguments)
+},{"dup":2}],26:[function(require,module,exports){
 var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
@@ -26499,10 +26162,8 @@ var usersTemplate = require('../../templates/usersTemplate.handlebars');
 var getInfoTemplate = require('../../templates/getInfoTemplate.handlebars');
 var loginTemplate = require('../../templates/loginTemplate.handlebars');
 var addMovieTemplate = require('../../templates/addMovieTemplate.handlebars');
-var Radio = require('backbone.radio');
 
 $('document').ready(function() {
-  //var moviesChannel = Radio.channel('movies');
   var usersView;
   var moviesView;
   var loginView;
@@ -26696,7 +26357,6 @@ $('document').ready(function() {
         update: updatedPassword
       });
       console.log('collection', self.collection);
-      //self.collection.set(user);
       user.save(null, {
         success: function(model, response) {
           alert(response.msg);
@@ -26711,7 +26371,6 @@ $('document').ready(function() {
     logout: function() {
       var logOut = new LogoutModel();
 
-      //router.navigate('login', true);
       logOut.fetch({
         success: function(model, res, opt) {
           alert('Success', res.msg);
@@ -26827,7 +26486,7 @@ $('document').ready(function() {
 
     deleteMovie: function(htmlElement) {
       var self = this;
-      var movieTitle = $(htmlElement.currentTarget).parent().children('div.movieTitle').text().trim('string');
+      var movieTitle = $(htmlElement.currentTarget).siblings('div.movieTitle').text().trim('string');
 
       var movie = self.collection.findWhere({
         title: movieTitle,
@@ -26839,7 +26498,7 @@ $('document').ready(function() {
 
     updateMovie: function(htmlElement) {
       var self = this;
-      var movieTitle = $(htmlElement.currentTarget).parent().children('div.movieTitle').text().trim('string');
+      var movieTitle = $(htmlElement.currentTarget).siblings('div.movieTitle').text().trim('string');
       var movieTitleUpdate = $(htmlElement.currentTarget).siblings('input.titleUpdate').val().trim('string');
 
       var movie = self.collection.findWhere({
@@ -26861,19 +26520,19 @@ $('document').ready(function() {
 Backbone.history.start();
 });
 
-},{"../../templates/addMovieTemplate.handlebars":28,"../../templates/getInfoTemplate.handlebars":29,"../../templates/loginTemplate.handlebars":30,"../../templates/moviesTemplate.handlebars":31,"../../templates/usersTemplate.handlebars":32,"backbone":2,"backbone.radio":1,"jquery":23,"lodash":24,"string-template":25,"underscore":26}],28:[function(require,module,exports){
+},{"../../templates/addMovieTemplate.handlebars":27,"../../templates/getInfoTemplate.handlebars":28,"../../templates/loginTemplate.handlebars":29,"../../templates/moviesTemplate.handlebars":30,"../../templates/usersTemplate.handlebars":31,"backbone":1,"jquery":22,"lodash":23,"string-template":24,"underscore":25}],27:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return "<div id=\"addMovieTemplate\">\n  <h1>Add a movie</h1>\n  <input id=\"title\" placeholder=\"Insert movie title here\" /><br>\n  <input id=\"link\" placeholder=\"Insert movie link here\" /><br>\n  <button id=\"addMovie\">Add a movie</button><br><br><br<br><br>\n</div>\n";
 },"useData":true});
-},{"handlebars/runtime":22}],29:[function(require,module,exports){
+},{"handlebars/runtime":21}],28:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return "<button id=\"getUserInfo\">Get your info</button><br>\n<input type=\"password\" id=\"updatePasswordText\" placeholder=\"Your new password\" />\n<button id=\"updatePassword\">Change your password</button>\n<br>\n<button id=\"logout\">Logout</button><br><br><br>\n";
 },"useData":true});
-},{"handlebars/runtime":22}],30:[function(require,module,exports){
+},{"handlebars/runtime":21}],29:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return "<h1>Login page</h1>\n\n<input type=\"text\" id=\"username\" placeholder=\"username\"><br>\n<input type=\"password\" id=\"password\" placeholder=\"password\"><br>\n<button id=\"register\">Register</button>\n<button id=\"login\">Log in</button><br>\n";
 },"useData":true});
-},{"handlebars/runtime":22}],31:[function(require,module,exports){
+},{"handlebars/runtime":21}],30:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
@@ -26885,7 +26544,7 @@ var templater = require("handlebars/runtime")["default"].template;module.exports
     + alias4(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"title","hash":{},"data":data}) : helper)))
     + " title</button><br>\n  <button class=\"deleteMovie\">Delete movie</button>\n</li><br><br>\n";
 },"useData":true});
-},{"handlebars/runtime":22}],32:[function(require,module,exports){
+},{"handlebars/runtime":21}],31:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
@@ -26895,4 +26554,4 @@ var templater = require("handlebars/runtime")["default"].template;module.exports
     + alias4(((helper = (helper = helpers.userId || (depth0 != null ? depth0.userId : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"userId","hash":{},"data":data}) : helper)))
     + "</div>\n<button id=\"hideUserInfo\">Hide your info</button>\n";
 },"useData":true});
-},{"handlebars/runtime":22}]},{},[27]);
+},{"handlebars/runtime":21}]},{},[26]);

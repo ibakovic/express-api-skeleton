@@ -8,10 +8,8 @@ var usersTemplate = require('../../templates/usersTemplate.handlebars');
 var getInfoTemplate = require('../../templates/getInfoTemplate.handlebars');
 var loginTemplate = require('../../templates/loginTemplate.handlebars');
 var addMovieTemplate = require('../../templates/addMovieTemplate.handlebars');
-var Radio = require('backbone.radio');
 
 $('document').ready(function() {
-  //var moviesChannel = Radio.channel('movies');
   var usersView;
   var moviesView;
   var loginView;
@@ -205,7 +203,6 @@ $('document').ready(function() {
         update: updatedPassword
       });
       console.log('collection', self.collection);
-      //self.collection.set(user);
       user.save(null, {
         success: function(model, response) {
           alert(response.msg);
@@ -220,7 +217,6 @@ $('document').ready(function() {
     logout: function() {
       var logOut = new LogoutModel();
 
-      //router.navigate('login', true);
       logOut.fetch({
         success: function(model, res, opt) {
           alert('Success', res.msg);
@@ -336,7 +332,7 @@ $('document').ready(function() {
 
     deleteMovie: function(htmlElement) {
       var self = this;
-      var movieTitle = $(htmlElement.currentTarget).parent().children('div.movieTitle').text().trim('string');
+      var movieTitle = $(htmlElement.currentTarget).siblings('div.movieTitle').text().trim('string');
 
       var movie = self.collection.findWhere({
         title: movieTitle,
@@ -348,7 +344,7 @@ $('document').ready(function() {
 
     updateMovie: function(htmlElement) {
       var self = this;
-      var movieTitle = $(htmlElement.currentTarget).parent().children('div.movieTitle').text().trim('string');
+      var movieTitle = $(htmlElement.currentTarget).siblings('div.movieTitle').text().trim('string');
       var movieTitleUpdate = $(htmlElement.currentTarget).siblings('input.titleUpdate').val().trim('string');
 
       var movie = self.collection.findWhere({
