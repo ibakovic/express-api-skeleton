@@ -40,7 +40,7 @@ var hbFunc = require('./handlebars/hbFunc.js');
 var loginFunc = require('./handlebars/loginFunc.js');
 
 app
-  .get('/login', hbFunc);
+  .get('/movieApp', hbFunc);
   //.get('/authorized', loginFunc)
 
 // serve static assets
