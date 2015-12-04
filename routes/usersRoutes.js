@@ -119,7 +119,7 @@ function isAuthenticate(req, res, next) {
   }
   else {
     logger.error('error', 'You must be logged in to do that.');
-    res.redirect('/login');
+    res.redirect('/movieApp');
   }
 }
 
