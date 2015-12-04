@@ -5,7 +5,7 @@
   "scripts": {
     "start": "supervisor ./bin/www",
     "debug": "node-debug --port 8181 ./bin/www",
-    "watchify": " watchify -t browserify-handlebars ./public/javascripts/loginPageJquery.js -o ./public/bundle.js"
+    "watchify": " watchify -t browserify-handlebars ./public/javascripts/loginPageJquery.js -o ./public/bundle.js -v"
   },
   "main": "./bin/www",
   "dependencies": {
