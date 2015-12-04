@@ -144,18 +144,20 @@ $('document').ready(function() {
       'click #getUserInfo': 'getUserInfo',
       'click #hideUserInfo': 'hideUserInfo',
       'click #updatePassword': 'updatePassword',
-      'click #logout': 'logout'
+      'click #logout': 'logout',
+      'click #deleteUser': 'deleteUser'
     },
 
     initialize: function() {
       var self = this;
-      _.bindAll(this, 'render', 'getUserInfo', 'hideUserInfo', 'updatePassword', 'logout');
+      _.bindAll(this, 'render', 'getUserInfo', 'hideUserInfo', 'updatePassword', 'logout', 'deleteUser');
 
       var serverResponse = new UserCollection();
 
       serverResponse.fetch({success: function(model, response) {
         self.collection = new UserCollection(response.data);
 
+        //self.listenTo(self.collection, 'remove', self.logOut());
         self.listenTo(self.collection, 'change', self.render(getInfoTemplate()));
       }});
 
@@ -226,6 +228,22 @@ $('document').ready(function() {
           console.log('Error! ', res);
         }
       });
+    },
+
+    deleteUser: function() {
+      var self = this;
+      var user = self.collection.findWhere({id: self.getUserId()});
+      if(confirm('Are you sure you want to delete your account?')) {
+        user.destroy({
+          success: function(model, res) {
+            alert(res.msg);
+            router.navigate('login' + res.redirect, {trigger: true});
+          },
+          error: function(model, res) {
+            alert('Couldn\'t delete your account');
+          }
+        });
+      }
     }
   });
 

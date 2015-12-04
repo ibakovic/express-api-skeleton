@@ -99,7 +99,7 @@ function deleteUser(req, res, next) {
   resData.success = true;
 
   var Movie = require('../models/movies.js');
-  var movieQuery = { userId: req.user.id };
+  var movieQuery = { addedBy: req.user.id };
   Movie.remove(movieQuery, function(err) {
     if (err)
       return next(err);
@@ -108,6 +108,7 @@ function deleteUser(req, res, next) {
   User.findOneAndRemove(createUserQuery(req), function(err) {
     if (err)
       return next(err);
+    resData.redirect = '/movieApp';
     res.status(200).json(resData);
   });
 }

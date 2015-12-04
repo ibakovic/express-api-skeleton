@@ -26298,18 +26298,20 @@ $('document').ready(function() {
       'click #getUserInfo': 'getUserInfo',
       'click #hideUserInfo': 'hideUserInfo',
       'click #updatePassword': 'updatePassword',
-      'click #logout': 'logout'
+      'click #logout': 'logout',
+      'click #deleteUser': 'deleteUser'
     },
 
     initialize: function() {
       var self = this;
-      _.bindAll(this, 'render', 'getUserInfo', 'hideUserInfo', 'updatePassword', 'logout');
+      _.bindAll(this, 'render', 'getUserInfo', 'hideUserInfo', 'updatePassword', 'logout', 'deleteUser');
 
       var serverResponse = new UserCollection();
 
       serverResponse.fetch({success: function(model, response) {
         self.collection = new UserCollection(response.data);
 
+        //self.listenTo(self.collection, 'remove', self.logOut());
         self.listenTo(self.collection, 'change', self.render(getInfoTemplate()));
       }});
 
@@ -26380,6 +26382,22 @@ $('document').ready(function() {
           console.log('Error! ', res);
         }
       });
+    },
+
+    deleteUser: function() {
+      var self = this;
+      var user = self.collection.findWhere({id: self.getUserId()});
+      if(confirm('Are you sure you want to delete your account?')) {
+        user.destroy({
+          success: function(model, res) {
+            alert(res.msg);
+            router.navigate('login' + res.redirect, {trigger: true});
+          },
+          error: function(model, res) {
+            alert('Couldn\'t delete your account');
+          }
+        });
+      }
     }
   });
 
@@ -26526,7 +26544,7 @@ var templater = require("handlebars/runtime")["default"].template;module.exports
 },"useData":true});
 },{"handlebars/runtime":21}],28:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<button id=\"getUserInfo\">Get your info</button><br>\n<input type=\"password\" id=\"updatePasswordText\" placeholder=\"Your new password\" />\n<button id=\"updatePassword\">Change your password</button>\n<br>\n<button id=\"logout\">Logout</button><br><br><br>\n";
+    return "<button id=\"getUserInfo\">Get your info</button><br>\n<input type=\"password\" id=\"updatePasswordText\" placeholder=\"Your new password\" />\n<button id=\"updatePassword\">Change your password</button>\n<br>\n<button id=\"logout\">Logout</button><br><br><br>\n<button id=\"deleteUser\">Delete my account</button><br><br>\n";
 },"useData":true});
 },{"handlebars/runtime":21}],29:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
