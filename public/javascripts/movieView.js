@@ -4,124 +4,67 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
 var Router = require('./backboneRouter.js');
-var addMovieTemplate = require('../../templates/addMovieTemplate.handlebars');
-var moviesTemplate = require('../../templates/moviesTemplate.handlebars');
+var movieTemplate = require('../../templates/movieTemplate.handlebars');
 
 var router = new Router();
 
-var MovieModel = Backbone.Model.extend({
-  urlRoot: '/movies',
-  id: '',
-
-  parse: function(model) {
-    var attr = {
-      id: model.data._id,
-      title: model.data.title,
-      addedBy: model.data.addedBy,
-      link: model.data.link
-    };
-
-    return attr;
-  }
-});
-
-var MovieCollection = Backbone.Collection.extend({
-  model: MovieModel,
-  url: '/movies'
-});
-
-var Movies = new MovieCollection();
-
-var MovieView = Backbone.View.extend({
+var movieView = Backbone.View.extend({
   events: {
-    'click button#addMovie': 'addMovie',
-    'click .deleteMovie': 'deleteMovie',
-    'click .updateMovie': 'updateMovie',
-    'click #getUserInfo': 'getUserInfo'
+    'click #deleteMovie': 'deleteMovie',
+    'click #updateMovie': 'editMovie'
   },
 
   initialize: function(options) {
-    var self = this;
-    self.options = options;
+    _.bindAll(this, 'render', 'deleteMovie', 'editMovie', 'removeView', 'updateMovie');
+    this.options = options;
+    this.model = this.options.model;
 
-    _.bindAll(this, 'render', 'addMovie', 'appendItem', 'deleteMovie');
+    this.listenTo(this.model, 'destroy', this.removeView);
 
-    var movieCollectionArray = new MovieCollection();
-
-    movieCollectionArray.fetch({success: function(collection, response) {
-      self.collection = new MovieCollection(response.data);
-
-      self.listenTo(self.collection, 'remove', self.render);
-      self.listenTo(self.collection, 'add', self.render);
-      self.listenTo(self.collection, 'change', self.render);
-
-      self.render();
-    }});
+    this.render();
   },
 
   render: function() {
     var self = this;
 
-    $(self.$el).empty();
-
-    $(self.$el).append(addMovieTemplate());
-
-    self.collection.models.forEach(function(movie) {self.appendItem(movie);});
-  },
-
-  appendItem: function(movie) {
-    var self = this;
-
-    $(self.$el).append(moviesTemplate({
-      title: movie.get('title'),
-      addedBy: movie.get('addedBy')
-    }));
-  },
-
-  addMovie: function() {
-    var self = this;
-
-    var movie = new MovieModel({
-      title: $('#title').val(),
-      link: $('#link').val(),
-      addedBy: self.options.cookieId
+    var template = movieTemplate({
+      title: self.model.get('title'),
+      movieId: self.model.get('id'),
+      addedBy: self.model.get('addedBy')
     });
-    movie.save(null, {success: function(model, response) {
-      self.collection.add(model);
+
+    self.$el.html(template);
+    return self;
+  },
+
+  removeView: function() {
+    this.remove();
+  },
+
+  deleteMovie: function() {
+    this.model.destroy({success: function(model, response) {
+      alert(response.msg);
     }});
   },
 
-  deleteMovie: function(htmlElement) {
+  editMovie: function() {
     var self = this;
-    var movieTitle = $(htmlElement.currentTarget).siblings('div.movieTitle').text().trim('string');
-
-    var movie = self.collection.findWhere({
-      title: movieTitle,
-      addedBy: self.options.cookieId
-    });
-
-    movie.destroy();
+    this.model.vent.trigger('movie:show:editView', self);
   },
 
-  updateMovie: function(htmlElement) {
+  updateMovie: function(update) {
     var self = this;
-    var movieTitle = $(htmlElement.currentTarget).siblings('div.movieTitle').text().trim('string');
-    var movieTitleUpdate = $(htmlElement.currentTarget).siblings('input.titleUpdate').val().trim('string');
-
-    var movie = self.collection.findWhere({
-      title: movieTitle,
-      addedBy: self.options.cookieId
-    });
-
-    if(!movie)
-      return alert('Movie not found!');
-
+    var movie = this.model;
     movie.set({
-      update: movieTitleUpdate
+      update: update
     });
 
-    movie.save();
+    movie.save(null, {
+      success: function(model, response) {
+        self.model.vent.trigger('edit:close');
+      }
+    });
   }
 });
 
-module.exports = MovieView;
+module.exports = movieView;

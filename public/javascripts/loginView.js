@@ -5,6 +5,7 @@ var Backbone = require('backbone');
 var _ = require('underscore');
 var loginTemplate = require('../../templates/loginTemplate.handlebars');
 var Router = require('./backboneRouter.js');
+var collections = {};
 
 var router = new Router();
 
@@ -49,7 +50,7 @@ var LoginView = Backbone.View.extend({
     credentials.save(null, {
       success: function(model, response) {
         alert(response.msg);
-        router.navigate('movies', true);
+        router.navigate('movies', {trigger: true});
       },
       error: function() {
         alert('Log in not successful!');

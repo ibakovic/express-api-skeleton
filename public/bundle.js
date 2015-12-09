@@ -13763,6 +13763,60 @@ arguments[4][2][0].apply(exports,arguments)
 },{"dup":2}],24:[function(require,module,exports){
 'use strict';
 
+var Backbone = require('backbone');
+var _ = require('underscore');
+var $ = require('jquery');
+var Router = require('./backboneRouter.js');
+var addMovieTemplate = require('../../templates/addMovieTemplate.handlebars');
+
+var router = new Router();
+
+var AddView = Backbone.View.extend({
+  events: {
+    'click #addMovie': 'addMovie',
+    'click #cancelAdd': 'cancelAdd'
+  },
+
+  initialize: function(options) {
+    _.bindAll(this, 'render', 'addMovie', 'cancelAdd');
+    this.options = options;
+
+    this.render();
+  },
+
+  render: function() {
+    var self = this;
+    self.$el.html(addMovieTemplate());
+  },
+
+  addMovie: function() {
+    var self = this;
+    var title = $('#addTitle').val().trim('string');
+    var link = $('#addLink').val().trim('string');
+
+    var Movie = new this.options.movieModel({
+      title: title,
+      link: link,
+      addedBy: self.options.userId
+    });
+
+    Movie.save(null, {success: function(model, response) {
+      self.options.vent.trigger('movie:add', model);
+      router.navigate('movies', {trigger: true});
+    }});
+  },
+
+  cancelAdd: function() {
+    this.$el.hide();
+    router.navigate('movies', {trigger: true});
+  }
+});
+
+module.exports = AddView;
+
+},{"../../templates/addMovieTemplate.handlebars":33,"./backboneRouter.js":25,"backbone":1,"jquery":22,"underscore":23}],25:[function(require,module,exports){
+'use strict';
+
 var $ = require('jquery');
 var Backbone = require('backbone');
 
@@ -13770,58 +13824,229 @@ var Router = Backbone.Router.extend({
   routes: {
     '': 'loginPage',
     'login/:redirect': 'returnToLogin',
-    'movies': 'startApp'
+    'movies': 'startApp',
+    'edit/:movieId': 'updateMovieTitle',
+    'addMovie': 'addMovie'
   }
 });
 
 module.exports = Router;
 
-},{"backbone":1,"jquery":22}],25:[function(require,module,exports){
+},{"backbone":1,"jquery":22}],26:[function(require,module,exports){
+'use strict';
+
 var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
 var Router = require('./backboneRouter.js');
+var editTemplate = require('../../templates/editTemplate.handlebars');
+
+var router = new Router();
+
+var EditView = Backbone.View.extend({
+  events: {
+    'click #submit': 'updateMovie',
+    'click #cancel': 'cancel'
+  },
+
+  initialize: function(options) {
+    var self = this;
+    _.bindAll(this, 'render', 'updateMovie', 'cancel', 'show');
+
+    self.render();
+  },
+
+  render: function() {
+    var self = this;
+
+    $(self.el).html(editTemplate());
+    return self;
+  },
+
+  show: function(movieView) {
+    this.model = movieView.model;
+    this.movieView = movieView;
+    this.$el.show();
+  },
+
+  updateMovie: function() {
+    var self = this;
+    var movieTitleUpdate = $('#titleUpdate').val().trim('string');
+
+    this.movieView.updateMovie(movieTitleUpdate);
+    //this.model.vent.trigger('movie:update', movieTitleUpdate);
+  },
+
+  cancel: function() {
+    this.$el.hide();
+    this.model.vent.trigger('edit:close');
+  }
+});
+
+module.exports = EditView;
+
+},{"../../templates/editTemplate.handlebars":34,"./backboneRouter.js":25,"backbone":1,"jquery":22,"underscore":23}],27:[function(require,module,exports){
+var $ = require('jquery');
+var Backbone = require('backbone');
+var _ = require('underscore');
+var addMovieTemplate = require('../../templates/addMovieTemplate.handlebars');
+var moviesTemplate = require('../../templates/moviesTemplate.handlebars');
+var editTemplate = require('../../templates/editTemplate.handlebars');
+var Router = require('./backboneRouter.js');
 var LoginView = require('./loginView.js');
-var MovieView = require('./movieView.js');
+var MovieView = require('./movieCollectionView.js');
 var UserView = require('./userView.js');
+var EditView = require('./editView.js');
+var AddView = require('./addView.js');
 var loginView;
-var usersView;
+var userView;
 var moviesView;
+var editView;
+var addView;
+var vent = _.extend({}, Backbone.Events);
+
+vent.on('movie:show:editView', function(movieView) {
+  moviesView.$el.hide();
+  userView.$el.hide();
+  addView.$el.hide();
+  loginView.$el.hide();
+
+  editView.show(movieView);
+});
+
+vent.on('edit:close', function() {
+  loginView.$el.hide();
+  editView.$el.hide();
+  addView.$el.hide();
+
+  userView.$el.show();
+  moviesView.reRender();
+  moviesView.$el.show();
+});
+
+vent.on('movie:add', function(model) {
+  moviesView.appendItem(model);
+  moviesView.reRender();
+});
 
 $('document').ready(function() {
-  var currentUserId;
+  var currentUserId = document.cookie.split('=');
+  var MovieModel = Backbone.Model.extend({
+    urlRoot: '/movies',
+    id: '',
+    vent: vent,
+
+    parse: function(model) {
+      var attr = {
+        id: model.id,
+        title: model.title,
+        addedBy: model.addedBy,
+        link: model.link
+      };
+
+      return attr;
+    }
+  });
+
+  var MovieCollection = Backbone.Collection.extend({
+    model: MovieModel,
+    url: '/movies',
+    vent: vent,
+
+    parse: function(response) {
+      return response.data;
+    }
+  });
+
+  var Movies = new MovieCollection();
+
+  var UserModel = Backbone.Model.extend({
+    url: '/',
+    parse: function(model) {
+      var attr = {
+        id: model.data.id,
+        username: model.data.username
+      };
+
+      return attr;
+    }
+  });
+
+  var User = new UserModel();
+
+  loginView = new LoginView({el: $('#loginWrapper')});
+  loginView.$el.hide();
+
+  moviesView = new MovieView({
+    el: $('#mainContainer'),
+    cookieId: currentUserId[1],
+    collection: Movies
+  });
+
+  userView = new UserView({
+    el: $('#userInfo'),
+    cookieId: currentUserId[1],
+    model: User
+  });
+
+  addView = new AddView({
+    el: $('#addMovieForm'),
+    movieModel: MovieModel,
+    vent: vent,
+    userId: currentUserId[1]
+  });
+  addView.$el.hide();
+
+  editView = new EditView({
+    el: $('#editForm'),
+    cookieId: currentUserId[1],
+    collection: Movies
+  });
+
   var router = new Router();
+
   router.on('route:loginPage', function() {
-    loginView = new LoginView({el: $('#loginWrapper')});
+    moviesView.$el.hide();
+    userView.$el.hide();
+    addView.$el.hide();
+    editView.$el.hide();
+
+    loginView.$el.show();
   });
 
   router.on('route:startApp', function() {
-    currentUserId = document.cookie.split('=');
-    console.log('Main js file', currentUserId[1]);
-    usersView = new UserView({
-      el: $('#userInfo'),
-      cookieId: currentUserId[1]
-    });
-    moviesView = new MovieView({
-      el: $('#mainContainer'),
-      cookieId: currentUserId[1]
-    });
-
-    usersView.$el.show();
-    moviesView.$el.show();
-
-    loginView = new LoginView({el: $('#loginWrapper')});
     loginView.$el.hide();
+    editView.$el.hide();
+    addView.$el.hide();
+
+    moviesView.fetchData();
+    userView.fetchData();
+
+    userView.$el.show();
+    moviesView.$el.show();
   });
 
   router.on('route:returnToLogin', function(redirect) {
     document.location = redirect;
   });
+
+  router.on('route:updateMovieTitle', function(movieId) {
+
+  });
+
+  router.on('route:addMovie', function() {
+    moviesView.$el.hide();
+    userView.$el.hide();
+    loginView.$el.hide();
+    editView.$el.hide();
+
+    addView.$el.show();
+  });
   // Start Backbone history a necessary step for bookmarkable URL's
   Backbone.history.start();
 });
 
-},{"./backboneRouter.js":24,"./loginView.js":26,"./movieView.js":27,"./userView.js":28,"backbone":1,"jquery":22,"underscore":23}],26:[function(require,module,exports){
+},{"../../templates/addMovieTemplate.handlebars":33,"../../templates/editTemplate.handlebars":34,"../../templates/moviesTemplate.handlebars":38,"./addView.js":24,"./backboneRouter.js":25,"./editView.js":26,"./loginView.js":28,"./movieCollectionView.js":29,"./userView.js":31,"backbone":1,"jquery":22,"underscore":23}],28:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -13829,6 +14054,7 @@ var Backbone = require('backbone');
 var _ = require('underscore');
 var loginTemplate = require('../../templates/loginTemplate.handlebars');
 var Router = require('./backboneRouter.js');
+var collections = {};
 
 var router = new Router();
 
@@ -13873,7 +14099,7 @@ var LoginView = Backbone.View.extend({
     credentials.save(null, {
       success: function(model, response) {
         alert(response.msg);
-        router.navigate('movies', true);
+        router.navigate('movies', {trigger: true});
       },
       error: function() {
         alert('Log in not successful!');
@@ -13901,7 +14127,7 @@ var LoginView = Backbone.View.extend({
 
 module.exports = LoginView;
 
-},{"../../templates/loginTemplate.handlebars":31,"./backboneRouter.js":24,"backbone":1,"jquery":22,"underscore":23}],27:[function(require,module,exports){
+},{"../../templates/loginTemplate.handlebars":36,"./backboneRouter.js":25,"backbone":1,"jquery":22,"underscore":23}],29:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -13910,127 +14136,175 @@ var _ = require('underscore');
 var Router = require('./backboneRouter.js');
 var addMovieTemplate = require('../../templates/addMovieTemplate.handlebars');
 var moviesTemplate = require('../../templates/moviesTemplate.handlebars');
+var addMovieButtonTemplate = require('../../templates/addMovieButtonTemplate.handlebars');
+var MovieView = require('./movieView.js');
 
 var router = new Router();
 
-var MovieModel = Backbone.Model.extend({
-  urlRoot: '/movies',
-  id: '',
-
-  parse: function(model) {
-    var attr = {
-      id: model.data._id,
-      title: model.data.title,
-      addedBy: model.data.addedBy,
-      link: model.data.link
-    };
-
-    return attr;
-  }
-});
-
-var MovieCollection = Backbone.Collection.extend({
-  model: MovieModel,
-  url: '/movies'
-});
-
-var Movies = new MovieCollection();
-
-var MovieView = Backbone.View.extend({
+var MovieCollectionView = Backbone.View.extend({
   events: {
-    'click button#addMovie': 'addMovie',
-    'click .deleteMovie': 'deleteMovie',
-    'click .updateMovie': 'updateMovie',
+    'click #cancelAdd': 'cancelAdd',
+    'click #addMovieButton': 'openAddMovieForm',
     'click #getUserInfo': 'getUserInfo'
   },
 
   initialize: function(options) {
     var self = this;
     self.options = options;
+    self.childrenViewsArray = [];
 
-    _.bindAll(this, 'render', 'addMovie', 'appendItem', 'deleteMovie');
+    self.collection = self.options.collection;
 
-    var movieCollectionArray = new MovieCollection();
+    _.bindAll(this, 'render', 'reRender', 'fetchData', 'cancelAdd', 'appendItem', 'openAddMovieForm', 'update');
 
-    movieCollectionArray.fetch({success: function(collection, response) {
-      self.collection = new MovieCollection(response.data);
+    self.listenTo(self.collection, 'remove', self.loadTemplate);
+    self.listenTo(self.collection, 'add', self.loadTemplate);
+    self.listenTo(self.collection, 'change', self.loadTemplate);
 
-      self.listenTo(self.collection, 'remove', self.render);
-      self.listenTo(self.collection, 'add', self.render);
-      self.listenTo(self.collection, 'change', self.render);
-
-      self.render();
-    }});
+    self.render();
   },
 
   render: function() {
     var self = this;
 
     $(self.$el).empty();
+    this.childrenViewsArray.forEach(function(movieView) {
+      movieView.remove();
+    });
 
-    $(self.$el).append(addMovieTemplate());
+    $(self.$el).html(addMovieButtonTemplate());
 
     self.collection.models.forEach(function(movie) {self.appendItem(movie);});
   },
 
-  appendItem: function(movie) {
+  reRender: function() {
     var self = this;
 
-    $(self.$el).append(moviesTemplate({
-      title: movie.get('title'),
-      addedBy: movie.get('addedBy')
-    }));
+    self.collection.fetch({success: function(collection, response) {
+      self.render();
+    }});
+  },
+
+  fetchData: function() {
+    var self = this;
+    self.collection.fetch({success: function(collection, response) {
+      self.render();
+    }});
+  },
+
+  appendItem: function(movie) {
+    var self = this;
+    var Movie = new MovieView({ model: movie });
+
+    this.childrenViewsArray.push(Movie);
+
+    $(self.$el).append(Movie.$el);
+  },
+
+  openAddMovieForm: function() {
+    this.$el.hide();
+    router.navigate('addMovie', {trigger: true});
+  },
+
+  cancelAdd: function() {
+    this.$el.hide();
+    router.navigate('movies', {trigger: true});
   },
 
   addMovie: function() {
     var self = this;
 
-    var movie = new MovieModel({
+    var movie = {
       title: $('#title').val(),
       link: $('#link').val(),
       addedBy: self.options.cookieId
-    });
-    movie.save(null, {success: function(model, response) {
+    };
+    self.collection.create(movie, {success: function(model, response) {
       self.collection.add(model);
+      self.undelegateEvents();
+      self.$el.hide();
+      router.navigate('movies', {trigger: true});
     }});
   },
 
-  deleteMovie: function(htmlElement) {
-    var self = this;
-    var movieTitle = $(htmlElement.currentTarget).siblings('div.movieTitle').text().trim('string');
+  update: function(update) {}
+});
 
-    var movie = self.collection.findWhere({
-      title: movieTitle,
-      addedBy: self.options.cookieId
-    });
+module.exports = MovieCollectionView;
 
-    movie.destroy();
+},{"../../templates/addMovieButtonTemplate.handlebars":32,"../../templates/addMovieTemplate.handlebars":33,"../../templates/moviesTemplate.handlebars":38,"./backboneRouter.js":25,"./movieView.js":30,"backbone":1,"jquery":22,"underscore":23}],30:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var Backbone = require('backbone');
+var _ = require('underscore');
+var Router = require('./backboneRouter.js');
+var movieTemplate = require('../../templates/movieTemplate.handlebars');
+
+var router = new Router();
+
+var movieView = Backbone.View.extend({
+  events: {
+    'click #deleteMovie': 'deleteMovie',
+    'click #updateMovie': 'editMovie'
   },
 
-  updateMovie: function(htmlElement) {
+  initialize: function(options) {
+    _.bindAll(this, 'render', 'deleteMovie', 'editMovie', 'removeView', 'updateMovie');
+    this.options = options;
+    this.model = this.options.model;
+
+    this.listenTo(this.model, 'destroy', this.removeView);
+
+    this.render();
+  },
+
+  render: function() {
     var self = this;
-    var movieTitle = $(htmlElement.currentTarget).siblings('div.movieTitle').text().trim('string');
-    var movieTitleUpdate = $(htmlElement.currentTarget).siblings('input.titleUpdate').val().trim('string');
 
-    var movie = self.collection.findWhere({
-      title: movieTitle,
-      addedBy: self.options.cookieId
+    var template = movieTemplate({
+      title: self.model.get('title'),
+      movieId: self.model.get('id'),
+      addedBy: self.model.get('addedBy')
     });
 
-    if(!movie)
-      return alert('Movie not found!');
+    self.$el.html(template);
+    return self;
+  },
 
+  removeView: function() {
+    this.remove();
+  },
+
+  deleteMovie: function() {
+    this.model.destroy({success: function(model, response) {
+      alert(response.msg);
+    }});
+  },
+
+  editMovie: function() {
+    var self = this;
+    this.model.vent.trigger('movie:show:editView', self);
+  },
+
+  updateMovie: function(update) {
+    var self = this;
+    var movie = this.model;
     movie.set({
-      update: movieTitleUpdate
+      update: update
     });
 
-    movie.save();
+    movie.save(null, {
+      success: function(model, response) {
+        self.model.vent.trigger('edit:close');
+      }
+    });
   }
 });
 
-module.exports = MovieView;
+module.exports = movieView;
 
-},{"../../templates/addMovieTemplate.handlebars":29,"../../templates/moviesTemplate.handlebars":32,"./backboneRouter.js":24,"backbone":1,"jquery":22,"underscore":23}],28:[function(require,module,exports){
+},{"../../templates/movieTemplate.handlebars":37,"./backboneRouter.js":25,"backbone":1,"jquery":22,"underscore":23}],31:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -14046,17 +14320,6 @@ var LogoutModel = Backbone.Model.extend({
   url: '/logout'
 });
 
-var UserModel = Backbone.Model.extend({
-  url: '/'
-});
-
-var UserCollection = Backbone.Collection.extend({
-  model: UserModel,
-  url: '/'
-});
-
-var Users = new UserCollection();
-
 var UserView = Backbone.View.extend({
   events: {
     'click #getUserInfo': 'getUserInfo',
@@ -14069,18 +14332,10 @@ var UserView = Backbone.View.extend({
   initialize: function(options) {
     var self = this;
     self.options = options;
-    _.bindAll(this, 'render', 'getUserInfo', 'hideUserInfo', 'updatePassword', 'logout', 'deleteUser');
+    _.bindAll(this, 'render', 'fetchData', 'getUserInfo', 'hideUserInfo', 'updatePassword', 'logout', 'deleteUser');
 
-    var serverResponse = new UserCollection();
-
-    serverResponse.fetch({success: function(model, response) {
-      self.collection = new UserCollection(response.data);
-
-      //self.listenTo(self.collection, 'remove', self.logOut());
-      self.listenTo(self.collection, 'change', self.render(getInfoTemplate()));
-    }});
-
-    this.render(getInfoTemplate());
+    self.listenTo(self.model, 'change', self.render(getInfoTemplate()));
+    self.render(getInfoTemplate());
   },
 
   render: function(content) {
@@ -14088,13 +14343,19 @@ var UserView = Backbone.View.extend({
     $(self.el).html(content);
   },
 
+  fetchData: function() {
+    var self = this;
+    self.options.model.fetch({success: function(model, response) {
+      self.render(getInfoTemplate());
+    }});
+  },
+
   getUserInfo: function() {
     var self = this;
-    var user = self.collection.findWhere({id: self.options.cookieId});
 
     var template = usersTemplate({
-      username: user.get('username'),
-      userId: user.get('id')
+      username: self.options.model.get('username'),
+      userId: self.options.model.get('id')
     });
 
     self.render(template);
@@ -14157,38 +14418,50 @@ var UserView = Backbone.View.extend({
 
 module.exports = UserView;
 
-},{"../../templates/getInfoTemplate.handlebars":30,"../../templates/usersTemplate.handlebars":33,"./backboneRouter.js":24,"backbone":1,"jquery":22,"underscore":23}],29:[function(require,module,exports){
+},{"../../templates/getInfoTemplate.handlebars":35,"../../templates/usersTemplate.handlebars":39,"./backboneRouter.js":25,"backbone":1,"jquery":22,"underscore":23}],32:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div id=\"addMovieTemplate\">\n  <h1>Add a movie</h1>\n  <input id=\"title\" placeholder=\"Insert movie title here\" /><br>\n  <input id=\"link\" placeholder=\"Insert movie link here\" /><br>\n  <button id=\"addMovie\">Add a movie</button><br><br><br<br><br>\n</div>\n";
-},"useData":true});
-},{"handlebars/runtime":21}],30:[function(require,module,exports){
-var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<button id=\"getUserInfo\">Get your info</button><br>\n<input type=\"password\" id=\"updatePasswordText\" placeholder=\"Your new password\" />\n<button id=\"updatePassword\">Change your password</button>\n<br>\n<button id=\"logout\">Logout</button><br><br><br>\n<button id=\"deleteUser\">Delete my account</button><br><br>\n";
-},"useData":true});
-},{"handlebars/runtime":21}],31:[function(require,module,exports){
-var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<h1>Login page</h1>\n\n<input type=\"text\" id=\"username\" placeholder=\"username\"><br>\n<input type=\"password\" id=\"password\" placeholder=\"password\"><br>\n<button id=\"register\">Register</button>\n<button id=\"login\">Log in</button><br>\n";
-},"useData":true});
-},{"handlebars/runtime":21}],32:[function(require,module,exports){
-var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
-
-  return "<li class=\"responseMovie\">\n  Title: <div class=\"movieTitle\">"
-    + alias4(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"title","hash":{},"data":data}) : helper)))
-    + "</div><br>\n  Added by: <div class=\"addedBy\">"
-    + alias4(((helper = (helper = helpers.addedBy || (depth0 != null ? depth0.addedBy : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"addedBy","hash":{},"data":data}) : helper)))
-    + "</div><br>\n  <input class=\"titleUpdate\" placeholder=\"Change your title\" />\n  <button class=\"updateMovie\">Change "
-    + alias4(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"title","hash":{},"data":data}) : helper)))
-    + " title</button><br>\n  <button class=\"deleteMovie\">Delete movie</button>\n</li><br><br>\n";
+    return " <button id=\"addMovieButton\" class=\"btn btn-primary\">Add a movie</button><br><br><br><br><br>\n";
 },"useData":true});
 },{"handlebars/runtime":21}],33:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<div id=\"addMovieTemplate\" class=\"row\">\n  <div class=\"col-md-4\"></div>\n  <div id=\"addMovieWrapper\" class=\"col-md-4\">\n    <h1 id=\"addMovieHead\">Add a movie</h1>\n    <input id=\"addTitle\" placeholder=\"Insert movie title here\" class=\"form-control\" /><br>\n    <input id=\"addLink\" placeholder=\"Insert movie link here\" class=\"form-control\" /><br>\n    <button id=\"addMovie\" class=\"btn btn-primary\">Submit</button>\n    <button id=\"cancelAdd\" class=\"btn btn-warning\">Cancel</button><br><br><br<br><br>\n  </div>\n</div>\n";
+},"useData":true});
+},{"handlebars/runtime":21}],34:[function(require,module,exports){
+var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<div>\n  <h1>Change your movie title</h1>\n  <input id=\"titleUpdate\" class=\"form-control\" placeholder=\"Change your title\" />\n  <button id=\"submit\" class=\"btn btn-primary\">Submit changes</button>\n  <button id=\"cancel\" class=\"btn btn-warning\">Cancel</button>\n</div>\n";
+},"useData":true});
+},{"handlebars/runtime":21}],35:[function(require,module,exports){
+var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<div class=\"row\">\n  <div class=\"col-md-4\"></div>\n  <div class=\"col-md-4\" id=\"userInfoWrapper\">\n    <button id=\"getUserInfo\" class=\"btn btn-success\">Get your info</button><br>\n    <div id=\"updatePasswordWrapper\">\n      <input type=\"password\" id=\"updatePasswordText\" placeholder=\"Your new password\" class=\"form-control\" />\n      <button id=\"updatePassword\" class=\"btn btn-primary\">Change your password</button>\n    </div>\n    <br>\n  </div>\n</div>\n\n<div class=\"row\">\n  <div class=\"col-md-5\"></div>\n  <button id=\"logout\" class=\"btn btn-warning col-md-1\">Logout</button>\n  <button id=\"deleteUser\" class=\"btn btn-danger col-md-1\">Delete my account</button><br><br>\n</div>\n";
+},"useData":true});
+},{"handlebars/runtime":21}],36:[function(require,module,exports){
+var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<h1 id=\"loginHead\">Movie app</h1>\n\n<input type=\"text\" id=\"username\" placeholder=\"username\" class=\"form-control\"><br>\n<input type=\"password\" id=\"password\" placeholder=\"password\" class=\"form-control\"><br>\n<button id=\"login\" class=\"btn btn-success btn-lg\">Log in</button><br><br>\n<div>\n  Don'h have an account? <button id=\"register\" class=\"btn btn-primary\">Sign up</button> for free!!<br>\n</div>\n";
+},"useData":true});
+},{"handlebars/runtime":21}],37:[function(require,module,exports){
+var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<div class=\"username\">"
-    + alias4(((helper = (helper = helpers.username || (depth0 != null ? depth0.username : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"username","hash":{},"data":data}) : helper)))
-    + "</div>\n<div class=\"userId\">"
-    + alias4(((helper = (helper = helpers.userId || (depth0 != null ? depth0.userId : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"userId","hash":{},"data":data}) : helper)))
-    + "</div>\n<button id=\"hideUserInfo\">Hide your info</button>\n";
+  return "<div class=\"responseMovie\">\n  Title: <div class=\"movieTitle\">"
+    + alias4(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"title","hash":{},"data":data}) : helper)))
+    + "</div><br>\n  <div class=\"movieId\" hidden>"
+    + alias4(((helper = (helper = helpers.movieId || (depth0 != null ? depth0.movieId : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"movieId","hash":{},"data":data}) : helper)))
+    + "</div>\n  Added by: <div class=\"addedBy\">"
+    + alias4(((helper = (helper = helpers.addedBy || (depth0 != null ? depth0.addedBy : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"addedBy","hash":{},"data":data}) : helper)))
+    + "</div><br>\n  <button id=\"updateMovie\" class=\"btn btn-primary\">Edit</button><br>\n  <button id=\"deleteMovie\" class=\"btn btn-danger\">Delete movie</button>\n</div>\n";
 },"useData":true});
-},{"handlebars/runtime":21}]},{},[25]);
+},{"handlebars/runtime":21}],38:[function(require,module,exports){
+var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<div class=\"row\">\n  <div class=\"col-md-4\"></div>\n  <div class=\"movieWrapper col-md-4\">\n    <li class=\"responseMovie\">\n\n    </li><br><br>\n  </div>\n</div>\n";
+},"useData":true});
+},{"handlebars/runtime":21}],39:[function(require,module,exports){
+var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
+
+  return "<div class=\"row\">\n  <div class=\"col-md-4\"></div>\n  <div id=\"usernameIdWrapper\" class=\"col-md-4\">\n    <div class=\"username\">Username: "
+    + alias4(((helper = (helper = helpers.username || (depth0 != null ? depth0.username : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"username","hash":{},"data":data}) : helper)))
+    + "</div>\n    <div class=\"userId\">Your ID: "
+    + alias4(((helper = (helper = helpers.userId || (depth0 != null ? depth0.userId : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"userId","hash":{},"data":data}) : helper)))
+    + "</div>\n    <button id=\"hideUserInfo\" class=\"btn btn-warning\">Hide your info</button>\n  </div>\n</div>\n";
+},"useData":true});
+},{"handlebars/runtime":21}]},{},[27]);

@@ -13,17 +13,6 @@ var LogoutModel = Backbone.Model.extend({
   url: '/logout'
 });
 
-var UserModel = Backbone.Model.extend({
-  url: '/'
-});
-
-var UserCollection = Backbone.Collection.extend({
-  model: UserModel,
-  url: '/'
-});
-
-var Users = new UserCollection();
-
 var UserView = Backbone.View.extend({
   events: {
     'click #getUserInfo': 'getUserInfo',
@@ -36,18 +25,10 @@ var UserView = Backbone.View.extend({
   initialize: function(options) {
     var self = this;
     self.options = options;
-    _.bindAll(this, 'render', 'getUserInfo', 'hideUserInfo', 'updatePassword', 'logout', 'deleteUser');
+    _.bindAll(this, 'render', 'fetchData', 'getUserInfo', 'hideUserInfo', 'updatePassword', 'logout', 'deleteUser');
 
-    var serverResponse = new UserCollection();
-
-    serverResponse.fetch({success: function(model, response) {
-      self.collection = new UserCollection(response.data);
-
-      //self.listenTo(self.collection, 'remove', self.logOut());
-      self.listenTo(self.collection, 'change', self.render(getInfoTemplate()));
-    }});
-
-    this.render(getInfoTemplate());
+    self.listenTo(self.model, 'change', self.render(getInfoTemplate()));
+    self.render(getInfoTemplate());
   },
 
   render: function(content) {
@@ -55,13 +36,19 @@ var UserView = Backbone.View.extend({
     $(self.el).html(content);
   },
 
+  fetchData: function() {
+    var self = this;
+    self.options.model.fetch({success: function(model, response) {
+      self.render(getInfoTemplate());
+    }});
+  },
+
   getUserInfo: function() {
     var self = this;
-    var user = self.collection.findWhere({id: self.options.cookieId});
 
     var template = usersTemplate({
-      username: user.get('username'),
-      userId: user.get('id')
+      username: self.options.model.get('username'),
+      userId: self.options.model.get('id')
     });
 
     self.render(template);
