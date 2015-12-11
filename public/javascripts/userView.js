@@ -3,11 +3,9 @@
 var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
-var Router = require('./backboneRouter.js');
+var router = require('./backboneRouter.js');
 var usersTemplate = require('../../templates/usersTemplate.handlebars');
 var getInfoTemplate = require('../../templates/getInfoTemplate.handlebars');
-
-var router = new Router();
 
 var LogoutModel = Backbone.Model.extend({
   url: '/logout'
@@ -25,22 +23,16 @@ var UserView = Backbone.View.extend({
   initialize: function(options) {
     var self = this;
     self.options = options;
-    _.bindAll(this, 'render', 'fetchData', 'getUserInfo', 'hideUserInfo', 'updatePassword', 'logout', 'deleteUser');
+    _.bindAll(this, 'render', 'getUserInfo', 'hideUserInfo', 'updatePassword', 'logout', 'deleteUser');
+
+    self.template = getInfoTemplate();
 
     self.listenTo(self.model, 'change', self.render(getInfoTemplate()));
-    self.render(getInfoTemplate());
   },
 
-  render: function(content) {
+  render: function() {
     var self = this;
-    $(self.el).html(content);
-  },
-
-  fetchData: function() {
-    var self = this;
-    self.options.model.fetch({success: function(model, response) {
-      self.render(getInfoTemplate());
-    }});
+    $(self.el).html(self.template);
   },
 
   getUserInfo: function() {
@@ -51,18 +43,23 @@ var UserView = Backbone.View.extend({
       userId: self.options.model.get('id')
     });
 
-    self.render(template);
+    self.template = template;
+
+    self.render();
   },
 
   hideUserInfo: function() {
-    this.render(getInfoTemplate());
+    this.template = getInfoTemplate();
+    this.render();
   },
 
   updatePassword: function(htmlElement) {
     var self = this;
     var updatedPassword = $(htmlElement.currentTarget).siblings('#updatePasswordText').val().trim('string');
 
-    var user = self.collection.findWhere({id: self.options.cookieId});
+    console.log('update password', updatedPassword);
+
+    var user = self.options.model;
 
     user.set({
       update: updatedPassword

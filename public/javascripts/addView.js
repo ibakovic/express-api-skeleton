@@ -3,10 +3,8 @@
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
-var Router = require('./backboneRouter.js');
+var router = require('./backboneRouter.js');
 var addMovieTemplate = require('../../templates/addMovieTemplate.handlebars');
-
-var router = new Router();
 
 var AddView = Backbone.View.extend({
   events: {
@@ -17,8 +15,6 @@ var AddView = Backbone.View.extend({
   initialize: function(options) {
     _.bindAll(this, 'render', 'addMovie', 'cancelAdd');
     this.options = options;
-
-    this.render();
   },
 
   render: function() {
@@ -38,7 +34,7 @@ var AddView = Backbone.View.extend({
     });
 
     Movie.save(null, {success: function(model, response) {
-      self.options.vent.trigger('movie:add', model);
+      Backbone.Events.trigger('movie:add', model);
       router.navigate('movies', {trigger: true});
     }});
   },

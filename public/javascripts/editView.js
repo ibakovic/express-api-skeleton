@@ -3,10 +3,8 @@
 var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
-var Router = require('./backboneRouter.js');
+var router = require('./backboneRouter.js');
 var editTemplate = require('../../templates/editTemplate.handlebars');
-
-var router = new Router();
 
 var EditView = Backbone.View.extend({
   events: {
@@ -16,9 +14,7 @@ var EditView = Backbone.View.extend({
 
   initialize: function(options) {
     var self = this;
-    _.bindAll(this, 'render', 'updateMovie', 'cancel', 'show');
-
-    self.render();
+    _.bindAll(this, 'render', 'cancel', 'getModel', 'updateMovie');
   },
 
   render: function() {
@@ -28,23 +24,31 @@ var EditView = Backbone.View.extend({
     return self;
   },
 
-  show: function(movieView) {
-    this.model = movieView.model;
-    this.movieView = movieView;
-    this.$el.show();
+  getModel: function(model) {
+    this.model = model;
   },
 
   updateMovie: function() {
     var self = this;
-    var movieTitleUpdate = $('#titleUpdate').val().trim('string');
+    var movie = this.model;
+    var update = $('#titleUpdate').val().trim('string');
 
-    this.movieView.updateMovie(movieTitleUpdate);
-    //this.model.vent.trigger('movie:update', movieTitleUpdate);
+    movie.set({
+      update: update
+    });
+
+    console.log('edit view', movie);
+
+    movie.save(null, {
+      success: function(model, response) {
+        router.navigate('movies', {trigger: true});
+      }
+    });
   },
 
   cancel: function() {
     this.$el.hide();
-    this.model.vent.trigger('edit:close');
+    router.navigate('movies', {trigger: true});
   }
 });
 

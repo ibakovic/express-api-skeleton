@@ -3,25 +3,21 @@
 var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
-var Router = require('./backboneRouter.js');
+var router = require('./backboneRouter.js');
 var movieTemplate = require('../../templates/movieTemplate.handlebars');
 
-var router = new Router();
-
-var movieView = Backbone.View.extend({
+var MovieView = Backbone.View.extend({
   events: {
     'click #deleteMovie': 'deleteMovie',
     'click #updateMovie': 'editMovie'
   },
 
   initialize: function(options) {
-    _.bindAll(this, 'render', 'deleteMovie', 'editMovie', 'removeView', 'updateMovie');
+    _.bindAll(this, 'render', 'deleteMovie', 'editMovie', 'removeView');
     this.options = options;
     this.model = this.options.model;
 
     this.listenTo(this.model, 'destroy', this.removeView);
-
-    this.render();
   },
 
   render: function() {
@@ -49,22 +45,9 @@ var movieView = Backbone.View.extend({
 
   editMovie: function() {
     var self = this;
-    this.model.vent.trigger('movie:show:editView', self);
-  },
-
-  updateMovie: function(update) {
-    var self = this;
-    var movie = this.model;
-    movie.set({
-      update: update
-    });
-
-    movie.save(null, {
-      success: function(model, response) {
-        self.model.vent.trigger('edit:close');
-      }
-    });
+    Backbone.Events.trigger('movie:show:editView', self.model);
+    router.navigate('edit', {trigger: true});
   }
 });
 
-module.exports = movieView;
+module.exports = MovieView;

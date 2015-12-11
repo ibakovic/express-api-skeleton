@@ -4,75 +4,65 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
 var loginTemplate = require('../../templates/loginTemplate.handlebars');
-var Router = require('./backboneRouter.js');
-var collections = {};
-
-var router = new Router();
-
-var LoginModel = Backbone.Model.extend({
-  url: '/login'
-});
-
-var LoginCollection = Backbone.Collection.extend({
-  model: LoginModel
-});
-
-var RegisterModel = Backbone.Model.extend({
-  url: '/register'
-});
-
-var Login = new LoginCollection();
+var router = require('./backboneRouter.js');
+var AlertView = require('./alertView.js');
 
 var LoginView = Backbone.View.extend({
   events: {
     'click #login': 'login',
-    'click #register': 'register'
+    'click #signUp': 'signUp'
   },
 
-  initialize: function() {
-    _.bindAll(this, 'render', 'login', 'register');
+  initialize: function(options) {
+    this.options = options;
+    _.bindAll(this, 'render', 'login', 'signUp');
     var self = this;
 
-    this.render(loginTemplate());
+    this.template = loginTemplate();
   },
 
-  render: function(content) {
+  render: function() {
     var self = this;
-    $(self.el).html(content);
+    self.$el.html(self.template);
   },
 
   login: function() {
     var self = this;
-    var credentials = new LoginModel({
+    var credentials = new self.options.model({
       username: $('#username').val().trim('string'),
       password: $('#password').val().trim('string')
     });
     credentials.save(null, {
       success: function(model, response) {
-        alert(response.msg);
+        var alertView = new AlertView({
+          el:$('#alertForm'),
+          content: $('#alertBox'),
+          msg: response.msg,
+          remove: true
+        });
+
+        alertView.render();
+        alertView.$el.show();
+        Backbone.Events.trigger('loggedin');
         router.navigate('movies', {trigger: true});
       },
-      error: function() {
-        alert('Log in not successful!');
+      error: function(model, response) {
+        var alertView = new AlertView({
+          el:$('#alertForm'),
+          content: $('#alertBox'),
+          msg: 'Login failed!',
+          remove: false
+        });
+
+        alertView.render();
+        alertView.$el.show();
+        //alert('Log in not successful!');
       }
     });
   },
 
-  register: function() {
-    var self = this;
-    var credentials = new RegisterModel({
-      username: $('#username').val().trim('string'),
-      password: $('#password').val().trim('string')
-    });
-
-    credentials.save(null, {
-      success: function(model, res) {
-        alert(res.msg);
-      },
-      error: function(model, res) {
-        alert('Register not successful!');
-      }
-    });
+  signUp: function() {
+    router.navigate('register', {trigger: true});
   }
 });
 

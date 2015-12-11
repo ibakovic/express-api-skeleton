@@ -6,11 +6,14 @@ var Backbone = require('backbone');
 var Router = Backbone.Router.extend({
   routes: {
     '': 'loginPage',
+    'register': 'openRegister',
     'login/:redirect': 'returnToLogin',
     'movies': 'startApp',
-    'edit/:movieId': 'updateMovieTitle',
+    'edit': 'updateMovieTitle',
     'addMovie': 'addMovie'
   }
 });
 
-module.exports = Router;
+var router = new Router();
+
+module.exports = router;
