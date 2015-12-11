@@ -5,7 +5,6 @@ var Backbone = require('backbone');
 var _ = require('underscore');
 var router = require('./backboneRouter.js');
 var registerTemplate = require('../../templates/registerTemplate.handlebars');
-var AlertView = require('./alertView.js');
 
 var RegisterView = Backbone.View.extend({
   events: {
@@ -32,27 +31,11 @@ var RegisterView = Backbone.View.extend({
 
     credentials.save(null, {
       success: function(model, res) {
-        var alertView = new AlertView({
-          el:$('#alertForm'),
-          content: $('#alertBox'),
-          msg: res.msg,
-          remove: false
-        });
-
-        alertView.render();
-        alertView.$el.show();
+        Backbone.Events.trigger('alert', res.msg, 'Registration');
         router.navigate('', {trigger: true});
       },
       error: function(model, res) {
-        var alertView = new AlertView({
-          el:$('#alertForm'),
-          content: $('#alertBox'),
-          msg: 'Registration failed!',
-          remove: false
-        });
-
-        alertView.render();
-        alertView.$el.show();
+        Backbone.Events.trigger('alert', 'Registration failed', 'Registration');
       }
     });
   },

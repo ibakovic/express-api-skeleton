@@ -23,9 +23,11 @@ var UserView = Backbone.View.extend({
   initialize: function(options) {
     var self = this;
     self.options = options;
-    _.bindAll(this, 'render', 'getUserInfo', 'hideUserInfo', 'updatePassword', 'logout', 'deleteUser');
+    _.bindAll(this, 'render', 'getUserInfo', 'hideUserInfo', 'logout');
 
     self.template = getInfoTemplate();
+
+    console.log('users view', self.options.model.get('id'));
 
     self.listenTo(self.model, 'change', self.render(getInfoTemplate()));
   },
@@ -38,14 +40,7 @@ var UserView = Backbone.View.extend({
   getUserInfo: function() {
     var self = this;
 
-    var template = usersTemplate({
-      username: self.options.model.get('username'),
-      userId: self.options.model.get('id')
-    });
-
-    self.template = template;
-
-    self.render();
+    router.navigate('userDetails/' + self.options.model.get('id'), {trigger: true});
   },
 
   hideUserInfo: function() {
@@ -53,56 +48,18 @@ var UserView = Backbone.View.extend({
     this.render();
   },
 
-  updatePassword: function(htmlElement) {
-    var self = this;
-    var updatedPassword = $(htmlElement.currentTarget).siblings('#updatePasswordText').val().trim('string');
-
-    console.log('update password', updatedPassword);
-
-    var user = self.options.model;
-
-    user.set({
-      update: updatedPassword
-    });
-    user.save(null, {
-      success: function(model, response) {
-        alert(response.msg);
-      },
-      error: function(model, response) {
-        alert(response.msg);
-        self.collection.set(model);
-      }
-    });
-  },
-
   logout: function() {
     var logOut = new LogoutModel();
 
     logOut.fetch({
       success: function(model, res, opt) {
-        alert('Success', res.msg);
-        router.navigate('login' + res.redirect, {trigger: true});
+        Backbone.Events.trigger('alert', 'Logout success!', 'Logout');
+        router.navigate('', {trigger: true});
       },
       error: function(model, res, opt) {
-        alert('Error! ', res);
+        Backbone.Events.trigger('alert', 'Error!' + res, 'Logout');
       }
     });
-  },
-
-  deleteUser: function() {
-    var self = this;
-    var user = self.collection.findWhere({id: self.options.cookieId});
-    if(confirm('Are you sure you want to delete your account?')) {
-      user.destroy({
-        success: function(model, res) {
-          alert(res.msg);
-          router.navigate('login' + res.redirect, {trigger: true});
-        },
-        error: function(model, res) {
-          alert('Couldn\'t delete your account');
-        }
-      });
-    }
   }
 });
 

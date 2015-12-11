@@ -59,9 +59,7 @@ var MovieCollectionView = Backbone.View.extend({
 
     movieView.render();
 
-    //rend before append!
     this.childrenViewsArray.push(movieView);
-    //this.render();
 
     self.$el.append(movieView.$el);
   },

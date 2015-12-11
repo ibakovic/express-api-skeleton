@@ -3,17 +3,18 @@
 var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
-var alertTemplate = require('../../templates/alertTemplate.handlebars');
+var promptTemplate = require('../../templates/promptTemplate.handlebars');
 
-var AlertView = Backbone.View.extend({
+var PromptView = Backbone.View.extend({
   events: {
-    'click .alertOk': 'alertOk'
+    'click #promptYes': 'promptYes',
+    'click .promptNo': 'promptNo'
   },
 
   initialize: function(options) {
-    _.bindAll(this, 'render', 'alertOk', 'getMessage');
+    _.bindAll(this, 'render', 'getMessage', 'promptYes', 'promptNo');
     this.options = options;
-    this.template = alertTemplate({message : 'Init'});
+    this.template = promptTemplate({message : 'Init'});
   },
 
   render: function() {
@@ -26,21 +27,29 @@ var AlertView = Backbone.View.extend({
   getMessage: function(message, title) {
     var self = this;
     if(!message) {
-      self.template = alertTemplate({
+      self.template = promptTemplate({
         message: 'No message to display!',
         title: 'Error!'
       });
     }
-    this.template = alertTemplate({
+    this.template = promptTemplate({
       message: message,
       title: title
     });
     return message;
   },
 
-  alertOk: function() {
+  promptYes: function() {
+    Backbone.Events.trigger('prompt:confirm', true);
+    this.$el.hide();
+  },
+
+  promptNo: function() {
+    Backbone.Events.trigger('prompt:confirm', false);
     this.$el.hide();
   }
 });
 
-module.exports = AlertView;
+module.exports = PromptView;
+
+

@@ -38,15 +38,18 @@ var MovieView = Backbone.View.extend({
   },
 
   deleteMovie: function() {
-    this.model.destroy({success: function(model, response) {
-      alert(response.msg);
-    }});
+    var self = this;
+
+    Backbone.Events.trigger('prompt', 'Are you sure you want to delete "' + self.model.get('title') + '"?', 'Delete');
+    Backbone.Events.on('prompt:confirm', function(confirm) {
+      if(confirm)
+        return self.model.destroy();
+    });
   },
 
   editMovie: function() {
     var self = this;
-    Backbone.Events.trigger('movie:show:editView', self.model);
-    router.navigate('edit', {trigger: true});
+    router.navigate('edit/' + self.model.get('id'), {trigger: true});
   }
 });
 

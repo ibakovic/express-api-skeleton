@@ -9,8 +9,9 @@ var Router = Backbone.Router.extend({
     'register': 'openRegister',
     'login/:redirect': 'returnToLogin',
     'movies': 'startApp',
-    'edit': 'updateMovieTitle',
-    'addMovie': 'addMovie'
+    'edit/:movieId': 'updateMovieTitle',
+    'addMovie': 'addMovie',
+    'userDetails/:userId': 'getUserDetails'
   }
 });
 

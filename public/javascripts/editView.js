@@ -14,7 +14,9 @@ var EditView = Backbone.View.extend({
 
   initialize: function(options) {
     var self = this;
-    _.bindAll(this, 'render', 'cancel', 'getModel', 'updateMovie');
+    self.options = options;
+    self.collection = self.options.collection;
+    _.bindAll(this, 'render', 'cancel', 'updateMovie');
   },
 
   render: function() {
@@ -24,20 +26,20 @@ var EditView = Backbone.View.extend({
     return self;
   },
 
-  getModel: function(model) {
-    this.model = model;
+  getMovieId: function(movieId) {
+    this.movieId = movieId;
   },
 
   updateMovie: function() {
     var self = this;
-    var movie = this.model;
+    var movie = this.collection.findWhere({id: self.movieId});
     var update = $('#titleUpdate').val().trim('string');
+
+    console.log(this.collection);
 
     movie.set({
       update: update
     });
-
-    console.log('edit view', movie);
 
     movie.save(null, {
       success: function(model, response) {

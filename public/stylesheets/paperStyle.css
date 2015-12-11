@@ -8,32 +8,24 @@
 
 #alertForm {
     position: fixed;
-    left: 0px;
-    top: 0px;
+    left: 0;
+    top: 0;
     z-index: 2;
     height: 100%;
     width: 100%;
     display: none;
+    background-color: #3e3e3e;
     background-color: rgba(0, 0, 0, 0.6);
 }
 
-#alertBox {
-    position: relative;
-    top: 20%;
-    left: 20%;
-    height: 40%;
-    width: 40%;
-    background-color: white;
-}
-
-#alertTemplate {
-    position: relative;
-    top: 40%;
-    left: 40%;
-    font-size: 200%;
-}
-
-#alertOk {
-    position: relative;
-    left: 5%;
+#promptForm {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    height: 100%;
+    width: 100%;
+    display: none;
+    background-color: #3e3e3e;
+    background-color: rgba(0, 0, 0, 0.6);
 }

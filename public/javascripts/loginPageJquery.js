@@ -10,9 +10,10 @@ var MovieView = require('./movieCollectionView.js');
 var UserView = require('./userView.js');
 var EditView = require('./editView.js');
 var AddView = require('./addView.js');
-var AlertView = require('./alertView.js');
 var RegisterView = require('./registerView.js');
 var AlertView = require('./alertView.js');
+var PromptView = require('./promptView.js');
+var UserDetailsView = require('./userDetailsView.js');
 var loginView;
 var userView;
 var moviesView;
@@ -20,12 +21,19 @@ var editView;
 var addView;
 var alertView;
 var registerView;
-var alertView;
+var promptView;
+var userDetailsView;
 
-Backbone.Events.on('loggedin', function() {});
+Backbone.Events.on('prompt', function(message, title) {
+  promptView.getMessage(message, title);
+  promptView.render();
+  promptView.$el.show();
+});
 
-Backbone.Events.on('movie:show:editView', function(model) {
-  editView.getModel(model);
+Backbone.Events.on('alert', function(message, title) {
+  alertView.getMessage(message, title);
+  alertView.render();
+  alertView.$el.show();
 });
 
 Backbone.Events.on('movie:add', function(model) {
@@ -68,6 +76,16 @@ $('document').ready(function() {
 
   var User = new UserModel();
 
+  promptView = new PromptView({
+    el: $('#promptForm'),
+    content: $('#promptBox')
+  });
+
+  alertView = new AlertView({
+    el: $('#alertForm'),
+    content: $('#alertBox')
+  });
+
   registerView = new RegisterView({
     el: $('#registerForm'),
     model: RegisterModel
@@ -105,24 +123,30 @@ $('document').ready(function() {
     collection: Movies
   });
 
+  userDetailsView = new UserDetailsView({
+    el: $('#userDetailsForm'),
+    model: User
+  });
+
   router.on('route:loginPage', function() {
     moviesView.$el.hide();
     userView.$el.hide();
     addView.$el.hide();
     editView.$el.hide();
     registerView.$el.hide();
+    userDetailsView.$el.hide();
 
     loginView.render();
     loginView.$el.show();
   });
 
   router.on('route:openRegister', function() {
-    console.log('Opened register route');
     moviesView.$el.hide();
     userView.$el.hide();
     addView.$el.hide();
     editView.$el.hide();
     loginView.$el.hide();
+    userDetailsView.$el.hide();
 
     registerView.render();
     registerView.$el.show();
@@ -133,6 +157,7 @@ $('document').ready(function() {
     editView.$el.hide();
     addView.$el.hide();
     registerView.$el.hide();
+    userDetailsView.$el.hide();
 
     Movies.fetch({success: function(collection, response) {
       moviesView.render();
@@ -149,15 +174,25 @@ $('document').ready(function() {
     document.location = redirect;
   });
 
-  router.on('route:updateMovieTitle', function() {
+  router.on('route:updateMovieTitle', function(movieId) {
     moviesView.$el.hide();
     userView.$el.hide();
     addView.$el.hide();
     loginView.$el.hide();
     registerView.$el.hide();
+    userDetailsView.$el.hide();
 
+    if(Movies.length === 0) {
+      Movies.fetch({success: function(collection, response) {
+        editView.getMovieId(movieId);
+        editView.render();
+        editView.$el.show();
+        return;
+      }});
+    }
+
+    editView.getMovieId(movieId);
     editView.render();
-
     editView.$el.show();
   });
 
@@ -167,11 +202,32 @@ $('document').ready(function() {
     loginView.$el.hide();
     editView.$el.hide();
     registerView.$el.hide();
+    userDetailsView.$el.hide();
 
     addView.render();
-
     addView.$el.show();
   });
+
+  router.on('route:getUserDetails', function(userId) {
+    moviesView.$el.hide();
+    userView.$el.hide();
+    loginView.$el.hide();
+    editView.$el.hide();
+    registerView.$el.hide();
+    addView.$el.hide();
+
+    if(!User.get('username')) {
+      User.fetch({success: function(model, response) {
+        userDetailsView.render();
+        userDetailsView.$el.show();
+        return;
+      }});
+    }
+
+    userDetailsView.render();
+    userDetailsView.$el.show();
+  });
+
   // Start Backbone history a necessary step for bookmarkable URL's
   Backbone.history.start();
 });
