@@ -2,7 +2,6 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
 var addMovieTemplate = require('../../templates/addMovieTemplate.handlebars');
-var moviesTemplate = require('../../templates/moviesTemplate.handlebars');
 var editTemplate = require('../../templates/editTemplate.handlebars');
 var router = require('./backboneRouter.js');
 var LoginView = require('./loginView.js');
@@ -135,6 +134,7 @@ $('document').ready(function() {
     editView.$el.hide();
     registerView.$el.hide();
     userDetailsView.$el.hide();
+    alertView.$el.hide();
 
     loginView.render();
     loginView.$el.show();
@@ -147,6 +147,7 @@ $('document').ready(function() {
     editView.$el.hide();
     loginView.$el.hide();
     userDetailsView.$el.hide();
+    alertView.$el.hide();
 
     registerView.render();
     registerView.$el.show();
@@ -158,6 +159,7 @@ $('document').ready(function() {
     addView.$el.hide();
     registerView.$el.hide();
     userDetailsView.$el.hide();
+    alertView.$el.hide();
 
     Movies.fetch({success: function(collection, response) {
       moviesView.render();
@@ -181,6 +183,7 @@ $('document').ready(function() {
     loginView.$el.hide();
     registerView.$el.hide();
     userDetailsView.$el.hide();
+    alertView.$el.hide();
 
     if(Movies.length === 0) {
       Movies.fetch({success: function(collection, response) {
@@ -203,6 +206,7 @@ $('document').ready(function() {
     editView.$el.hide();
     registerView.$el.hide();
     userDetailsView.$el.hide();
+    alertView.$el.hide();
 
     addView.render();
     addView.$el.show();
@@ -215,6 +219,7 @@ $('document').ready(function() {
     editView.$el.hide();
     registerView.$el.hide();
     addView.$el.hide();
+    alertView.$el.hide();
 
     if(!User.get('username')) {
       User.fetch({success: function(model, response) {

@@ -7,6 +7,8 @@ var router = require('./backboneRouter.js');
 var editTemplate = require('../../templates/editTemplate.handlebars');
 
 var EditView = Backbone.View.extend({
+  template: editTemplate,
+
   events: {
     'click #submit': 'updateMovie',
     'click #cancel': 'cancel'
@@ -20,10 +22,9 @@ var EditView = Backbone.View.extend({
   },
 
   render: function() {
-    var self = this;
+    var html = this.template();
 
-    $(self.el).html(editTemplate());
-    return self;
+    $(this.el).html(html);
   },
 
   getMovieId: function(movieId) {
@@ -34,8 +35,6 @@ var EditView = Backbone.View.extend({
     var self = this;
     var movie = this.collection.findWhere({id: self.movieId});
     var update = $('#titleUpdate').val().trim('string');
-
-    console.log(this.collection);
 
     movie.set({
       update: update

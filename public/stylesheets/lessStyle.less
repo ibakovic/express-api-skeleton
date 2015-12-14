@@ -1,0 +1,56 @@
+@import "registerStyle.less";
+@import "loginStyle.less";
+@import "movieCollectionStyle.less";
+@import "movieStyle.less";
+
+@baseColor: #EEEEEE;
+@defaultMarginTop: 50px;
+@defaultMargin: 2%;
+@defaultPadding: 1%;
+@maxHeight: 100%;
+
+.mainProperties() {
+    background-color: @baseColor;
+    margin-top: @defaultMarginTop;
+    margin-bottom: @defaultMargin;
+    padding: @defaultPadding;
+    border-radius: 5px;
+}
+
+.navbar {
+    background-color: @baseColor;
+}
+
+#loginWrapper {
+    .mainProperties();
+}
+
+#login {
+    width: 100%;
+}
+
+#registerForm {
+    .mainProperties();
+}
+
+.modal-dialog {
+    background-color: #7e7e7e;
+    color: red;
+}
+
+#promptForm {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    height: @maxHeight;
+    width: 100%;
+    display: none;
+    background-color: #3e3e3e;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+#mainContainer {
+    .mainProperties();
+    background-color: #FFF;
+}

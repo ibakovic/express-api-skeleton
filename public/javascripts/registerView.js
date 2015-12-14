@@ -7,6 +7,8 @@ var router = require('./backboneRouter.js');
 var registerTemplate = require('../../templates/registerTemplate.handlebars');
 
 var RegisterView = Backbone.View.extend({
+  template: registerTemplate,
+
   events: {
     'click #register': 'register',
     'click #cancelRegister': 'cancelRegister'
@@ -14,12 +16,11 @@ var RegisterView = Backbone.View.extend({
   initialize: function(options) {
     this.options = options;
     _.bindAll(this, 'render', 'register', 'cancelRegister');
-    this.template = registerTemplate();
   },
 
   render: function() {
-    var self = this;
-    this.$el.html(self.template);
+    var html = this.template();
+    this.$el.html(html);
   },
 
   register: function() {

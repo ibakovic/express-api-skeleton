@@ -11,9 +11,19 @@ var passport = require('passport');
 var docs = require('./docs.js');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
+var fs = require('fs');
+var less = require('less');
 
 // setup logging
 require('minilog').enable();
+
+var lessFile = './public/stylesheets/lessStyle.less';
+var cssFile = './public/stylesheets/style.css';
+
+less.render(fs.readFileSync(lessFile).toString(), function(err, out) {
+  //console.log(out.css);
+  fs.writeFileSync(cssFile, out.css);
+});
 
 // create server
 var app = express();

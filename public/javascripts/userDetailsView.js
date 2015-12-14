@@ -9,21 +9,16 @@ var userDetailsTemplate = require('../../templates/userDetailsTemplate.handlebar
 var userDetailsView = Backbone.View.extend({
   events: {
     'click #updatePassword': 'updatePassword',
-    'click #deleteUser': 'deleteUser'
+    'click #deleteUser': 'deleteUser',
+    'click #hideUserDetails': 'hideUserDetails'
   },
 
   template: userDetailsTemplate,
 
   initialize: function(options) {
     var self = this;
-    _.bindAll(this, 'render', 'updatePassword', 'deleteUser');
+    _.bindAll(this, 'render', 'updatePassword', 'deleteUser', 'hideUserDetails');
     this.options = options;
-
-    console.log('init details', self.options.model);
-    // this.template = userDetailsTemplate({
-    //   username: self.options.model.get('username'),
-    //   userId: self.options.model.get('id')
-    // });
   },
 
   render: function() {
@@ -67,6 +62,10 @@ var userDetailsView = Backbone.View.extend({
         router.navigate('', {trigger: true});
       }
     });
+  },
+
+  hideUserDetails: function() {
+    router.navigate('movies', {trigger: true});
   }
 });
 

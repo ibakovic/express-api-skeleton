@@ -13770,6 +13770,8 @@ var router = require('./backboneRouter.js');
 var addMovieTemplate = require('../../templates/addMovieTemplate.handlebars');
 
 var AddView = Backbone.View.extend({
+  template: addMovieTemplate,
+
   events: {
     'click #addMovie': 'addMovie',
     'click #cancelAdd': 'cancelAdd'
@@ -13781,8 +13783,8 @@ var AddView = Backbone.View.extend({
   },
 
   render: function() {
-    var self = this;
-    self.$el.html(addMovieTemplate());
+    var html = this.template();
+    this.$el.html(html);
   },
 
   addMovie: function() {
@@ -13819,6 +13821,10 @@ var _ = require('underscore');
 var alertTemplate = require('../../templates/alertTemplate.handlebars');
 
 var AlertView = Backbone.View.extend({
+  template: alertTemplate,
+
+  properties: {},
+
   events: {
     'click .alertOk': 'alertOk'
   },
@@ -13826,28 +13832,28 @@ var AlertView = Backbone.View.extend({
   initialize: function(options) {
     _.bindAll(this, 'render', 'alertOk', 'getMessage');
     this.options = options;
-    this.template = alertTemplate({message : 'Init'});
   },
 
   render: function() {
-    var self = this;
+    var self =this;
+    var html = this.template(self.properties);
     this.$el.css({'display': 'block'});
-    this.options.content.html(self.template);
+    this.options.content.html(html);
     return this;
   },
 
   getMessage: function(message, title) {
     var self = this;
     if(!message) {
-      self.template = alertTemplate({
+      self.properties = {
         message: 'No message to display!',
         title: 'Error!'
-      });
+      };
     }
-    this.template = alertTemplate({
+    this.properties = {
       message: message,
       title: title
-    });
+    };
     return message;
   },
 
@@ -13890,6 +13896,8 @@ var router = require('./backboneRouter.js');
 var editTemplate = require('../../templates/editTemplate.handlebars');
 
 var EditView = Backbone.View.extend({
+  template: editTemplate,
+
   events: {
     'click #submit': 'updateMovie',
     'click #cancel': 'cancel'
@@ -13903,10 +13911,9 @@ var EditView = Backbone.View.extend({
   },
 
   render: function() {
-    var self = this;
+    var html = this.template();
 
-    $(self.el).html(editTemplate());
-    return self;
+    $(this.el).html(html);
   },
 
   getMovieId: function(movieId) {
@@ -13917,8 +13924,6 @@ var EditView = Backbone.View.extend({
     var self = this;
     var movie = this.collection.findWhere({id: self.movieId});
     var update = $('#titleUpdate').val().trim('string');
-
-    console.log(this.collection);
 
     movie.set({
       update: update
@@ -13944,7 +13949,6 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
 var addMovieTemplate = require('../../templates/addMovieTemplate.handlebars');
-var moviesTemplate = require('../../templates/moviesTemplate.handlebars');
 var editTemplate = require('../../templates/editTemplate.handlebars');
 var router = require('./backboneRouter.js');
 var LoginView = require('./loginView.js');
@@ -14077,6 +14081,7 @@ $('document').ready(function() {
     editView.$el.hide();
     registerView.$el.hide();
     userDetailsView.$el.hide();
+    alertView.$el.hide();
 
     loginView.render();
     loginView.$el.show();
@@ -14089,6 +14094,7 @@ $('document').ready(function() {
     editView.$el.hide();
     loginView.$el.hide();
     userDetailsView.$el.hide();
+    alertView.$el.hide();
 
     registerView.render();
     registerView.$el.show();
@@ -14100,6 +14106,7 @@ $('document').ready(function() {
     addView.$el.hide();
     registerView.$el.hide();
     userDetailsView.$el.hide();
+    alertView.$el.hide();
 
     Movies.fetch({success: function(collection, response) {
       moviesView.render();
@@ -14123,6 +14130,7 @@ $('document').ready(function() {
     loginView.$el.hide();
     registerView.$el.hide();
     userDetailsView.$el.hide();
+    alertView.$el.hide();
 
     if(Movies.length === 0) {
       Movies.fetch({success: function(collection, response) {
@@ -14145,6 +14153,7 @@ $('document').ready(function() {
     editView.$el.hide();
     registerView.$el.hide();
     userDetailsView.$el.hide();
+    alertView.$el.hide();
 
     addView.render();
     addView.$el.show();
@@ -14157,6 +14166,7 @@ $('document').ready(function() {
     editView.$el.hide();
     registerView.$el.hide();
     addView.$el.hide();
+    alertView.$el.hide();
 
     if(!User.get('username')) {
       User.fetch({success: function(model, response) {
@@ -14174,7 +14184,7 @@ $('document').ready(function() {
   Backbone.history.start();
 });
 
-},{"../../templates/addMovieTemplate.handlebars":37,"../../templates/editTemplate.handlebars":39,"../../templates/moviesTemplate.handlebars":43,"./addView.js":24,"./alertView.js":25,"./backboneRouter.js":26,"./editView.js":27,"./loginView.js":29,"./movieCollectionView.js":30,"./promptView.js":32,"./registerView.js":33,"./userDetailsView.js":34,"./userView.js":35,"backbone":1,"jquery":22,"underscore":23}],29:[function(require,module,exports){
+},{"../../templates/addMovieTemplate.handlebars":37,"../../templates/editTemplate.handlebars":39,"./addView.js":24,"./alertView.js":25,"./backboneRouter.js":26,"./editView.js":27,"./loginView.js":29,"./movieCollectionView.js":30,"./promptView.js":32,"./registerView.js":33,"./userDetailsView.js":34,"./userView.js":35,"backbone":1,"jquery":22,"underscore":23}],29:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -14184,6 +14194,8 @@ var loginTemplate = require('../../templates/loginTemplate.handlebars');
 var router = require('./backboneRouter.js');
 
 var LoginView = Backbone.View.extend({
+  template: loginTemplate,
+
   events: {
     'click #login': 'login',
     'click #signUp': 'signUp'
@@ -14193,13 +14205,11 @@ var LoginView = Backbone.View.extend({
     this.options = options;
     _.bindAll(this, 'render', 'login', 'signUp');
     var self = this;
-
-    this.template = loginTemplate();
   },
 
   render: function() {
-    var self = this;
-    self.$el.html(self.template);
+    var html = this.template();
+    this.$el.html(html);
   },
 
   login: function() {
@@ -14233,12 +14243,12 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
 var router = require('./backboneRouter.js');
-var addMovieTemplate = require('../../templates/addMovieTemplate.handlebars');
-var moviesTemplate = require('../../templates/moviesTemplate.handlebars');
 var addMovieButtonTemplate = require('../../templates/addMovieButtonTemplate.handlebars');
 var MovieView = require('./movieView.js');
 
 var MovieCollectionView = Backbone.View.extend({
+  template: addMovieButtonTemplate,
+
   events: {
     'click #cancelAdd': 'cancelAdd',
     'click #addMovieButton': 'openAddMovieForm',
@@ -14262,15 +14272,15 @@ var MovieCollectionView = Backbone.View.extend({
 
   render: function() {
     var self = this;
+    var html = this.template();
 
-    self.$el.empty();
-    //_.invoke(self.childrenViewsArray, 'remove');
-    self.childrenViewsArray.forEach(function(view) {
+    this.$el.empty();
+    this.childrenViewsArray.forEach(function(view) {
       view.remove();
     });
-    self.$el.html(addMovieButtonTemplate());
+    this.$el.html(html);
 
-    self.collection.models.forEach(function(movie) {self.appendItem(movie);});
+    this.collection.models.forEach(function(movie) {self.appendItem(movie);});
     return self;
   },
 
@@ -14283,14 +14293,13 @@ var MovieCollectionView = Backbone.View.extend({
   },
 
   appendItem: function(movie) {
-    var self = this;
     var movieView = new MovieView({ model: movie });
 
     movieView.render();
 
     this.childrenViewsArray.push(movieView);
 
-    self.$el.append(movieView.$el);
+    this.$el.append(movieView.$el);
   },
 
   openAddMovieForm: function() {
@@ -14301,7 +14310,7 @@ var MovieCollectionView = Backbone.View.extend({
 
 module.exports = MovieCollectionView;
 
-},{"../../templates/addMovieButtonTemplate.handlebars":36,"../../templates/addMovieTemplate.handlebars":37,"../../templates/moviesTemplate.handlebars":43,"./backboneRouter.js":26,"./movieView.js":31,"backbone":1,"jquery":22,"underscore":23}],31:[function(require,module,exports){
+},{"../../templates/addMovieButtonTemplate.handlebars":36,"./backboneRouter.js":26,"./movieView.js":31,"backbone":1,"jquery":22,"underscore":23}],31:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -14311,6 +14320,8 @@ var router = require('./backboneRouter.js');
 var movieTemplate = require('../../templates/movieTemplate.handlebars');
 
 var MovieView = Backbone.View.extend({
+  template: movieTemplate,
+
   events: {
     'click #deleteMovie': 'deleteMovie',
     'click #updateMovie': 'editMovie'
@@ -14327,7 +14338,7 @@ var MovieView = Backbone.View.extend({
   render: function() {
     var self = this;
 
-    var template = movieTemplate({
+    var template = this.template({
       title: self.model.get('title'),
       movieId: self.model.get('id'),
       addedBy: self.model.get('addedBy')
@@ -14368,6 +14379,10 @@ var _ = require('underscore');
 var promptTemplate = require('../../templates/promptTemplate.handlebars');
 
 var PromptView = Backbone.View.extend({
+  template: promptTemplate,
+
+  properties: {},
+
   events: {
     'click #promptYes': 'promptYes',
     'click .promptNo': 'promptNo'
@@ -14376,28 +14391,27 @@ var PromptView = Backbone.View.extend({
   initialize: function(options) {
     _.bindAll(this, 'render', 'getMessage', 'promptYes', 'promptNo');
     this.options = options;
-    this.template = promptTemplate({message : 'Init'});
   },
 
   render: function() {
-    var self = this;
+    var html = this.template(this.properties);
     this.$el.css({'display': 'block'});
-    this.options.content.html(self.template);
+    this.options.content.html(html);
     return this;
   },
 
   getMessage: function(message, title) {
     var self = this;
     if(!message) {
-      self.template = promptTemplate({
+      self.properties = {
         message: 'No message to display!',
         title: 'Error!'
-      });
+      };
     }
-    this.template = promptTemplate({
+    this.properties = {
       message: message,
       title: title
-    });
+    };
     return message;
   },
 
@@ -14416,7 +14430,7 @@ module.exports = PromptView;
 
 
 
-},{"../../templates/promptTemplate.handlebars":44,"backbone":1,"jquery":22,"underscore":23}],33:[function(require,module,exports){
+},{"../../templates/promptTemplate.handlebars":43,"backbone":1,"jquery":22,"underscore":23}],33:[function(require,module,exports){
 'use script';
 
 var $ = require('jquery');
@@ -14426,6 +14440,8 @@ var router = require('./backboneRouter.js');
 var registerTemplate = require('../../templates/registerTemplate.handlebars');
 
 var RegisterView = Backbone.View.extend({
+  template: registerTemplate,
+
   events: {
     'click #register': 'register',
     'click #cancelRegister': 'cancelRegister'
@@ -14433,12 +14449,11 @@ var RegisterView = Backbone.View.extend({
   initialize: function(options) {
     this.options = options;
     _.bindAll(this, 'render', 'register', 'cancelRegister');
-    this.template = registerTemplate();
   },
 
   render: function() {
-    var self = this;
-    this.$el.html(self.template);
+    var html = this.template();
+    this.$el.html(html);
   },
 
   register: function() {
@@ -14466,7 +14481,7 @@ var RegisterView = Backbone.View.extend({
 
 module.exports = RegisterView;
 
-},{"../../templates/registerTemplate.handlebars":45,"./backboneRouter.js":26,"backbone":1,"jquery":22,"underscore":23}],34:[function(require,module,exports){
+},{"../../templates/registerTemplate.handlebars":44,"./backboneRouter.js":26,"backbone":1,"jquery":22,"underscore":23}],34:[function(require,module,exports){
 'use script';
 
 var $ = require('jquery');
@@ -14478,21 +14493,16 @@ var userDetailsTemplate = require('../../templates/userDetailsTemplate.handlebar
 var userDetailsView = Backbone.View.extend({
   events: {
     'click #updatePassword': 'updatePassword',
-    'click #deleteUser': 'deleteUser'
+    'click #deleteUser': 'deleteUser',
+    'click #hideUserDetails': 'hideUserDetails'
   },
 
   template: userDetailsTemplate,
 
   initialize: function(options) {
     var self = this;
-    _.bindAll(this, 'render', 'updatePassword', 'deleteUser');
+    _.bindAll(this, 'render', 'updatePassword', 'deleteUser', 'hideUserDetails');
     this.options = options;
-
-    console.log('init details', self.options.model);
-    // this.template = userDetailsTemplate({
-    //   username: self.options.model.get('username'),
-    //   userId: self.options.model.get('id')
-    // });
   },
 
   render: function() {
@@ -14536,19 +14546,22 @@ var userDetailsView = Backbone.View.extend({
         router.navigate('', {trigger: true});
       }
     });
+  },
+
+  hideUserDetails: function() {
+    router.navigate('movies', {trigger: true});
   }
 });
 
 module.exports = userDetailsView;
 
-},{"../../templates/userDetailsTemplate.handlebars":46,"./backboneRouter.js":26,"backbone":1,"jquery":22,"underscore":23}],35:[function(require,module,exports){
+},{"../../templates/userDetailsTemplate.handlebars":45,"./backboneRouter.js":26,"backbone":1,"jquery":22,"underscore":23}],35:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
 var router = require('./backboneRouter.js');
-var usersTemplate = require('../../templates/usersTemplate.handlebars');
 var getInfoTemplate = require('../../templates/getInfoTemplate.handlebars');
 
 var LogoutModel = Backbone.Model.extend({
@@ -14556,40 +14569,30 @@ var LogoutModel = Backbone.Model.extend({
 });
 
 var UserView = Backbone.View.extend({
+  template: getInfoTemplate,
+
   events: {
     'click #getUserInfo': 'getUserInfo',
-    'click #hideUserInfo': 'hideUserInfo',
-    'click #updatePassword': 'updatePassword',
-    'click #logout': 'logout',
-    'click #deleteUser': 'deleteUser'
+    'click #logout': 'logout'
   },
 
   initialize: function(options) {
     var self = this;
-    self.options = options;
-    _.bindAll(this, 'render', 'getUserInfo', 'hideUserInfo', 'logout');
+    this.options = options;
+    _.bindAll(this, 'render', 'getUserInfo', 'logout');
 
-    self.template = getInfoTemplate();
-
-    console.log('users view', self.options.model.get('id'));
-
-    self.listenTo(self.model, 'change', self.render(getInfoTemplate()));
+    this.listenTo(self.model, 'change', self.render);
   },
 
   render: function() {
-    var self = this;
-    $(self.el).html(self.template);
+    var html = this.template();
+    this.$el.html(html);
   },
 
   getUserInfo: function() {
     var self = this;
 
     router.navigate('userDetails/' + self.options.model.get('id'), {trigger: true});
-  },
-
-  hideUserInfo: function() {
-    this.template = getInfoTemplate();
-    this.render();
   },
 
   logout: function() {
@@ -14609,7 +14612,7 @@ var UserView = Backbone.View.extend({
 
 module.exports = UserView;
 
-},{"../../templates/getInfoTemplate.handlebars":40,"../../templates/usersTemplate.handlebars":47,"./backboneRouter.js":26,"backbone":1,"jquery":22,"underscore":23}],36:[function(require,module,exports){
+},{"../../templates/getInfoTemplate.handlebars":40,"./backboneRouter.js":26,"backbone":1,"jquery":22,"underscore":23}],36:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return " <button id=\"addMovieButton\" class=\"btn btn-primary\">Add a movie</button><br><br><br><br><br>\n";
 },"useData":true});
@@ -14621,11 +14624,11 @@ var templater = require("handlebars/runtime")["default"].template;module.exports
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<div class=\"modal-dialog\">\n  <div id=\"alertTemplate\" class=\"modal-content\">\n    <div id=\"alertHeader\" class=\"modal-header\">\n      <button class=\"alertOk close\">x</button>\n      <h4 class=\"modal-title\">"
+  return "<div class=\"modal-dialog\">\n  <div id=\"alertTemplate\" class=\"modal-content\">\n    <div id=\"alertHeader\" class=\"modal-header\">\n      <h4 class=\"modal-title\">"
     + alias4(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"title","hash":{},"data":data}) : helper)))
     + "</h4>\n    </div>\n    <div id=\"alertMesssage\" class=\"modal-body\">"
     + alias4(((helper = (helper = helpers.message || (depth0 != null ? depth0.message : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"message","hash":{},"data":data}) : helper)))
-    + "</div>\n    <div class=\"modal-footer\"><button class=\"alertOk btn btn-success\">Ok</button></div>\n  </div>\n</div>\n";
+    + "</div>\n  </div>\n</div>\n";
 },"useData":true});
 },{"handlebars/runtime":21}],39:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -14633,17 +14636,17 @@ var templater = require("handlebars/runtime")["default"].template;module.exports
 },"useData":true});
 },{"handlebars/runtime":21}],40:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div class=\"navbar-collapse collapse\">\n  <ul class=\"nav navbar-nav\">\n    <li id=\"getUserInfo\" class=\"btn btn-success\">Get your info</li>\n  </ul>\n\n  <div class=\"navbar-right\">\n    <button id=\"logout\" class=\"btn btn-warning\">Logout</button>\n  </div>\n</div>\n";
+    return "<ul class=\"nav navbar-nav\">\n  <li id=\"getUserInfo\" class=\"btn btn-success\">Get your info</li>\n</ul>\n\n<div class=\"navbar-right\">\n  <button id=\"logout\" class=\"btn btn-warning\">Logout</button>\n</div>\n";
 },"useData":true});
 },{"handlebars/runtime":21}],41:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<h1 id=\"loginHead\">Movie app</h1>\n\n<input type=\"text\" id=\"username\" placeholder=\"username\" class=\"form-control\"><br>\n<input type=\"password\" id=\"password\" placeholder=\"password\" class=\"form-control\"><br>\n<button id=\"login\" class=\"btn btn-success btn-lg\">Log in</button><br><br>\n<div>\n  Don't have an account? <button id=\"signUp\" class=\"btn btn-primary\">Sign up</button> for free!!<br>\n</div>\n";
+    return "<div>\n  <h1 id=\"loginHead\" class=\"text-center\">Movie app</h1>\n</div>\n<input type=\"text\" id=\"username\" placeholder=\"username\" class=\"form-control\"><br>\n<input type=\"password\" id=\"password\" placeholder=\"password\" class=\"form-control\"><br>\n<button id=\"login\" class=\"btn btn-success btn-lg\">Log in</button><br><br>\n<div>\n  Don't have an account? <button id=\"signUp\" class=\"btn btn-primary\">Sign up</button> for free!!<br>\n</div>\n";
 },"useData":true});
 },{"handlebars/runtime":21}],42:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<div class=\"responseMovie\">\n  Title: <div class=\"movieTitle\">"
+  return "<div class=\"responseMovie col-md-4\">\n  Title: <div class=\"movieTitle\">"
     + alias4(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"title","hash":{},"data":data}) : helper)))
     + "</div><br>\n  <div class=\"movieId\" hidden>"
     + alias4(((helper = (helper = helpers.movieId || (depth0 != null ? depth0.movieId : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"movieId","hash":{},"data":data}) : helper)))
@@ -14653,10 +14656,6 @@ var templater = require("handlebars/runtime")["default"].template;module.exports
 },"useData":true});
 },{"handlebars/runtime":21}],43:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div class=\"row\">\n  <div class=\"col-md-4\"></div>\n  <div class=\"movieWrapper col-md-4\">\n    <li class=\"responseMovie\">\n\n    </li><br><br>\n  </div>\n</div>\n";
-},"useData":true});
-},{"handlebars/runtime":21}],44:[function(require,module,exports){
-var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "<div class=\"modal-dialog\">\n  <div id=\"promptTemplate\" class=\"modal-content\">\n    <div id=\"promptHeader\" class=\"modal-header\">\n      <button class=\"promptNo close\">x</button>\n      <h4 class=\"modal-title\">"
@@ -14665,11 +14664,11 @@ var templater = require("handlebars/runtime")["default"].template;module.exports
     + alias4(((helper = (helper = helpers.message || (depth0 != null ? depth0.message : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"message","hash":{},"data":data}) : helper)))
     + "</div>\n    <div class=\"modal-footer\">\n      <button class=\"promptNo btn btn-danger\">No</button>\n      <button id=\"promptYes\" class=\"btn btn-success\">Yes</button>\n    </div>\n  </div>\n</div>\n";
 },"useData":true});
-},{"handlebars/runtime":21}],45:[function(require,module,exports){
+},{"handlebars/runtime":21}],44:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div>\n  <input id=\"registerUsername\" placeholder=\"username\" type=\"text\" class=\"form-control\">\n  <input id=\"registerPassword\" placeholder=\"password\" type=\"password\" class=\"form-control\">\n  <button id=\"register\" class=\"btn btn-info\">Register</button>\n  <button id=\"cancelRegister\" class=\"btn btn-warning\">Cancel</button>\n</div>\n";
+    return "<div>\n  <h4 class=\"registerTitle text-center\">Register here</h4>\n  <input id=\"registerUsername\" placeholder=\"username\" type=\"text\" class=\"form-control\">\n  <input id=\"registerPassword\" placeholder=\"password\" type=\"password\" class=\"form-control\">\n  <div class=\"row\">\n    <div class=\"col-md-2\"></div>\n    <button id=\"register\" class=\"btn btn-info col-md-4\">Register</button>\n    <button id=\"cancelRegister\" class=\"btn btn-warning col-md-4\">Cancel</button>\n  </div>\n</div>\n";
 },"useData":true});
-},{"handlebars/runtime":21}],46:[function(require,module,exports){
+},{"handlebars/runtime":21}],45:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
@@ -14677,16 +14676,6 @@ var templater = require("handlebars/runtime")["default"].template;module.exports
     + alias4(((helper = (helper = helpers.username || (depth0 != null ? depth0.username : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"username","hash":{},"data":data}) : helper)))
     + "</div>\n  <div class=\"userId\">Your ID: "
     + alias4(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
-    + "</div>\n  <div>\n    <input type=\"password\" id=\"updatePasswordText\" placeholder=\"Your new password\" class=\"form-control\" />\n      <div id=\"updatePassword\" class=\"btn btn-primary\">Change your password</div>\n  </div>\n  <button id=\"deleteUser\" class=\"btn btn-danger\">Delete my account</button>\n</div>\n";
-},"useData":true});
-},{"handlebars/runtime":21}],47:[function(require,module,exports){
-var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
-
-  return "<div class=\"row\">\n  <div class=\"col-md-4\"></div>\n  <div id=\"usernameIdWrapper\" class=\"col-md-4\">\n    <div class=\"username\">Username: "
-    + alias4(((helper = (helper = helpers.username || (depth0 != null ? depth0.username : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"username","hash":{},"data":data}) : helper)))
-    + "</div>\n    <div class=\"userId\">Your ID: "
-    + alias4(((helper = (helper = helpers.userId || (depth0 != null ? depth0.userId : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"userId","hash":{},"data":data}) : helper)))
-    + "</div>\n    <button id=\"hideUserInfo\" class=\"btn btn-warning\">Hide your info</button>\n  </div>\n</div>\n";
+    + "</div>\n  <div>\n    <input type=\"password\" id=\"updatePasswordText\" placeholder=\"Your new password\" class=\"form-control\" />\n      <div id=\"updatePassword\" class=\"btn btn-primary\">Change your password</div>\n  </div>\n  <button id=\"deleteUser\" class=\"btn btn-danger\">Delete my account</button>\n  <button id=\"hideUserDetails\" class=\"btn btn -warning\">Hide info</button>\n</div>\n";
 },"useData":true});
 },{"handlebars/runtime":21}]},{},[28]);

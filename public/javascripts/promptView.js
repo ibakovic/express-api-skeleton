@@ -6,6 +6,10 @@ var _ = require('underscore');
 var promptTemplate = require('../../templates/promptTemplate.handlebars');
 
 var PromptView = Backbone.View.extend({
+  template: promptTemplate,
+
+  properties: {},
+
   events: {
     'click #promptYes': 'promptYes',
     'click .promptNo': 'promptNo'
@@ -14,28 +18,27 @@ var PromptView = Backbone.View.extend({
   initialize: function(options) {
     _.bindAll(this, 'render', 'getMessage', 'promptYes', 'promptNo');
     this.options = options;
-    this.template = promptTemplate({message : 'Init'});
   },
 
   render: function() {
-    var self = this;
+    var html = this.template(this.properties);
     this.$el.css({'display': 'block'});
-    this.options.content.html(self.template);
+    this.options.content.html(html);
     return this;
   },
 
   getMessage: function(message, title) {
     var self = this;
     if(!message) {
-      self.template = promptTemplate({
+      self.properties = {
         message: 'No message to display!',
         title: 'Error!'
-      });
+      };
     }
-    this.template = promptTemplate({
+    this.properties = {
       message: message,
       title: title
-    });
+    };
     return message;
   },
 

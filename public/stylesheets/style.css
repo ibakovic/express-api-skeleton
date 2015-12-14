@@ -1,129 +1,53 @@
-body {
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+.registerTitle {
+  margin: 2%;
+  font-weight: bold;
 }
-
+#register,
+#cancelRegister {
+  margin: 2%;
+  margin-left: 0;
+  margin-right: 0;
+}
+.navbar {
+  background-color: #EEEEEE;
+}
 #loginWrapper {
-    background-color: #43E9E0;
-    border-radius: 10px;
-    margin-top: 50px;
+  background-color: #EEEEEE;
+  margin-top: 50px;
+  margin-bottom: 2%;
+  padding: 1%;
+  border-radius: 5px;
 }
-
-#loginHead {
-    margin-left: 33%;
-    margin-bottom: 3%;
-    font-weight: bold;
+#login {
+  width: 100%;
 }
-
-#username, #password {
-    margin: 0%;
-    margin-left: 30%;
-    width: 40%;
-    border-radius: 10px;
+#registerForm {
+  background-color: #EEEEEE;
+  margin-top: 50px;
+  margin-bottom: 2%;
+  padding: 1%;
+  border-radius: 5px;
 }
-
-#register {
-    margin-left: 38%;
+.modal-dialog {
+  background-color: #7e7e7e;
+  color: red;
 }
-
-#register, #login {
-    margin-bottom: 5%;
+#promptForm {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+  display: none;
+  background-color: #3e3e3e;
+  background-color: rgba(0, 0, 0, 0.6);
 }
-
-#addMovieWrapper {
-    background-color: #88FFAA;
-    border-radius: 10px;
-    border-bottom-right-radius: 0px;
-    border-bottom-left-radius: 0px;
-    margin-top: 50px;
-}
-
-#addMovieHead {
-    font-weight: bold;
-    margin-left: 31%;
-}
-
-#title, #link {
-    width: 40%;
-    margin-left: 30%;
-    border-radius: 10px;
-}
-
-#addMovie {
-    width: 30%;
-    padding: 2%;
-    margin-left: 35%;
-}
-
-.movieWrapper {
-    background-color: #88FFAA;
-}
-
-.movieTitle, .addedBy {
-    margin: 1%;
-    margin-left: 37%;
-    font-size: 150%;
-}
-
-.titleUpdate, .updateMovie, .deleteMovie {
-    margin: 1%;
-}
-
-#userInfoWrapper, #usernameIdWrapper {
-    background-color: #4488EE;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-
-#getUserInfo, #updatePasswordText, #updatePassword {
-    margin: 1%;
-}
-
-#getUserInfo {
-    margin-left: 40%;
-    width: 20%;
-    padding: 2%;
-}
-
-#updatePasswordWrapper {
-    margin-left: 30%;
-    padding: 2%;
-    width: 40%;
-    background-color: #2233FF;
-    border-radius: 10px;
-}
-
-#updatePasswordText {
-}
-
-#updatePassword {
-    margin-left: 10%;
-}
-
-#logout, #deleteUser {
-    margin: 1%;
-    margin-left: 0%;
-}
-
-.username, .userId {
-    margin: 2%;
-    margin-left: 34%;
-    color: white;
-    font-weight: bold;
-    font-size: 150%;
-}
-
-.username {
-    margin-left: 38%;
-}
-
-#hideUserInfo {
-    margin: 2%;
-    width: 20%;
-    margin-left: 40%;
-}
-
-
-
-a {
-  color: #00B7FF;
+#mainContainer {
+  background-color: #EEEEEE;
+  margin-top: 50px;
+  margin-bottom: 2%;
+  padding: 1%;
+  border-radius: 5px;
+  background-color: #FFF;
 }

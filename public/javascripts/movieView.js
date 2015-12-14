@@ -7,6 +7,8 @@ var router = require('./backboneRouter.js');
 var movieTemplate = require('../../templates/movieTemplate.handlebars');
 
 var MovieView = Backbone.View.extend({
+  template: movieTemplate,
+
   events: {
     'click #deleteMovie': 'deleteMovie',
     'click #updateMovie': 'editMovie'
@@ -23,7 +25,7 @@ var MovieView = Backbone.View.extend({
   render: function() {
     var self = this;
 
-    var template = movieTemplate({
+    var template = this.template({
       title: self.model.get('title'),
       movieId: self.model.get('id'),
       addedBy: self.model.get('addedBy')

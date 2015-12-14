@@ -7,6 +7,8 @@ var loginTemplate = require('../../templates/loginTemplate.handlebars');
 var router = require('./backboneRouter.js');
 
 var LoginView = Backbone.View.extend({
+  template: loginTemplate,
+
   events: {
     'click #login': 'login',
     'click #signUp': 'signUp'
@@ -16,13 +18,11 @@ var LoginView = Backbone.View.extend({
     this.options = options;
     _.bindAll(this, 'render', 'login', 'signUp');
     var self = this;
-
-    this.template = loginTemplate();
   },
 
   render: function() {
-    var self = this;
-    self.$el.html(self.template);
+    var html = this.template();
+    this.$el.html(html);
   },
 
   login: function() {

@@ -7,6 +7,8 @@ var router = require('./backboneRouter.js');
 var addMovieTemplate = require('../../templates/addMovieTemplate.handlebars');
 
 var AddView = Backbone.View.extend({
+  template: addMovieTemplate,
+
   events: {
     'click #addMovie': 'addMovie',
     'click #cancelAdd': 'cancelAdd'
@@ -18,8 +20,8 @@ var AddView = Backbone.View.extend({
   },
 
   render: function() {
-    var self = this;
-    self.$el.html(addMovieTemplate());
+    var html = this.template();
+    this.$el.html(html);
   },
 
   addMovie: function() {

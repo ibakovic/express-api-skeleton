@@ -6,6 +6,10 @@ var _ = require('underscore');
 var alertTemplate = require('../../templates/alertTemplate.handlebars');
 
 var AlertView = Backbone.View.extend({
+  template: alertTemplate,
+
+  properties: {},
+
   events: {
     'click .alertOk': 'alertOk'
   },
@@ -13,28 +17,28 @@ var AlertView = Backbone.View.extend({
   initialize: function(options) {
     _.bindAll(this, 'render', 'alertOk', 'getMessage');
     this.options = options;
-    this.template = alertTemplate({message : 'Init'});
   },
 
   render: function() {
-    var self = this;
+    var self =this;
+    var html = this.template(self.properties);
     this.$el.css({'display': 'block'});
-    this.options.content.html(self.template);
+    this.options.content.html(html);
     return this;
   },
 
   getMessage: function(message, title) {
     var self = this;
     if(!message) {
-      self.template = alertTemplate({
+      self.properties = {
         message: 'No message to display!',
         title: 'Error!'
-      });
+      };
     }
-    this.template = alertTemplate({
+    this.properties = {
       message: message,
       title: title
-    });
+    };
     return message;
   },
 
