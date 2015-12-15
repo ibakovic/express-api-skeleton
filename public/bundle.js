@@ -14667,6 +14667,6 @@ var templater = require("handlebars/runtime")["default"].template;module.exports
 
   return "<nav class=\"navbar navbar-default navbar-fixed-top\">\n  <div class=\"container\">\n    <div class=\"navbar-header\">\n      <a id=\"getUserInfo\" class=\"navbar-brand\">"
     + container.escapeExpression(((helper = (helper = helpers.username || (depth0 != null ? depth0.username : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"username","hash":{},"data":data}) : helper)))
-    + "</a>\n    </div>\n    <ul class=\"nav navbar-nav\">\n      <li id=\"addMovieButton\"><a class=\"navbar-brand\">+</a></li>\n      <li id=\"logout\"><a class=\"navbar-brand\">Logout</a></li>\n    </ul>\n  </div>\n</nav>\n";
+    + "</a>\n    </div>\n      <div id=\"addMovieButton\"><a class=\"navbar-brand\">+</a></div>\n      <div id=\"logout\" class=\"navbar-right\"><a class=\"navbar-brand\">Logout</a></div>\n  </div>\n</nav>\n";
 },"useData":true});
 },{"handlebars/runtime":21}]},{},[28]);
