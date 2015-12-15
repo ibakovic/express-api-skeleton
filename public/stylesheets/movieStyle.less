@@ -1,0 +1,30 @@
+@borderRadius: 5px;
+
+.borderStyle() {
+    border-width: 2px;
+    border-style: solid;
+    border-color: #ccc;
+    padding: 3%;
+}
+
+.movieTitle {
+    .borderStyle();
+    border-top-left-radius: @borderRadius;
+    border-top-right-radius: @borderRadius;
+    margin-bottom: 0;
+}
+
+.movieText {
+    .borderStyle();
+    font-size: 120%;
+    .movieId, .addedBy {
+        font-weight: bold;
+    }
+}
+
+.movieButtons {
+    .borderStyle();
+    margin: 0;
+    border-bottom-right-radius: @borderRadius;
+    border-bottom-left-radius: @borderRadius;
+}

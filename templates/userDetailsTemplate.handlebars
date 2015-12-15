@@ -1,10 +1,15 @@
 <div>
-  <div class="username">Username: {{username}}</div>
-  <div class="userId">Your ID: {{id}}</div>
-  <div>
+  <div class="userDetailsHead">
+    <div class="username text-center">Welcome "{{username}}"</div>
+    <div class="userId text-center">Your ID: {{id}}</div>
+  </div>
+  <div class="updatePasswordContainer text-center">
+    <h4>Change your password here</h4>
     <input type="password" id="updatePasswordText" placeholder="Your new password" class="form-control" />
       <div id="updatePassword" class="btn btn-primary">Change your password</div>
   </div>
-  <button id="deleteUser" class="btn btn-danger">Delete my account</button>
-  <button id="hideUserDetails" class="btn btn -warning">Hide info</button>
+  <div class="detailsButtonContainer">
+    <button id="deleteUser" class="btn btn-danger">Delete my account</button>
+    <button id="hideUserDetails" class="btn">Return to main page</button>
+  </div>
 </div>

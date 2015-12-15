@@ -4,30 +4,31 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
 var router = require('./backboneRouter.js');
-var getInfoTemplate = require('../../templates/getInfoTemplate.handlebars');
+var userNavbarTemplate = require('../../templates/userNavbarTemplate.handlebars');
 
 var LogoutModel = Backbone.Model.extend({
   url: '/logout'
 });
 
 var UserView = Backbone.View.extend({
-  template: getInfoTemplate,
+  template: userNavbarTemplate,
 
   events: {
     'click #getUserInfo': 'getUserInfo',
+    'click #addMovieButton': 'openAddMovieForm',
     'click #logout': 'logout'
   },
 
   initialize: function(options) {
     var self = this;
     this.options = options;
-    _.bindAll(this, 'render', 'getUserInfo', 'logout');
+    _.bindAll(this, 'render', 'getUserInfo', 'openAddMovieForm', 'logout');
 
     this.listenTo(self.model, 'change', self.render);
   },
 
   render: function() {
-    var html = this.template();
+    var html = this.template(this.options.model.toJSON());
     this.$el.html(html);
   },
 
@@ -35,6 +36,10 @@ var UserView = Backbone.View.extend({
     var self = this;
 
     router.navigate('userDetails/' + self.options.model.get('id'), {trigger: true});
+  },
+
+  openAddMovieForm: function() {
+    router.navigate('addMovie', {trigger: true});
   },
 
   logout: function() {

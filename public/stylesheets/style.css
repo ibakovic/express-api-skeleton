@@ -1,12 +1,88 @@
 .registerTitle {
   margin: 2%;
-  font-weight: bold;
 }
 #register,
 #cancelRegister {
   margin: 2%;
-  margin-left: 0;
-  margin-right: 0;
+  width: 30%;
+  margin-left: 1%;
+  margin-right: 1%;
+  margin-top: 5%;
+}
+#login {
+  width: 50%;
+}
+.movieTitle {
+  border-width: 2px;
+  border-style: solid;
+  border-color: #ccc;
+  padding: 3%;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  margin-bottom: 0;
+}
+.movieText {
+  border-width: 2px;
+  border-style: solid;
+  border-color: #ccc;
+  padding: 3%;
+  font-size: 120%;
+}
+.movieText .movieId,
+.movieText .addedBy {
+  font-weight: bold;
+}
+.movieButtons {
+  border-width: 2px;
+  border-style: solid;
+  border-color: #ccc;
+  padding: 3%;
+  margin: 0;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+.userDetailsHead {
+  margin: 3%;
+  font-size: 200%;
+}
+.updatePasswordContainer {
+  margin: 3%;
+  margin-left: 25%;
+  padding-top: 1%;
+  padding-bottom: 1%;
+  background-color: #eee;
+  width: 50%;
+  border-radius: 5px;
+}
+.updatePasswordContainer #updatePasswordText {
+  margin-bottom: 1%;
+  margin-left: 30%;
+  width: 40%;
+}
+.detailsButtonContainer {
+  text-align: center;
+}
+.detailsButtonContainer #deleteUser,
+.detailsButtonContainer #hideUserDetails {
+  margin: 1%;
+  width: 10%;
+}
+.navbar-brand:hover {
+  cursor: pointer;
+}
+.editMovieContainer {
+  background-color: #eee;
+  border-radius: 5px;
+  padding: 2%;
+  margin: 2%;
+  margin-left: 20%;
+  margin-top: 50px;
+  width: 60%;
+}
+.editMovieContainer #titleUpdate {
+  margin-left: 30%;
+  width: 40%;
+  margin-bottom: 2%;
 }
 .navbar {
   background-color: #EEEEEE;
@@ -17,9 +93,6 @@
   margin-bottom: 2%;
   padding: 1%;
   border-radius: 5px;
-}
-#login {
-  width: 100%;
 }
 #registerForm {
   background-color: #EEEEEE;

@@ -4,18 +4,9 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
 var router = require('./backboneRouter.js');
-var addMovieButtonTemplate = require('../../templates/addMovieButtonTemplate.handlebars');
 var MovieView = require('./movieView.js');
 
 var MovieCollectionView = Backbone.View.extend({
-  template: addMovieButtonTemplate,
-
-  events: {
-    'click #cancelAdd': 'cancelAdd',
-    'click #addMovieButton': 'openAddMovieForm',
-    'click #getUserInfo': 'getUserInfo'
-  },
-
   initialize: function(options) {
     var self = this;
     self.options = options;
@@ -23,7 +14,7 @@ var MovieCollectionView = Backbone.View.extend({
 
     self.collection = self.options.collection;
 
-    _.bindAll(this, 'render', 'afterRender', 'appendItem', 'openAddMovieForm');
+    _.bindAll(this, 'render', 'afterRender', 'appendItem');
 
     _.wrap(this.render, function(render) {
       render();
@@ -33,13 +24,11 @@ var MovieCollectionView = Backbone.View.extend({
 
   render: function() {
     var self = this;
-    var html = this.template();
 
     this.$el.empty();
     this.childrenViewsArray.forEach(function(view) {
       view.remove();
     });
-    this.$el.html(html);
 
     this.collection.models.forEach(function(movie) {self.appendItem(movie);});
     return self;
@@ -61,11 +50,6 @@ var MovieCollectionView = Backbone.View.extend({
     this.childrenViewsArray.push(movieView);
 
     this.$el.append(movieView.$el);
-  },
-
-  openAddMovieForm: function() {
-    this.$el.hide();
-    router.navigate('addMovie', {trigger: true});
   }
 });
 

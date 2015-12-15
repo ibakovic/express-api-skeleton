@@ -31,8 +31,8 @@ var MovieView = Backbone.View.extend({
       addedBy: self.model.get('addedBy')
     });
 
-    self.$el.html(template);
-    return self;
+    this.$el.html(template);
+    return this;
   },
 
   removeView: function() {
