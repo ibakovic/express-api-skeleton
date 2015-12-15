@@ -13,7 +13,7 @@ insert_final_newline = true
 
 # Use 2 spaces for indentation in HTML, Handlebars, JavaScript, SCSS
 
-[*.{html,handlebars,js,scss}]
+[*.{html,handlebars,js,scss,less}]
 indent_size = 2
 
 # Use 4 spaces for indentation in Markdown files

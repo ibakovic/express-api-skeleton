@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var router = require('express').Router();
 var Movie = require('../models/movies.js');
+var User = require('../models/users.js');
 var Message = require('../strings.json');
 var logger = require('minilog')('moviesRoutes');
 
@@ -98,9 +99,16 @@ function listMovies (req, res, next) {
       return res.status(400).json(resData);
     }
 
-    resData.data = _.invoke(movies, 'toObject');
+    User.populate(movies, {path: 'addedBy', model: 'User'}, function(err, movie){
+      logger.log(movie.addedBy);
 
-    return res.status(200).json(resData);
+      resData.msg = Message.MovieFound;
+      resData.success = true;
+      resData.data = _.invoke(movie, 'toObject');
+      status = 200;
+
+      return res.status(status).json(resData);
+    });
   });
 }
 
@@ -133,12 +141,16 @@ function showMovie (req, res, next) {
       return res.status(status).json(resData);
     }
 
-    resData.msg = Message.MovieFound;
-    resData.success = true;
-    resData.data = movie.toObject();
-    status = 200;
+    User.populate(movie, {path: 'addedBy', model: 'User'}, function(err, movie){
+      logger.log(movie.addedBy);
 
-    return res.status(status).json(resData);
+      resData.msg = Message.MovieFound;
+      resData.success = true;
+      resData.data = movie.toObject();
+      status = 200;
+
+      return res.status(status).json(resData);
+    });
   });
 }
 

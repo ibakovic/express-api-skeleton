@@ -14322,10 +14322,12 @@ var MovieView = Backbone.View.extend({
   render: function() {
     var self = this;
 
+    var username = this.model.get('addedBy').username;
+
     var template = this.template({
       title: self.model.get('title'),
       movieId: self.model.get('id'),
-      addedBy: self.model.get('addedBy')
+      addedBy: username
     });
 
     this.$el.html(template);
