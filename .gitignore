@@ -12,3 +12,10 @@ coverage/
 
 # editor stuff
 *~
+
+# todo
+todo.txt
+
+#ignore files created by browserify and less
+app/dist/main.js
+app/dist/mainStyle.css
