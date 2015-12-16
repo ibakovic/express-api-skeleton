@@ -1,1 +1,3 @@
-- express-sessions
+- browserify i lessc pokretanje preko gulpa zatim preko nodea!
+- glavna stranica ide u app/dist
+- style.css i bundle.js se trebaju generirati i ne pushati
