@@ -21,8 +21,8 @@ var registerView;
 var promptView;
 var userDetailsView;
 
-Backbone.Events.on('prompt', function(message, title) {
-  promptView.getMessage(message, title);
+Backbone.Events.on('prompt', function(message, title, id) {
+  promptView.getMessage(message, title, id);
   promptView.render();
   promptView.$el.show();
 });

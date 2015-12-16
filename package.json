@@ -5,8 +5,8 @@
   "scripts": {
     "start": "supervisor ./bin/www",
     "debug": "node-debug --port 8181 ./bin/www",
-    "browserify": "browserify -t browserify-handlebars ./app/src/js/loginPageJquery.js -o ./app/dist/loginPageJquery.js",
-    "watchify": " watchify -t browserify-handlebars ./app/src/js/loginPageJquery.js -o ./app/dist/loginPageJquery.js -v",
+    "browserify": "browserify -t browserify-handlebars ./app/src/js/main.js -o ./app/dist/main.js",
+    "watchify": " watchify -t browserify-handlebars ./app/src/js/main.js -o ./app/dist/main.js -v",
     "less": "lessc app/src/style/mainStyle.less app/dist/mainStyle.css"
   },
   "main": "./bin/www",

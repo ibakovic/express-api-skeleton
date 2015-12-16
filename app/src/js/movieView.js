@@ -44,8 +44,8 @@ var MovieView = Backbone.View.extend({
   deleteMovie: function() {
     var self = this;
 
-    Backbone.Events.trigger('prompt', 'Are you sure you want to delete "' + self.model.get('title') + '"?', 'Delete');
-    Backbone.Events.on('prompt:confirm', function(confirm) {
+    Backbone.Events.trigger('prompt', 'Are you sure you want to delete "' + self.model.get('title') + '"?', 'Delete', 'deleteMovie');
+    Backbone.Events.on('prompt:confirm:deleteMovie', function(confirm) {
       if(confirm)
         return self.model.destroy();
     });

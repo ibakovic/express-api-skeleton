@@ -55,10 +55,11 @@ var userDetailsView = Backbone.View.extend({
     var self = this;
     var user = self.options.model;
 
-    Backbone.Events.trigger('prompt', 'Are you sure you want to remove your account?', 'Delete account');
-    Backbone.Events.on('prompt:confirm', function(confirm) {
+    Backbone.Events.trigger('prompt', 'Are you sure you want to remove your account?', 'Delete account', 'deleteUser');
+    Backbone.Events.on('prompt:confirm:deleteUser', function(confirm) {
       if(confirm) {
         user.destroy();
+        self.remove();
         router.navigate('', {trigger: true});
       }
     });

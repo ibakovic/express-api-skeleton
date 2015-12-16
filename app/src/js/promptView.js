@@ -27,7 +27,7 @@ var PromptView = Backbone.View.extend({
     return this;
   },
 
-  getMessage: function(message, title) {
+  getMessage: function(message, title, id) {
     var self = this;
     if(!message) {
       self.properties = {
@@ -37,18 +37,21 @@ var PromptView = Backbone.View.extend({
     }
     this.properties = {
       message: message,
-      title: title
+      title: title,
+      id: id
     };
     return message;
   },
 
   promptYes: function() {
-    Backbone.Events.trigger('prompt:confirm', true);
+    var self = this;
+    Backbone.Events.trigger('prompt:confirm:' + self.properties.id, true);
     this.$el.hide();
   },
 
   promptNo: function() {
-    Backbone.Events.trigger('prompt:confirm', false);
+    var self = this;
+    Backbone.Events.trigger('prompt:confirm:' + self.properties.id, false);
     this.$el.hide();
   }
 });
