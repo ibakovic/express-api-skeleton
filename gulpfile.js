@@ -1,9 +1,14 @@
 'use strict';
 
+var browserify = require('gulp-browserify');
+var browserifyHandlebars = require('browserify-handlebars');
 var gulp = require("gulp");
 var eslint = require("gulp-eslint");
 var nodemon = require("gulp-nodemon");
 var shell = require("gulp-shell");
+var source = require('vinyl-source-stream');
+var less = require('gulp-less');
+var path = require('path');
 
 var istanbul = require('gulp-istanbul');
 // We'll use mocha here, but any test framework will work
@@ -17,6 +22,26 @@ var paths = {
     test: ['./test/*.js']
   }
 };
+
+gulp.task('browserify', function() {
+  // Single entry point to browserify
+  gulp.src('./app/src/js/loginPageJquery.js')
+    .pipe(browserify({
+      insertGlobals : true,
+      debug : !gulp.env.production,
+      transform: [browserifyHandlebars],
+      paths: [ './app/src/js' ]
+    }))
+    .pipe(gulp.dest('./app/dist'));
+});
+
+gulp.task('less', function () {
+  return gulp.src('./app/src/style/mainStyle.less')
+    .pipe(less({
+      paths: [ './app/src/style' ]
+    }))
+    .pipe(gulp.dest('./app/dist'));
+});
 
 gulp.task('lint', function() {
   return gulp.src(paths.lint.routes)

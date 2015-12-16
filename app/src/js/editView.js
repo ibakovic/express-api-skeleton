@@ -4,7 +4,7 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
 var router = require('./backboneRouter.js');
-var editTemplate = require('../../templates/editTemplate.handlebars');
+var editTemplate = require('../../../templates/editTemplate.handlebars');
 
 var EditView = Backbone.View.extend({
   template: editTemplate,

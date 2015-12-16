@@ -4,7 +4,7 @@ var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
 var router = require('./backboneRouter.js');
-var addMovieTemplate = require('../../templates/addMovieTemplate.handlebars');
+var addMovieTemplate = require('../../../templates/addMovieTemplate.handlebars');
 
 var AddView = Backbone.View.extend({
   template: addMovieTemplate,

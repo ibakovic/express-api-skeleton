@@ -3,7 +3,7 @@
 var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
-var loginTemplate = require('../../templates/loginTemplate.handlebars');
+var loginTemplate = require('../../../templates/loginTemplate.handlebars');
 var router = require('./backboneRouter.js');
 
 var LoginView = Backbone.View.extend({

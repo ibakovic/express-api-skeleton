@@ -3,25 +3,25 @@
 var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
-var promptTemplate = require('../../templates/promptTemplate.handlebars');
+var alertTemplate = require('../../../templates/alertTemplate.handlebars');
 
-var PromptView = Backbone.View.extend({
-  template: promptTemplate,
+var AlertView = Backbone.View.extend({
+  template: alertTemplate,
 
   properties: {},
 
   events: {
-    'click #promptYes': 'promptYes',
-    'click .promptNo': 'promptNo'
+    'click .alertOk': 'alertOk'
   },
 
   initialize: function(options) {
-    _.bindAll(this, 'render', 'getMessage', 'promptYes', 'promptNo');
+    _.bindAll(this, 'render', 'alertOk', 'getMessage');
     this.options = options;
   },
 
   render: function() {
-    var html = this.template(this.properties);
+    var self =this;
+    var html = this.template(self.properties);
     this.$el.css({'display': 'block'});
     this.options.content.html(html);
     return this;
@@ -42,17 +42,9 @@ var PromptView = Backbone.View.extend({
     return message;
   },
 
-  promptYes: function() {
-    Backbone.Events.trigger('prompt:confirm', true);
-    this.$el.hide();
-  },
-
-  promptNo: function() {
-    Backbone.Events.trigger('prompt:confirm', false);
+  alertOk: function() {
     this.$el.hide();
   }
 });
 
-module.exports = PromptView;
-
-
+module.exports = AlertView;

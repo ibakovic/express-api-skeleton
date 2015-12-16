@@ -4,7 +4,7 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('underscore');
 var router = require('./backboneRouter.js');
-var registerTemplate = require('../../templates/registerTemplate.handlebars');
+var registerTemplate = require('../../../templates/registerTemplate.handlebars');
 
 var RegisterView = Backbone.View.extend({
   template: registerTemplate,
