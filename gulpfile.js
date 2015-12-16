@@ -50,18 +50,6 @@ gulp.task('lint', function() {
     .pipe(eslint.failOnError());
 });
 
-gulp.task('test-unit', function(cb) {
-  gulp.src(['./controllers/**/*.js', './models/*.js', './index.js'])
-    .pipe(istanbul())
-    .pipe(istanbul.hookRequire())
-    .on('finish', function() {
-      gulp.src(['test/*.js'])
-        .pipe(mocha())
-        .pipe(istanbul.writeReports())
-        .on('end', cb);
-    });
-});
-
 gulp.task('server', function() {
   nodemon({
     script: './bin/www'
