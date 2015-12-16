@@ -2,7 +2,6 @@
 
 var chain = require('connect-chain');
 var passport = require('passport');
-var jwtoken = require('jsonwebtoken');
 var User = require('../models/users.js');
 var Message = require('../strings.json');
 var _ = require('lodash');

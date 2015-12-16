@@ -4,7 +4,6 @@ var logger = require('minilog')('Passport');
 var User = require('../models/users.js');
 var login = require('./login');
 var register = require('./register');
-var jwtStrategy = require('./jwtStrategy');
 var localStrategy = require('./localStrategy.js');
 
 function serializeUser(user, done) {
@@ -25,6 +24,5 @@ module.exports = function initPassport(passport) {
 
   login(passport);
   register(passport);
-  //jwtStrategy(passport);
   localStrategy(passport);
 };
