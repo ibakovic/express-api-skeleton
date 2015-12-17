@@ -33,11 +33,17 @@ var userDetailsView = Backbone.View.extend({
 
   updatePassword: function(htmlElement) {
     var self = this;
-    var updatedPassword = $('#updatePasswordText').val().trim('string');
+    var oldPassword = $('#oldPassword').val().trim();
+    var updatedPassword = $('#updatePasswordText').val().trim();
+    var confirmedPassword = $('#confirmPassword').val().trim();
+
+    if(updatedPassword !== confirmedPassword)
+      return Backbone.Events.trigger('alert', 'New password not confirmed!', 'Password error');
 
     var user = self.options.model;
 
     user.set({
+      oldPassword: oldPassword,
       update: updatedPassword
     });
     user.save(null, {
@@ -45,8 +51,8 @@ var userDetailsView = Backbone.View.extend({
         Backbone.Events.trigger('alert', response.msg, 'Change password');
       },
       error: function(model, response) {
-        Backbone.Events.trigger('alert', response.msg, 'Change password');
-        self.collection.set(model);
+        console.log(model);
+        Backbone.Events.trigger('alert', response.responseText, 'Change password');
       }
     });
   },

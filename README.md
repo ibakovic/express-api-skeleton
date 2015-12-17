@@ -12,5 +12,3 @@ as well as manipulate their movie data
 
 ##API Reference
 http://movieapp-ibakovic.rhcloud.com/movieApp
-
-##Contributors

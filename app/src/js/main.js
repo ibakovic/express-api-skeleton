@@ -11,6 +11,7 @@ var RegisterView = require('./registerView.js');
 var AlertView = require('./alertView.js');
 var PromptView = require('./promptView.js');
 var UserDetailsView = require('./userDetailsView.js');
+var ConfirmView = require('./confirmView.js');
 var loginView;
 var userView;
 var moviesView;
@@ -20,6 +21,21 @@ var alertView;
 var registerView;
 var promptView;
 var userDetailsView;
+var confirmView;
+
+Backbone.Events.on('register', function(username, password, model) {
+  confirmView.getCredentials(username, password, model);
+  moviesView.$el.hide();
+  userView.$el.hide();
+  addView.$el.hide();
+  editView.$el.hide();
+  loginView.$el.hide();
+  userDetailsView.$el.hide();
+  alertView.$el.hide();
+  registerView.$el.hide();
+
+  confirmView.render();
+});
 
 Backbone.Events.on('prompt', function(message, title, id) {
   promptView.getMessage(message, title, id);
@@ -40,6 +56,12 @@ Backbone.Events.on('movie:add', function(model) {
 $('document').ready(function() {
   var currentUserId = document.cookie.split('=');
 
+  var EmailModel = Backbone.Model.extend({
+    url: '/email'
+  });
+
+  var emailModel = new EmailModel();
+
   var LoginModel = Backbone.Model.extend({
     url: '/login'
   });
@@ -49,13 +71,13 @@ $('document').ready(function() {
   });
 
   var MovieModel = Backbone.Model.extend({
-    urlRoot: '/movies',
+    urlRoot: '/users/movies',
     id: ''
   });
 
   var MovieCollection = Backbone.Collection.extend({
     model: MovieModel,
-    url: '/movies',
+    url: '/users/movies',
 
     parse: function(response) {
       return response.data;
@@ -65,7 +87,7 @@ $('document').ready(function() {
   var Movies = new MovieCollection();
 
   var UserModel = Backbone.Model.extend({
-    url: '/',
+    url: '/users',
     parse: function(response) {
       return response.data;
     }
@@ -85,7 +107,8 @@ $('document').ready(function() {
 
   registerView = new RegisterView({
     el: $('#registerForm'),
-    model: RegisterModel
+    model: RegisterModel,
+    emailModel: emailModel
   });
   registerView.$el.hide();
 
@@ -125,6 +148,11 @@ $('document').ready(function() {
     model: User
   });
 
+  confirmView = new ConfirmView({
+    el: $('#confirmRegistration'),
+    model: UserModel
+  });
+
   router.on('route:loginPage', function() {
     moviesView.$el.hide();
     userView.$el.hide();
@@ -133,6 +161,7 @@ $('document').ready(function() {
     registerView.$el.hide();
     userDetailsView.$el.hide();
     alertView.$el.hide();
+    confirmView.$el.hide();
 
     loginView.render();
     loginView.$el.show();
@@ -146,9 +175,24 @@ $('document').ready(function() {
     loginView.$el.hide();
     userDetailsView.$el.hide();
     alertView.$el.hide();
+    confirmView.$el.hide();
 
     registerView.render();
     registerView.$el.show();
+  });
+
+  router.on('route:confirmRegister', function() {
+    moviesView.$el.hide();
+    userView.$el.hide();
+    addView.$el.hide();
+    editView.$el.hide();
+    loginView.$el.hide();
+    userDetailsView.$el.hide();
+    alertView.$el.hide();
+    registerView.$el.hide();
+
+    confirmView.render();
+    confirmView.$el.show();
   });
 
   router.on('route:startApp', function() {
@@ -158,6 +202,7 @@ $('document').ready(function() {
     registerView.$el.hide();
     userDetailsView.$el.hide();
     alertView.$el.hide();
+    confirmView.$el.hide();
 
     Movies.fetch({success: function(collection, response) {
       moviesView.render();
@@ -176,12 +221,12 @@ $('document').ready(function() {
 
   router.on('route:updateMovieTitle', function(movieId) {
     moviesView.$el.hide();
-    userView.$el.hide();
     addView.$el.hide();
     loginView.$el.hide();
     registerView.$el.hide();
     userDetailsView.$el.hide();
     alertView.$el.hide();
+    confirmView.$el.hide();
 
     if(Movies.length === 0) {
       Movies.fetch({success: function(collection, response) {
@@ -199,12 +244,12 @@ $('document').ready(function() {
 
   router.on('route:addMovie', function() {
     moviesView.$el.hide();
-    userView.$el.hide();
     loginView.$el.hide();
     editView.$el.hide();
     registerView.$el.hide();
     userDetailsView.$el.hide();
     alertView.$el.hide();
+    confirmView.$el.hide();
 
     addView.render();
     addView.$el.show();
@@ -212,12 +257,12 @@ $('document').ready(function() {
 
   router.on('route:getUserDetails', function(userId) {
     moviesView.$el.hide();
-    userView.$el.hide();
     loginView.$el.hide();
     editView.$el.hide();
     registerView.$el.hide();
     addView.$el.hide();
     alertView.$el.hide();
+    confirmView.$el.hide();
 
     if(!User.get('username')) {
       User.fetch({success: function(model, response) {

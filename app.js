@@ -11,7 +11,6 @@ var passport = require('passport');
 var docs = require('./docs.js');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
-var fs = require('fs');
 var less = require('less');
 
 // setup logging
@@ -41,7 +40,7 @@ app
 var hbFunc = require('./handlebars/hbFunc.js');
 
 app
-  .get('/movieApp', hbFunc);
+  .get('', hbFunc);
 
 // serve static assets
 app
@@ -71,11 +70,13 @@ require('./passport/init.js')(passport);
 // routers
 var usersRoutes = require('./routes/usersRoutes.js');
 var logRegRoutes = require('./routes/logRegRoutes.js');
+var mailHandler = require('./mailHandler.js');
 
 // API endpoints
 app
   .use('/', logRegRoutes)
-  .use('/', usersRoutes);
+  .use('/users', usersRoutes)
+  .use('/email', mailHandler);
 
 // docs
 app

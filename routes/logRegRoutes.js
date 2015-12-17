@@ -12,7 +12,7 @@ var logger = require('minilog')('logRegRoutes');
  */
 function logout(req, res, next) {
   req.session.destroy(function(err) {
-    res.status(200).json({msg: 'Logging out...', redirect: '/movieApp'});
+    res.status(200).json({msg: 'Logging out...', redirect: ''});
   });
 }
 

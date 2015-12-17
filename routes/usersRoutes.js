@@ -64,8 +64,13 @@ function updateUser(req, res, next) {
   resData.msg = Message.UserPasswordParameterRequired;
   resData.success = false;
 
+  if(!req.body.oldPassword) {
+    resData.msg = 'Old password required!';
+    return res.status(400).json(resData.msg);
+  }
+
   if (!req.body.update)
-    return res.status(400).json(resData);
+    return res.status(400).json(resData.msg);
 
   var updatedPassword = bCrypt.hashSync(req.body.update, bCrypt.genSaltSync(10), null);
   var passwordQuery = {password: updatedPassword};
@@ -108,7 +113,7 @@ function deleteUser(req, res, next) {
   User.findOneAndRemove(createUserQuery(req), function(err) {
     if (err)
       return next(err);
-    resData.redirect = '/movieApp';
+    resData.redirect = '';
     res.status(200).json(resData);
   });
 }
@@ -119,7 +124,7 @@ function isAuthenticate(req, res, next) {
   }
   else {
     logger.error('error', 'You must be logged in to do that.');
-    res.redirect('/movieApp');
+    res.redirect('');
   }
 }
 
