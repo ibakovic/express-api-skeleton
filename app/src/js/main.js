@@ -1,6 +1,6 @@
 var $ = require('jquery');
 var Backbone = require('backbone');
-var _ = require('underscore');
+var _ = require('lodash');
 var router = require('./backboneRouter.js');
 var LoginView = require('./loginView.js');
 var MovieView = require('./movieCollectionView.js');

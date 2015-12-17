@@ -1,7 +1,7 @@
 'use strict';
 
 var Backbone = require('backbone');
-var _ = require('underscore');
+var _ = require('lodash');
 var $ = require('jquery');
 var router = require('./backboneRouter.js');
 var addMovieTemplate = require('../../../templates/addMovieTemplate.handlebars');

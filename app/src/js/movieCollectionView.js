@@ -2,7 +2,7 @@
 
 var $ = require('jquery');
 var Backbone = require('backbone');
-var _ = require('underscore');
+var _ = require('lodash');
 var router = require('./backboneRouter.js');
 var MovieView = require('./movieView.js');
 

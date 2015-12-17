@@ -2,7 +2,7 @@
 
 var $ = require('jquery');
 var Backbone = require('backbone');
-var _ = require('underscore');
+var _ = require('lodash');
 var promptTemplate = require('../../../templates/promptTemplate.handlebars');
 
 var PromptView = Backbone.View.extend({

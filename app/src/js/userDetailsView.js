@@ -1,7 +1,7 @@
 'use script';
 
 var $ = require('jquery');
-var _ = require('underscore');
+var _ = require('lodash');
 var Backbone = require('backbone');
 var router = require('./backboneRouter.js');
 var userDetailsTemplate = require('../../../templates/userDetailsTemplate.handlebars');
@@ -59,7 +59,6 @@ var userDetailsView = Backbone.View.extend({
     Backbone.Events.on('prompt:confirm:deleteUser', function(confirm) {
       if(confirm) {
         user.destroy();
-        self.remove();
         router.navigate('', {trigger: true});
       }
     });
