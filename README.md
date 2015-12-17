@@ -11,4 +11,4 @@ as well as manipulate their movie data
 - start
 
 ##API Reference
-http://movieapp-ibakovic.rhcloud.com/movieApp
+http://movieapp-ibakovic.rhcloud.com
