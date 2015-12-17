@@ -70,7 +70,7 @@ require('./passport/init.js')(passport);
 // routers
 var usersRoutes = require('./routes/usersRoutes.js');
 var logRegRoutes = require('./routes/logRegRoutes.js');
-var mailHandler = require('./mailHandler.js');
+var mailHandler = require('./routes/mailHandler.js');
 
 // API endpoints
 app
