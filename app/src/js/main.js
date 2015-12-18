@@ -25,7 +25,7 @@ var confirmView;
 
 Backbone.Events.on('register', function(username, password, model) {
   confirmView.getCredentials(username, password, model);
-  moviesView.$el.hide();
+  /*moviesView.$el.hide();
   userView.$el.hide();
   addView.$el.hide();
   editView.$el.hide();
@@ -34,7 +34,7 @@ Backbone.Events.on('register', function(username, password, model) {
   alertView.$el.hide();
   registerView.$el.hide();
 
-  confirmView.render();
+  confirmView.render();*/
 });
 
 Backbone.Events.on('prompt', function(message, title, id) {
@@ -189,10 +189,9 @@ $('document').ready(function() {
     loginView.$el.hide();
     userDetailsView.$el.hide();
     alertView.$el.hide();
-    registerView.$el.hide();
+    //registerView.$el.hide();
 
-    confirmView.render();
-    confirmView.$el.show();
+    registerView.registerConfirm();
   });
 
   router.on('route:startApp', function() {

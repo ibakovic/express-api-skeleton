@@ -25,19 +25,20 @@ var RegisterView = Backbone.View.extend({
 
   register: function() {
     var self = this;
-    var userEmail = $('#userEmail').val().trim();
+    var credentials = new self.options.model({
+      username: $('#registerUsername').val().trim('string'),
+      password: $('#registerPassword').val().trim('string')
+    });
 
-    if(!userEmail)
-      return Backbone.Events.trigger('alert', 'E-mail required', 'Registration');
-
-    var username = $('#registerUsername').val().trim();
-    var password = $('#registerPassword').val().trim();
-
-    Backbone.Events.trigger('register', username, password, self.options.model);
-
-    this.options.emailModel.fetch({success: function(model, response) {
-      Backbone.Events.trigger('alert', 'To confirm registration go to your e-mail and click the link!', 'Registration');
-    }});
+    credentials.save(null, {
+      success: function(model, res) {
+        Backbone.Events.trigger('alert', res.msg, 'Registration');
+        router.navigate('', {trigger: true});
+      },
+      error: function(model, res) {
+        Backbone.Events.trigger('alert', 'Registration failed', 'Registration');
+      }
+    });
   },
 
   cancelRegister: function() {

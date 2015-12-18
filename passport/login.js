@@ -38,6 +38,11 @@ function processLogin(req, username, password, done) {
       return done(null, false);
     }
 
+    if(user.createdAt !== null) {
+      logger.error('Registration not verified yet!');
+      return done(null, false);
+    }
+
     // User and password both match, return user from done method
     // which will be treated like success
     done(null, user);

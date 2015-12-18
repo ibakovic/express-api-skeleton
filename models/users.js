@@ -11,7 +11,13 @@ var UserSchema = new mongoose.Schema({
       'default': shortid.generate
   },
   username: String,
-  password: String
+  password: String,
+  createdAt: {
+    type: Date,
+    required: true,
+    default: Date.now,
+    expires: 120
+  }
 });
 
 utils.setupSerialization(UserSchema);

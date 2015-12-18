@@ -1,31 +1,48 @@
+'use strict';
+
 var router = require('express').Router();
 var nodemailer = require('nodemailer');
 var logger = require('minilog')('mailHandler');
+var Verification = require('../models/verification.js');
+var User = require('../models/users.js');
+var Message = require('../strings.json');
 
-function mailHandler (req, res, next) {
-  var url = req.protocol + "://" + req.get('host') + '#confirm';
-  var transporter = nodemailer.createTransport({
-    host: 'mail.vip.hr'
-  });
+function confirmRegistration(req, res, next) {
+  var resData = {};
+  if(!req.body.verId) {
+    resData.msg = 'Verification ID is missing';
+    res.status(400).json(resData);
+  }
+  var verQuery = {verId: req.body.verId};
 
-  var mailOptions = {
-    from: 'noreply@extensionengine.com',
-    to: 'ibakovic@extensionengine.com',
-    subject: 'Verification for movieapp registration',
-    text: 'Click on this link to verify your registration: ' + url
-  };
+  Verification.findOne(verQuery, function(err, ver) {
+    if(err)
+      return next(err);
 
-  transporter.sendMail(mailOptions, function(err, info) {
-    if(err) {
-      logger.error(err);
-      return res.status(400).json('Failed to send e-mail');
+    if(!ver) {
+      resData.msg = 'Verification ID is not found';
+      return res.status(400).json(resData);
     }
 
-    res.status(200).json('E-mail sent');
+    var userQuery = {_id: ver.userId};
+    var expQuery = {createdAt: null};
+
+    logger.log(ver.userId);
+
+    User.findOneAndUpdate(userQuery, expQuery, {'new': true}, function(err, data) {
+      if (err)
+        return next(err);
+
+      resData.msg = Message.RegistrationComplete;
+      resData.success = true;
+      resData.data = data;
+
+      return res.status(200).json(resData);
+    });
   });
 }
 
-router.
-  get('', mailHandler);
+router
+  .post('', confirmRegistration);
 
 module.exports = router;
