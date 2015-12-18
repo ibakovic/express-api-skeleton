@@ -24,8 +24,8 @@ var userDetailsView;
 var confirmView;
 
 Backbone.Events.on('register', function(username, password, model) {
-  confirmView.getCredentials(username, password, model);
-  /*moviesView.$el.hide();
+  /*confirmView.getCredentials(username, password, model);
+  moviesView.$el.hide();
   userView.$el.hide();
   addView.$el.hide();
   editView.$el.hide();
@@ -150,7 +150,7 @@ $('document').ready(function() {
 
   confirmView = new ConfirmView({
     el: $('#confirmRegistration'),
-    model: UserModel
+    model: EmailModel
   });
 
   router.on('route:loginPage', function() {
@@ -181,7 +181,7 @@ $('document').ready(function() {
     registerView.$el.show();
   });
 
-  router.on('route:confirmRegister', function() {
+  router.on('route:confirmRegister', function(verId) {
     moviesView.$el.hide();
     userView.$el.hide();
     addView.$el.hide();
@@ -189,9 +189,13 @@ $('document').ready(function() {
     loginView.$el.hide();
     userDetailsView.$el.hide();
     alertView.$el.hide();
-    //registerView.$el.hide();
+    registerView.$el.hide();
 
-    registerView.registerConfirm();
+    console.log('inside confirm register');
+
+    confirmView.getVerId(verId);
+    confirmView.render();
+    confirmView.$el.show();
   });
 
   router.on('route:startApp', function() {

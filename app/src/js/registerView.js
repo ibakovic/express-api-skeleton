@@ -26,8 +26,9 @@ var RegisterView = Backbone.View.extend({
   register: function() {
     var self = this;
     var credentials = new self.options.model({
-      username: $('#registerUsername').val().trim('string'),
-      password: $('#registerPassword').val().trim('string')
+      username: $('#registerUsername').val().trim(),
+      password: $('#registerPassword').val().trim(),
+      emailTo: $('#userEmail').val().trim()
     });
 
     credentials.save(null, {

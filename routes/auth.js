@@ -57,7 +57,8 @@ function registrationResponse(req, res, next) {
         return next(err);
 
       if(!ver) {
-        var id = bCrypt.hashSync(req.body.userId, bCrypt.genSaltSync(10), null);
+        var id = bCrypt.hashSync(req.body.userId, bCrypt.genSaltSync(10), null).toString();
+        id = id.replace('/','*');
         var verification = new Verification({
           verId: id,
           userId: user.id

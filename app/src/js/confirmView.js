@@ -13,7 +13,7 @@ var ConfirmView = Backbone.View.extend({
 
   initialize: function(options) {
     this.options = options;
-    _.bindAll(this, 'render', 'returnToLogin', 'getCredentials');
+    _.bindAll(this, 'render', 'getVerId', 'returnToLogin');
   },
 
   getCredentials: function(username, password, model) {
@@ -24,29 +24,22 @@ var ConfirmView = Backbone.View.extend({
     };
   },
 
+  getVerId: function(verId) {
+    this.verId = verId;
+  },
+
   render: function() {
     var html = this.template();
     this.$el.html(html);
-    var self = this;
-    console.log('render confirm', self.credentials);
-    var credentials = new self.credentials.model({
-      username: self.credentials.username,
-      password: self.credentials.password
-    });
-
-    credentials.save(null, {
-      success: function(model, res) {
-        Backbone.Events.trigger('alert', res.msg, 'Registration');
-        router.navigate('', {trigger: true});
-      },
-      error: function(model, res) {
-        Backbone.Events.trigger('alert', 'Registration failed', 'Registration');
-      }
-    });
   },
 
   returnToLogin: function() {
-    router.navigate('', {trigger: true});
+    var self = this;
+    var verification = new this.options.model({verId: self.verId});
+
+    verification.save(null, {success: function(model, response) {
+      router.navigate('', {trigger: true});
+    }});
   }
 });
 
