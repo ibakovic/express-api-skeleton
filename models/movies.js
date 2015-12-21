@@ -15,7 +15,8 @@ var MovieSchema = new mongoose.Schema({
   addedBy: {
     type: String,
     ref: 'User'
-  }
+  },
+  created: 'string'
 });
 
 utils.setupSerialization(MovieSchema);

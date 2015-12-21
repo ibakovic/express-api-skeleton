@@ -23,20 +23,6 @@ var promptView;
 var userDetailsView;
 var confirmView;
 
-Backbone.Events.on('register', function(username, password, model) {
-  /*confirmView.getCredentials(username, password, model);
-  moviesView.$el.hide();
-  userView.$el.hide();
-  addView.$el.hide();
-  editView.$el.hide();
-  loginView.$el.hide();
-  userDetailsView.$el.hide();
-  alertView.$el.hide();
-  registerView.$el.hide();
-
-  confirmView.render();*/
-});
-
 Backbone.Events.on('prompt', function(message, title, id) {
   promptView.getMessage(message, title, id);
   promptView.render();

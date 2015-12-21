@@ -5,7 +5,21 @@ var router = require('express').Router();
 var Movie = require('../models/movies.js');
 var User = require('../models/users.js');
 var Message = require('../strings.json');
+var format = require('string-template');
 var logger = require('minilog')('moviesRoutes');
+
+function getDate() {
+  var date = new Date();
+  var day = date.getDate();
+  var month = date.getMonth();
+  var year = date.getFullYear();
+
+  return format('{day}. {month}. {year}.', {
+    day: day,
+    month: month,
+    year: year
+  });
+}
 
 /**
  * @typedef ApiResponse
@@ -60,7 +74,8 @@ function addMovie (req, res, next) {
     var movie = new Movie({
       title: req.body.title,
       link: req.body.link,
-      addedBy: req.user.id
+      addedBy: req.user.id,
+      created: getDate()
     });
 
     movie.save(function (err, movie) {

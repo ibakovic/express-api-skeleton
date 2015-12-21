@@ -13,6 +13,14 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var less = require('less');
 
+var fs = require('fs');
+var image = fs.readFileSync('images/Background.png');
+
+function getImages(req, res, next) {
+   res.writeHead(200, {'Content-Type': 'image/gif' });
+   res.end(image, 'binary');
+}
+
 // setup logging
 require('minilog').enable();
 
@@ -45,6 +53,7 @@ app
 // serve static assets
 app
   .use(express.static(Path.join(__dirname, 'app')))
+  .use(express.static(Path.join(__dirname, 'images')))
   .use(express.static(Path.join(__dirname, 'node_modules')))
   .use(express.static(Path.join(__dirname, 'app/src/style')))
   .use(express.static(Path.join(__dirname, 'app/dist')))
@@ -74,6 +83,7 @@ var mailHandler = require('./routes/mailHandler.js');
 
 // API endpoints
 app
+  .get('/images', getImages)
   .use('/', logRegRoutes)
   .use('/users', usersRoutes)
   .use('/email', mailHandler);
