@@ -65,7 +65,7 @@ app.use(logger('dev'));
 
 // handling HTTP request payload
 app
-  .use(bodyParser.json())
+  .use(bodyParser.json({limit: '50000kb'}))
   .use(bodyParser.urlencoded({extended: false}));
 
 app.use(cookieParser());
@@ -80,7 +80,7 @@ require('./passport/init.js')(passport);
 var usersRoutes = require('./routes/usersRoutes.js');
 var logRegRoutes = require('./routes/logRegRoutes.js');
 var mailHandler = require('./routes/mailHandler.js');
-var imageRouter = require('./routes/imagesRouter.js');
+var imageRouter = require('./routes/imagesRoutes.js');
 
 // API endpoints
 app

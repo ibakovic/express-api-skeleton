@@ -35,32 +35,7 @@ function getMongoImages(req, res, next) {
  * @param {Function(req, res, next)} next
  */
 function addImage(req, res, next) {
-  var imageQuery = {name: req.body.imageName};
-  ImageModel.findOne(imageQuery, function(err, image) {
-    if(err)
-      return next(err);
 
-    var resData = {};
-
-    if(image) {
-      resData.msg = 'This image name already exists';
-      resData.success = false;
-      res.status(400).json(resData);
-    }
-
-    var newImg = new ImageModel({
-      data: req.body.imageData,
-      contentType: 'image/png'
-    });
-
-    newImg.save(function(err, image) {
-      if(err)
-        return next(err);
-
-      resData.msg = 'Movie saved';
-      res.status(200).json(resData);
-    });
-  });
 }
 
 router
