@@ -35,8 +35,12 @@ var AddView = Backbone.View.extend({
       addedBy: self.options.userId
     });
 
+
     Movie.save(null, {success: function(model, response) {
+      model.set({'addedBy': response.data.addedBy});
+      console.log('Add movie', model);
       Backbone.Events.trigger('movie:add', model);
+
       router.navigate('movies', {trigger: true});
     }});
   },

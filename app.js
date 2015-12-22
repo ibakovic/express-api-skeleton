@@ -80,10 +80,11 @@ require('./passport/init.js')(passport);
 var usersRoutes = require('./routes/usersRoutes.js');
 var logRegRoutes = require('./routes/logRegRoutes.js');
 var mailHandler = require('./routes/mailHandler.js');
+var imageRouter = require('./routes/imagesRouter.js');
 
 // API endpoints
 app
-  .get('/images', getImages)
+  .use('/images', imageRouter)
   .use('/', logRegRoutes)
   .use('/users', usersRoutes)
   .use('/email', mailHandler);

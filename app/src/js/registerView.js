@@ -4,6 +4,7 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('lodash');
 var router = require('./backboneRouter.js');
+var popsicle = require('popsicle');
 var registerTemplate = require('../../../templates/registerTemplate.handlebars');
 
 var RegisterView = Backbone.View.extend({
@@ -25,20 +26,30 @@ var RegisterView = Backbone.View.extend({
 
   register: function() {
     var self = this;
-    var credentials = new self.options.model({
+    var credentials = ({
       username: $('#registerUsername').val().trim(),
       password: $('#registerPassword').val().trim(),
       emailTo: $('#userEmail').val().trim()
     });
 
-    credentials.save(null, {
-      success: function(model, res) {
-        Backbone.Events.trigger('alert', res.msg, 'Registration');
-        router.navigate('', {trigger: true});
+    popsicle({
+      method: 'POST',
+      url: '/register',
+      body: {
+        username: $('#registerUsername').val().trim(),
+        password: $('#registerPassword').val().trim(),
+        emailTo: $('#userEmail').val().trim()
       },
-      error: function(model, res) {
-        Backbone.Events.trigger('alert', 'Registration failed', 'Registration');
+      headers: {
+        'Content-Type': 'application/json'
       }
+    })
+    .then(function completeRegister(res) {
+      Backbone.Events.trigger('alert', res.msg, 'Registration');
+      router.navigate('', {trigger: true});
+    })
+    .catch(function errorConfirm() {
+      Backbone.Events.trigger('alert', 'Registration failed', 'Registration');
     });
   },
 

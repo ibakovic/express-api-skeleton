@@ -1,4 +1,4 @@
-@borderRadius: 5px;
+@borderRadius: 12px;
 
 .borderStyle() {
     border-width: 2px;
@@ -6,36 +6,48 @@
     border-color: #ccc;
 }
 
-.movieTitle {
-    .borderStyle();
-    border-top-left-radius: @borderRadius;
-    border-top-right-radius: @borderRadius;
+.responseMovie {
+    border-radius: @borderRadius;
+    background-color: #FFF;
+    margin: 1%;
     margin-bottom: 0;
+    padding: 0;
+    .movieTitle {
+        margin-bottom: 5%;
+        margin-top: 5%;
+    }
+
+    .movieText {
+        font-size: 120%;
+        .movieId, .addedBy, .created {
+            font-weight: bold;
+            display: inline;
+            color: #BBB;
+        }
+        .movieImage {
+            width: 100%;
+            border-top-right-radius: @borderRadius;
+            border-top-left-radius: @borderRadius;
+        }
+    }
+
+    .movieButtons {
+      border-bottom-right-radius: @borderRadius;
+      border-bottom-left-radius: @borderRadius;
+      #updateMovie, #deleteMovie {
+          margin: 3%;
+      }
+      #updateMovie {
+          margin-right: 0;
+      }
+      #deleteMovie {
+          margin-left: 0;
+      }
+    }
 }
 
-.movieText {
-    .borderStyle();
-    font-size: 120%;
-    .movieId, .addedBy, .created {
-        font-weight: bold;
-    }
-    .movieImage {
-        width: 100%;
-    }
-}
-
-.movieButtons {
-    .borderStyle();
-    margin: 0;
-    border-bottom-right-radius: @borderRadius;
-    border-bottom-left-radius: @borderRadius;
-    #updateMovie, #deleteMovie {
-        margin: 3%;
-    }
-    #updateMovie {
-        margin-right: 0;
-    }
-    #deleteMovie {
-        margin-left: 0;
+@media screen and (max-width: 1100px) {
+    .movieTitle {
+        font-size: 120%;
     }
 }

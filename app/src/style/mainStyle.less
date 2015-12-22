@@ -11,20 +11,29 @@
 @defaultPadding: 1%;
 @maxHeight: 100%;
 
+html, body {
+  height: 100%;
+  padding: 0;
+}
+
+.container-fluid {
+  padding: 0;
+}
+
 .mainProperties() {
     background-color: @baseColor;
-    margin-top: @defaultMarginTop;
-    margin-bottom: @defaultMargin;
     padding: @defaultPadding;
     border-radius: 5px;
 }
 
 .navbar {
     background-color: @baseColor;
+    margin: 0;
 }
 
 #loginWrapper {
     .mainProperties();
+    margin-top: 50px;
 }
 
 #registerForm {
@@ -54,5 +63,7 @@
 
 #mainContainer {
     .mainProperties();
-    background-color: #FFF;
+    background-color: #CCC;
+    margin: 0;
+    padding-left: 15%;
 }

@@ -42,23 +42,8 @@ Backbone.Events.on('movie:add', function(model) {
 $('document').ready(function() {
   var currentUserId = document.cookie.split('=');
 
-  var EmailModel = Backbone.Model.extend({
-    url: '/email'
-  });
-
-  var emailModel = new EmailModel();
-
-  var LoginModel = Backbone.Model.extend({
-    url: '/login'
-  });
-
-  var RegisterModel = Backbone.Model.extend({
-    url: '/register'
-  });
-
   var MovieModel = Backbone.Model.extend({
-    urlRoot: '/users/movies',
-    id: ''
+    urlRoot: '/users/movies'
   });
 
   var MovieCollection = Backbone.Collection.extend({
@@ -92,15 +77,12 @@ $('document').ready(function() {
   });
 
   registerView = new RegisterView({
-    el: $('#registerForm'),
-    model: RegisterModel,
-    emailModel: emailModel
+    el: $('#registerForm')
   });
   registerView.$el.hide();
 
   loginView = new LoginView({
-    el: $('#loginWrapper'),
-    model: LoginModel,
+    el: $('#loginWrapper')
   });
   loginView.$el.hide();
 
@@ -135,8 +117,7 @@ $('document').ready(function() {
   });
 
   confirmView = new ConfirmView({
-    el: $('#confirmRegistration'),
-    model: EmailModel
+    el: $('#confirmRegistration')
   });
 
   router.on('route:loginPage', function() {
@@ -196,12 +177,12 @@ $('document').ready(function() {
     Movies.fetch({success: function(collection, response) {
       moviesView.render();
       moviesView.$el.show();
+      User.fetch({success: function(collection, response) {
+        userView.render();
+        userView.$el.show();
+      }});
     }});
 
-    User.fetch({success: function(collection, response) {
-      userView.render();
-      userView.$el.show();
-    }});
   });
 
   router.on('route:returnToLogin', function(redirect) {

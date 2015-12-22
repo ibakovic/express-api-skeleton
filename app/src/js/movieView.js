@@ -29,6 +29,7 @@ var MovieView = Backbone.View.extend({
 
     var template = self.template({
       title: self.model.get('title'),
+      link: self.model.get('link'),
       movieId: self.model.get('id'),
       addedBy: username,
       picture: '/images',

@@ -5,6 +5,7 @@ var Backbone = require('backbone');
 var _ = require('lodash');
 var loginTemplate = require('../../../templates/loginTemplate.handlebars');
 var router = require('./backboneRouter.js');
+var popsicle = require('popsicle');
 
 var LoginView = Backbone.View.extend({
   template: loginTemplate,
@@ -27,18 +28,27 @@ var LoginView = Backbone.View.extend({
 
   login: function() {
     var self = this;
-    var credentials = new self.options.model({
+    var credentials = {
       username: $('#username').val().trim('string'),
       password: $('#password').val().trim('string')
-    });
-    credentials.save(null, {
-      success: function(model, response) {
-        Backbone.Events.trigger('alert', response.msg, 'Log in');
-        router.navigate('movies', {trigger: true});
+    };
+
+    popsicle({
+      method: 'POST',
+      url: '/login',
+      body: {
+        username: $('#username').val().trim('string'),
+        password: $('#password').val().trim('string')
       },
-      error: function(model, response) {
-        Backbone.Events.trigger('alert', 'Log in failed!', 'Log in');
+      headers: {
+        'Content-Type': 'application/json'
       }
+    })
+    .then(function completeLogin(res) {
+      if(res.status === 200)
+        return router.navigate('movies', {trigger: true});
+
+      Backbone.Events.trigger('alert', 'Log in failed!', 'Log in');
     });
   },
 

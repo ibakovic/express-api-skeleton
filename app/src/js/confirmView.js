@@ -2,6 +2,7 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('lodash');
 var router = require('./backboneRouter.js');
+var popsicle = require('popsicle');
 var confirmedRegistrationTemplate = require('../../../templates/confirmedRegistrationTemplate.handlebars');
 
 var ConfirmView = Backbone.View.extend({
@@ -35,11 +36,23 @@ var ConfirmView = Backbone.View.extend({
 
   returnToLogin: function() {
     var self = this;
-    var verification = new this.options.model({verId: self.verId});
 
-    verification.save(null, {success: function(model, response) {
+    popsicle({
+      method: 'POST',
+      url: '/email',
+      body: {
+        verId: self.verId
+      },
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function completeConfirm(res) {
       router.navigate('', {trigger: true});
-    }});
+    })
+    .catch(function errorConfirm() {
+      Backbone.Events.trgger('alert', 'registration failed', 'Registration failed');
+    });
   }
 });
 

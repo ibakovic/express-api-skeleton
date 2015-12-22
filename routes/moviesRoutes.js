@@ -8,10 +8,15 @@ var Message = require('../strings.json');
 var format = require('string-template');
 var logger = require('minilog')('moviesRoutes');
 
+
+/**
+ * Gets current date
+ * @return {String} Date in String format
+ */
 function getDate() {
   var date = new Date();
   var day = date.getDate();
-  var month = date.getMonth();
+  var month = date.getMonth() + 1;
   var year = date.getFullYear();
 
   return format('{day}. {month}. {year}.', {

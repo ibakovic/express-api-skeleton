@@ -1,10 +1,10 @@
 <div class="responseMovie col-md-3">
-  <h3 class="movieTitle text-center">{{title}}</h3>
   <div class="movieText text-center">
     <img class="movieImage" src="{{picture}}" />
-    Movie ID: <div class="movieId">{{movieId}}</div>
-    Added by: <div class="addedBy">{{addedBy}}</div>
-    Created: <div class="created">{{created}}</div>
+    <div>Movie link: <a href="{{link}}" class="movieId">{{movieId}}</a></div>
+    Added by: <div class="addedBy">{{addedBy}},</div>
+    <div class="created">{{created}}</div>
+    <h4 class="movieTitle text-center">{{title}}</h4>
   </div>
   <div class="movieButtons text-center">
     <button id="updateMovie" class="btn btn-primary">Edit</button>
