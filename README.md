@@ -13,7 +13,6 @@ as well as manipulate their movie data
 2. Run "npm install" in your project root and wait for several minutes
 
 ##Run app
-To run the app:
 1. Get to project root
 2. npm start
 
