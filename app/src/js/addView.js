@@ -17,13 +17,17 @@ var AddView = Backbone.View.extend({
   },
 
   initialize: function(options) {
-    _.bindAll(this, 'render', 'uploadImage', 'addMovie', 'cancelAdd');
+    _.bindAll(this, 'render', 'getImgId', 'uploadImage', 'addMovie', 'cancelAdd');
     this.options = options;
   },
 
   render: function() {
     var html = this.template();
     this.$el.html(html);
+  },
+
+  getImgId: function(imgId) {
+    this.imgId = imgId;
   },
 
   uploadImage: function() {
@@ -37,25 +41,27 @@ var AddView = Backbone.View.extend({
     var title = $('#addTitle').val().trim();
     var link = $('#addLink').val().trim();
 
+    if(this.imgId === 'noImg')
+      return Backbone.Events.trigger('alert', 'Please upload an image before submitting changes', 'Image not uploaded');
+
     var Movie = new self.options.movieModel({
       title: title,
       link: link,
-      addedBy: self.options.userId
+      addedBy: self.options.userId,
+      imageId: self.imgId
     });
 
     Movie.save(null, {
       success: function(model, response) {
-        console.log('Add movie success');
         model.set({'addedBy': response.data.addedBy});
         model.set({'imageUrl': response.data.addedBy + '/' + title});
-        console.log('Add movie', model);
         Backbone.Events.trigger('movie:add', model);
 
         self.$el.hide();
         router.navigate('movies', {trigger: true});
       },
-      error: function() {
-        console.log('Add view error');
+      error: function(model, response) {
+        Backbone.Events.trigger('alert', response.msg, 'Failed to add your movie');
     }});
   },
 

@@ -27,8 +27,6 @@ function confirmRegistration(req, res, next) {
     var userQuery = {_id: ver.userId};
     var expQuery = {createdAt: null};
 
-    logger.log(ver.userId);
-
     User.findOneAndUpdate(userQuery, expQuery, {'new': true}, function(err, data) {
       if (err)
         return next(err);

@@ -158,8 +158,6 @@ $('document').ready(function() {
     alertView.$el.hide();
     registerView.$el.hide();
 
-    console.log('inside confirm register');
-
     confirmView.getVerId(verId);
     confirmView.render();
     confirmView.$el.show();
@@ -212,7 +210,7 @@ $('document').ready(function() {
     editView.$el.show();
   });
 
-  router.on('route:addMovie', function() {
+  router.on('route:addMovie', function(imageId) {
     moviesView.$el.hide();
     loginView.$el.hide();
     editView.$el.hide();
@@ -220,6 +218,8 @@ $('document').ready(function() {
     userDetailsView.$el.hide();
     alertView.$el.hide();
     confirmView.$el.hide();
+
+    addView.getImgId(imageId);
 
     addView.render();
     addView.$el.show();

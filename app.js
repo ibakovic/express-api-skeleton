@@ -54,6 +54,7 @@ app
 app
   .use(express.static(Path.join(__dirname, 'app')))
   .use(express.static(Path.join(__dirname, 'images')))
+  .use(express.static(Path.join(__dirname, 'uploads')))
   .use(express.static(Path.join(__dirname, 'node_modules')))
   .use(express.static(Path.join(__dirname, 'app/src/style')))
   .use(express.static(Path.join(__dirname, 'app/dist')))

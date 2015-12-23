@@ -51,7 +51,6 @@ var userDetailsView = Backbone.View.extend({
         Backbone.Events.trigger('alert', response.msg, 'Change password');
       },
       error: function(model, response) {
-        console.log(model);
         Backbone.Events.trigger('alert', response.responseText, 'Change password');
       }
     });

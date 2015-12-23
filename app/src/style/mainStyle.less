@@ -4,6 +4,7 @@
 @import "userDetailsStyle.less";
 @import "userNavbarStyle.less";
 @import "editStyle.less";
+@import "addMovieStyle.less";
 
 @baseColor: #EEEEEE;
 @defaultMarginTop: 50px;
@@ -11,23 +12,28 @@
 @defaultPadding: 1%;
 @maxHeight: 100%;
 
-html, body {
-  height: 100%;
-  padding: 0;
-}
-
-.container-fluid {
-  padding: 0;
-}
-
 .mainProperties() {
     background-color: @baseColor;
     padding: @defaultPadding;
     border-radius: 5px;
 }
 
+html, body {
+  height: 100%;
+  padding: 0;
+  padding-bottom: 0;
+}
+
+body {
+  min-height: 100%;
+}
+
+.container-fluid {
+  padding: 0;
+}
+
 .navbar {
-    background-color: @baseColor;
+    background-color: white;
     margin: 0;
 }
 
@@ -62,8 +68,10 @@ html, body {
 }
 
 #mainContainer {
-    .mainProperties();
-    background-color: #CCC;
+    padding: 1%;
+    background: #EBEBEB none repeat scroll 0% 0%;
     margin: 0;
+    margin-bottom: 0;
     padding-left: 15%;
+    min-height: 100%;
 }

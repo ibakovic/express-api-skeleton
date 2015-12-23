@@ -4,6 +4,14 @@
 movieapp is an app that allowes users to register and login
 as well as manipulate their movie data
 
+##Requirements
+- Node.js and npm
+- MongoDB
+
+##Install
+1. Download application from github
+2. Run "npm install" in your project root and wait for several minutes
+
 ##Run app
 To run the app:
 1. Get to project root
