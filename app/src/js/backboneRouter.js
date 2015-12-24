@@ -12,7 +12,8 @@ var Router = Backbone.Router.extend({
     'movies': 'startApp',
     'edit/:movieId': 'updateMovieTitle',
     'addMovie/:imageId': 'addMovie',
-    'userDetails/:userId': 'getUserDetails'
+    'userDetails/:userId': 'getUserDetails',
+    'userInfo/:userId': 'userInfo'
   }
 });
 

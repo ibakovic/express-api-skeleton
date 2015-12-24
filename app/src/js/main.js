@@ -12,6 +12,7 @@ var AlertView = require('./alertView.js');
 var PromptView = require('./promptView.js');
 var UserDetailsView = require('./userDetailsView.js');
 var ConfirmView = require('./confirmView.js');
+var UserInfoView = require('./userInfoView.js');
 var loginView;
 var userView;
 var moviesView;
@@ -22,6 +23,7 @@ var registerView;
 var promptView;
 var userDetailsView;
 var confirmView;
+var userInfoView;
 
 Backbone.Events.on('prompt', function(message, title, id) {
   promptView.getMessage(message, title, id);
@@ -120,6 +122,11 @@ $('document').ready(function() {
     el: $('#confirmRegistration')
   });
 
+  userInfoView = new UserInfoView({
+    el: $('#userInfoForm'),
+    model: User
+  });
+
   router.on('route:loginPage', function() {
     moviesView.$el.hide();
     userView.$el.hide();
@@ -129,6 +136,7 @@ $('document').ready(function() {
     userDetailsView.$el.hide();
     alertView.$el.hide();
     confirmView.$el.hide();
+    userInfoView.$el.hide();
 
     loginView.render();
     loginView.$el.show();
@@ -143,6 +151,7 @@ $('document').ready(function() {
     userDetailsView.$el.hide();
     alertView.$el.hide();
     confirmView.$el.hide();
+    userInfoView.$el.hide();
 
     registerView.render();
     registerView.$el.show();
@@ -157,6 +166,7 @@ $('document').ready(function() {
     userDetailsView.$el.hide();
     alertView.$el.hide();
     registerView.$el.hide();
+    userInfoView.$el.hide();
 
     confirmView.getVerId(verId);
     confirmView.render();
@@ -171,6 +181,7 @@ $('document').ready(function() {
     userDetailsView.$el.hide();
     alertView.$el.hide();
     confirmView.$el.hide();
+    userInfoView.$el.hide();
 
     Movies.fetch({success: function(collection, response) {
       moviesView.render();
@@ -195,6 +206,7 @@ $('document').ready(function() {
     userDetailsView.$el.hide();
     alertView.$el.hide();
     confirmView.$el.hide();
+    userInfoView.$el.hide();
 
     if(Movies.length === 0) {
       Movies.fetch({success: function(collection, response) {
@@ -218,6 +230,7 @@ $('document').ready(function() {
     userDetailsView.$el.hide();
     alertView.$el.hide();
     confirmView.$el.hide();
+    userInfoView.$el.hide();
 
     addView.getImgId(imageId);
 
@@ -233,6 +246,7 @@ $('document').ready(function() {
     addView.$el.hide();
     alertView.$el.hide();
     confirmView.$el.hide();
+    userInfoView.$el.hide();
 
     if(!User.get('username')) {
       User.fetch({success: function(model, response) {
@@ -244,6 +258,28 @@ $('document').ready(function() {
 
     userDetailsView.render();
     userDetailsView.$el.show();
+  });
+
+  router.on('route:userInfo', function(userId) {
+    moviesView.$el.hide();
+    loginView.$el.hide();
+    editView.$el.hide();
+    registerView.$el.hide();
+    addView.$el.hide();
+    alertView.$el.hide();
+    confirmView.$el.hide();
+    userDetailsView.$el.hide();
+
+    if(!User.get('username')) {
+      User.fetch({success: function(model, response) {
+        userInfoView.render();
+        userInfoView.$el.show();
+        return;
+      }});
+    }
+
+    userInfoView.render();
+    userInfoView.$el.show();
   });
 
   // Start Backbone history a necessary step for bookmarkable URL's

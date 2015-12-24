@@ -10,12 +10,13 @@ var MovieView = Backbone.View.extend({
   template: movieTemplate,
 
   events: {
+    'click .addedBy': 'openUserInfo',
     'click #deleteMovie': 'deleteMovie',
     'click #updateMovie': 'editMovie'
   },
 
   initialize: function(options) {
-    _.bindAll(this, 'render', 'deleteMovie', 'editMovie', 'removeView');
+    _.bindAll(this, 'render', 'deleteMovie', 'editMovie', 'removeView', 'openUserInfo');
     this.options = options;
     this.model = this.options.model;
 
@@ -57,6 +58,11 @@ var MovieView = Backbone.View.extend({
   editMovie: function() {
     var self = this;
     router.navigate('edit/' + self.model.get('id'), {trigger: true});
+  },
+
+  openUserInfo: function() {
+    var self = this;
+    router.navigate('userInfo/' + self.model.get('addedBy').username, {trigger: true});
   }
 });
 

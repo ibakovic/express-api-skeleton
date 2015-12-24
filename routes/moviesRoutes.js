@@ -125,7 +125,11 @@ function addMovie (req, res, next) {
             resData.data = newMovie.toObject();
             resData.data.image = data;
 
-            return res.status(200).json(resData);
+            fs.unlink(imagePath, function(err) {
+              if(err)
+                return next(err);
+              return res.status(200).json(resData);
+            });
           });
         });
       });
