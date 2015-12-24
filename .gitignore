@@ -19,3 +19,6 @@ todo.txt
 #ignore files created by browserify and less
 app/dist/main.js
 app/dist/mainStyle.css
+
+#ignore temporary images file
+uploads/temp

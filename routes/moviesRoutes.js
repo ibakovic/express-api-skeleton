@@ -88,7 +88,7 @@ function addMovie (req, res, next) {
       return res.status(400).json(resData);
     }
 
-    var imagePath = root + '/undefineduploads/' + req.body.imageId;
+    var imagePath = root + '/uploads/temp/' + req.body.imageId;
 
     fs.readFile(imagePath, function (err, data) {
       if(err)
@@ -162,29 +162,6 @@ function listMovies (req, res, next) {
       resData.data = _.invoke(movie, 'toObject');
       status = 200;
 
-      var i = 0;
-
-      movie.forEach(function(singleMovie) {
-        var imagePath = format('{path}/{userId}/{title}/image.png', {
-          path: path,
-          userId: req.user.id,
-          title: singleMovie.title
-        });
-
-        fs.readFile(imagePath, function(err, image) {
-          if(err)
-            return next(err);
-
-          if(!image) {
-            resData.msg = 'Image not found';
-            resData.success = false;
-            status = 400;
-            return res.status(status).json(resData);
-          }
-          resData.data[i].image = image;
-          i++;
-        });
-      });
       res.status(status).json(resData);
     });
   });

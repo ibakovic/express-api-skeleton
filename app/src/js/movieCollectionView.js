@@ -43,6 +43,7 @@ var MovieCollectionView = Backbone.View.extend({
   },
 
   appendItem: function(movie) {
+    var self = this;
     var movieView = new MovieView({ model: movie });
 
     movieView.render();

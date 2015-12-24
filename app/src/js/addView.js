@@ -57,7 +57,7 @@ var AddView = Backbone.View.extend({
         model.set({'imageUrl': response.data.addedBy + '/' + title});
         Backbone.Events.trigger('movie:add', model);
 
-        self.$el.hide();
+        //self.$el.hide();
         router.navigate('movies', {trigger: true});
       },
       error: function(model, response) {
@@ -66,7 +66,7 @@ var AddView = Backbone.View.extend({
   },
 
   cancelAdd: function() {
-    this.$el.hide();
+    //this.$el.hide();
     router.navigate('movies', {trigger: true});
   }
 });
