@@ -17,8 +17,8 @@ var fs = require('fs');
 var image = fs.readFileSync('images/Background.png');
 
 function getImages(req, res, next) {
-   res.writeHead(200, {'Content-Type': 'image/gif' });
-   res.end(image, 'binary');
+  res.writeHead(200, {'Content-Type': 'image/gif' });
+  res.end(image, 'binary');
 }
 
 // setup logging
