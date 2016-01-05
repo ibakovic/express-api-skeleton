@@ -37,14 +37,20 @@ var EditView = Backbone.View.extend({
     var self = this;
     var movie = this.collection.findWhere({id: self.movieId});
     var update = $('#titleUpdate').val().trim('string');
+    var title = movie.get('title');
 
     movie.set({
-      update: update
+      update: update,
+      title: title
     });
 
     movie.save(null, {
       success: function(model, response) {
         router.navigate('movies', {trigger: true});
+      },
+      error: function(model, response) {
+        var msg = response.responseText.split('"');
+        Backbone.Events.trigger('alert', msg[3], 'Update error');
       }
     });
   },

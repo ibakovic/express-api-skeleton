@@ -254,7 +254,23 @@ function deleteMovie (req, res, next) {
       return res.status(400).json(resData);
     }
 
-    return res.status(200).json(resData);
+    var imgPath = format('{path}/{userId}/{movieTitle}', {
+      path: path,
+      userId: req.user.id,
+      movieTitle: movie.title
+    });
+
+    fs.unlink(imgPath + '/image.png', function(err) {
+      if(err)
+        return next(err);
+
+      fs.rmdir(imgPath, function(err) {
+        if(err)
+          return next(err);
+
+        return res.status(200).json(resData);
+      });
+    });
   });
 }
 
@@ -308,7 +324,24 @@ function updateMovie (req, res, next) {
       resData.msg = Message.MovieUpdated;
       resData.success = true;
 
-      return res.status(200).json(resData);
+      var oldPath = format('{path}/{userId}/{movieTitle}', {
+        path: path,
+        userId: req.user.id,
+        movieTitle: req.body.title
+      });
+
+      var newPath = format('{path}/{userId}/{movieTitle}', {
+        path: path,
+        userId: req.user.id,
+        movieTitle: req.body.update
+      });
+
+      fs.rename(oldPath, newPath, function(err) {
+        if(err)
+          return next(err);
+
+        return res.status(200).json(resData);
+      });
     });
   });
 }

@@ -16,13 +16,14 @@ var UserView = Backbone.View.extend({
   events: {
     'click #getUserInfo': 'getUserInfo',
     'click #addMovieButton': 'openAddMovieForm',
-    'click #logout': 'logout'
+    'click #logout': 'logout',
+    'click #homePage': 'homePage'
   },
 
   initialize: function(options) {
     var self = this;
     this.options = options;
-    _.bindAll(this, 'render', 'getUserInfo', 'openAddMovieForm', 'logout');
+    _.bindAll(this, 'render', 'getUserInfo', 'openAddMovieForm', 'logout', 'homePage');
 
     this.listenTo(self.model, 'change', self.render);
   },
@@ -54,6 +55,10 @@ var UserView = Backbone.View.extend({
         Backbone.Events.trigger('alert', 'Error!' + res, 'Logout');
       }
     });
+  },
+
+  homePage: function() {
+    router.navigate('movies', {trigger: true});
   }
 });
 
