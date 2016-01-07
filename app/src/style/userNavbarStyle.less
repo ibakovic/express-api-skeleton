@@ -1,14 +1,29 @@
+.hoverStyle() {
+  cursor: pointer;
+  background-color: #EDEDED;
+}
+
 .navbar-header {
   padding-left: 35%;
   .navbar-brand {
     &:hover {
-      cursor: pointer;
+      .hoverStyle();
     }
   }
 }
 
 .cursorPointer {
   &:hover {
-    cursor: pointer;
+    .hoverStyle();
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .cursorPointer {
+    &:hover {
+      .hoverStyle();
+    }
+
+    text-align: center;
   }
 }
