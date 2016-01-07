@@ -22,3 +22,9 @@ app/dist/mainStyle.css
 
 #ignore temporary images file
 uploads/temp
+
+# ignore sublime-workspace
+nodeAppProject.sublime-workspace
+
+# ignore uploads images
+uploads/
