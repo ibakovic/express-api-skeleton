@@ -32,7 +32,7 @@ gulp.task('browserify', function() {
       transform: [browserifyHandlebars],
       paths: [ './app/src/js' ]
     }))
-    .pipe(gulp.dest('./app/dist'));
+    .pipe(gulp.dest('./app/dist/main.js'));
 });
 
 gulp.task('less', function () {
