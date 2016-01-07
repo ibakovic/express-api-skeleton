@@ -14,7 +14,7 @@ var ConfirmView = Backbone.View.extend({
 
   initialize: function(options) {
     this.options = options;
-    _.bindAll(this, 'render', 'getVerId', 'returnToLogin');
+    _.bindAll(this, 'render', 'show', 'hide', 'getVerId', 'returnToLogin');
   },
 
   getCredentials: function(username, password, model) {
@@ -32,6 +32,14 @@ var ConfirmView = Backbone.View.extend({
   render: function() {
     var html = this.template();
     this.$el.html(html);
+  },
+
+  show: function() {
+    this.$el.show();
+  },
+
+  hide: function() {
+    this.$el.hide();
   },
 
   returnToLogin: function() {

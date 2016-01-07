@@ -1,8 +1,8 @@
 {
-	"folders":
-	[
-		{
-			"path": "/home/ibakovic/Projects/nodeapp",
+    "folders":
+    [
+        {
+            "path": "/home/ibakovic/Projects/nodeapp",
             "folder_exclude_patterns":
             [
                 "node_modules"
@@ -13,6 +13,6 @@
                 "app/dist/main.js",
                 "nodeAppProject.sublime-workspace"
             ]
-		}
-	]
+        }
+    ]
 }

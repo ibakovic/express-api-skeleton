@@ -15,7 +15,7 @@ var UserDetailsView = Backbone.View.extend({
 
   initialize: function(options) {
     this.options = options;
-    _.bindAll(this, 'render', 'close');
+    _.bindAll(this, 'render', 'show', 'hide', 'close');
   },
 
   render: function() {
@@ -25,6 +25,14 @@ var UserDetailsView = Backbone.View.extend({
       userID: self.options.model.get('id')
     });
     this.$el.html(html);
+  },
+
+  show: function() {
+    this.$el.show();
+  },
+
+  hide: function() {
+    this.$el.hide();
   },
 
   close: function() {

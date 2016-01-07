@@ -26,5 +26,5 @@ uploads/temp
 # ignore sublime-workspace
 nodeAppProject.sublime-workspace
 
-# ignore uploads images
+# ignore uploaded images
 uploads/

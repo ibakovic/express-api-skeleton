@@ -16,7 +16,7 @@ var RegisterView = Backbone.View.extend({
   },
   initialize: function(options) {
     this.options = options;
-    _.bindAll(this, 'render', 'register', 'cancelRegister');
+    _.bindAll(this, 'render', 'show', 'hide', 'register', 'cancelRegister');
   },
 
   render: function() {
@@ -51,6 +51,14 @@ var RegisterView = Backbone.View.extend({
     .catch(function errorConfirm() {
       Backbone.Events.trigger('alert', 'Registration failed', 'Registration');
     });
+  },
+
+  show: function() {
+    this.$el.show();
+  },
+
+  hide: function() {
+    this.$el.hide();
   },
 
   cancelRegister: function() {

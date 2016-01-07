@@ -17,13 +17,21 @@ var AddView = Backbone.View.extend({
   },
 
   initialize: function(options) {
-    _.bindAll(this, 'render', 'getImgId', 'uploadImage', 'addMovie', 'cancelAdd');
+    _.bindAll(this, 'render', 'show', 'hide', 'getImgId', 'uploadImage', 'addMovie', 'cancelAdd');
     this.options = options;
   },
 
   render: function() {
     var html = this.template();
     this.$el.html(html);
+  },
+
+  show: function() {
+    this.$el.show();
+  },
+
+  hide: function() {
+    this.$el.hide();
   },
 
   getImgId: function(imgId) {

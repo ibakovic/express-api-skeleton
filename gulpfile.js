@@ -25,7 +25,7 @@ var paths = {
 
 gulp.task('browserify', function() {
   // Single entry point to browserify
-  gulp.src('./app/src/js/main.js')
+  gulp.src('./app/src/js/index.js')
     .pipe(browserify({
       insertGlobals : true,
       debug : !gulp.env.production,

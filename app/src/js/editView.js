@@ -20,13 +20,21 @@ var EditView = Backbone.View.extend({
     var self = this;
     self.options = options;
     self.collection = self.options.collection;
-    _.bindAll(this, 'render', 'cancel', 'updateMovie');
+    _.bindAll(this, 'render', 'show', 'hide', 'cancel', 'updateMovie');
   },
 
   render: function() {
     var html = this.template();
 
     $(this.el).html(html);
+  },
+
+  show: function() {
+    this.$el.show();
+  },
+
+  hide: function() {
+    this.$el.hide();
   },
 
   getMovieId: function(movieId) {

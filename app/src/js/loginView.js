@@ -17,7 +17,7 @@ var LoginView = Backbone.View.extend({
 
   initialize: function(options) {
     this.options = options;
-    _.bindAll(this, 'render', 'login', 'signUp');
+    _.bindAll(this, 'render', 'show', 'hide', 'login', 'signUp');
     var self = this;
   },
 
@@ -50,6 +50,14 @@ var LoginView = Backbone.View.extend({
 
       Backbone.Events.trigger('alert', 'Log in failed!', 'Log in');
     });
+  },
+
+  show: function() {
+    this.$el.show();
+  },
+
+  hide: function() {
+    this.$el.hide();
   },
 
   signUp: function() {
