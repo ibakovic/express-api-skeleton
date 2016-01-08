@@ -5,16 +5,16 @@ var router = require('express').Router();
 var fs = require('fs');
 var multer = require('multer');
 var Path = require('path');
-var root = require('../rootDirectory.js');
+var root = require('../../rootDirectory.js');
 var upload = multer({ dest: root + '/uploads/temp' });
 var path = root + '/uploads';
 var mkdirp = require('mkdirp');
-var Movie = require('../models/movies.js');
-var User = require('../models/users.js');
-var MongoImage = require('../models/mongoImages.js');
-var Message = require('../strings.json');
+var Movie = require('../models/Movie.js');
+var User = require('../models/User.js');
+var Message = require('../../strings.json');
 var format = require('string-template');
 var logger = require('minilog')('moviesRoutes');
+var async = require('async');
 
 var cpUpload = upload.fields([{
   name: 'image',
@@ -134,6 +134,17 @@ function addMovie (req, res, next) {
       });
     }
 
+    function onImageStored(err) {
+      var movie = new Movie({
+        title: req.body.title,
+        link: req.body.link,
+        addedBy: req.user.id,
+        created: getDate()
+      });
+
+      movie.save(onAdded);
+    }
+
     function onAdded(err, movie) {
       if (err) {
         next(err);
@@ -152,17 +163,6 @@ function addMovie (req, res, next) {
           data: movie.toObject()
         });
       });
-    }
-
-    function onImageStored(err) {
-      var movie = new Movie({
-        title: req.body.title,
-        link: req.body.link,
-        addedBy: req.user.id,
-        created: getDate()
-      });
-
-      movie.save(onAdded);
     }
 
     storeImage(imagePath, newPath, onImageStored);

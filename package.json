@@ -3,12 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npm run gulp less && npm run browserify && supervisor ./bin/www",
+    "start": "npm run less && npm run browserify && supervisor ./bin/www",
     "gulp": "gulp",
     "debug": "node-debug --port 8181 ./bin/www",
-    "browserify": "browserify -t browserify-handlebars ./app/src/js/index.js -o ./app/dist/main.js",
-    "watchify": " watchify -t browserify-handlebars ./app/src/js/index.js -o ./app/dist/main.js -v",
-    "less": "lessc app/src/style/mainStyle.less app/dist/mainStyle.css"
+    "browserify": "browserify -t browserify-handlebars ./app/src/js/index.js -o ./app/dist/bundle.js",
+    "watchify": " watchify -t browserify-handlebars ./app/src/js/index.js -o ./app/dist/bundle.js -v",
+    "less": "lessc app/src/style/mainStyle.less app/dist/style.css"
   },
   "main": "./bin/www",
   "dependencies": {

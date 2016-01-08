@@ -1,7 +1,7 @@
 'use strict';
 
 var LocalStrategy = require('passport-local').Strategy;
-var User = require('../models/users.js');
+var User = require('../models/User.js');
 var bCrypt = require('bcrypt-nodejs');
 var format = require('string-template');
 var logger = require('minilog')('register');

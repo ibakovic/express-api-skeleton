@@ -3,9 +3,9 @@
 var router = require('express').Router();
 var nodemailer = require('nodemailer');
 var logger = require('minilog')('mailHandler');
-var Verification = require('../models/verification.js');
-var User = require('../models/users.js');
-var Message = require('../strings.json');
+var Verification = require('../models/RegistrationNotConfirmed.js');
+var User = require('../models/User.js');
+var Message = require('../../strings.json');
 
 function confirmRegistration(req, res, next) {
   var resData = {};

@@ -3,7 +3,7 @@ var Backbone = require('backbone');
 var _ = require('lodash');
 var router = require('./backboneRouter.js');
 var popsicle = require('popsicle');
-var confirmedRegistrationTemplate = require('../../../../templates/confirmedRegistrationTemplate.handlebars');
+var confirmedRegistrationTemplate = require('../../templates/confirmedRegistrationTemplate.handlebars');
 
 var ConfirmView = Backbone.View.extend({
   template: confirmedRegistrationTemplate,

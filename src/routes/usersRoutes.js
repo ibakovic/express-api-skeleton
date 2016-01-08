@@ -3,8 +3,8 @@
 var express = require('express');
 var router = express.Router();
 var bCrypt = require('bcrypt-nodejs');
-var User = require('../models/users.js');
-var Message = require('../strings.json');
+var User = require('../models/User.js');
+var Message = require('../../strings.json');
 var moviesController = require('./moviesRoutes.js');
 var _ = require('lodash');
 var logger = require('minilog')('usersRoutes');
@@ -103,7 +103,7 @@ function deleteUser(req, res, next) {
   resData.msg = Message.UserDeleted;
   resData.success = true;
 
-  var Movie = require('../models/movies.js');
+  var Movie = require('../models/Movie.js');
   var movieQuery = { addedBy: req.user.id };
   Movie.remove(movieQuery, function(err) {
     if (err)

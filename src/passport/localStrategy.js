@@ -2,7 +2,7 @@
 
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-var User = require('../models/users.js');
+var User = require('../models/User.js');
 var logger = require('minilog')('passport:localStrategy');
 
 function authorize(req, username, password, done) {

@@ -3,7 +3,7 @@
 var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('lodash');
-var alertTemplate = require('../../../../templates/alertTemplate.handlebars');
+var alertTemplate = require('../../templates/alertTemplate.handlebars');
 
 var AlertView = Backbone.View.extend({
   template: alertTemplate,

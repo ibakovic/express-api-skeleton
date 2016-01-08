@@ -17,8 +17,8 @@ coverage/
 todo.txt
 
 #ignore files created by browserify and less
-app/dist/main.js
-app/dist/mainStyle.css
+app/dist/bundle.js
+app/dist/main.css
 
 #ignore temporary images file
 uploads/temp

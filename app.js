@@ -13,14 +13,6 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var less = require('less');
 
-var fs = require('fs');
-var image = fs.readFileSync('images/Background.png');
-
-function getImages(req, res, next) {
-  res.writeHead(200, {'Content-Type': 'image/gif' });
-  res.end(image, 'binary');
-}
-
 // setup logging
 require('minilog').enable();
 
@@ -28,7 +20,7 @@ require('minilog').enable();
 var app = express();
 
 // init mongoose
-var mongooseConnection = require('./models/init.js')();
+var mongooseConnection = require('./src/models/init.js')();
 
 // init session
 app.use(session({
@@ -53,7 +45,6 @@ app
 // serve static assets
 app
   .use(express.static(Path.join(__dirname, 'app')))
-  .use(express.static(Path.join(__dirname, 'images')))
   .use(express.static(Path.join(__dirname, 'uploads')))
   .use(express.static(Path.join(__dirname, 'node_modules')))
   .use(express.static(Path.join(__dirname, 'app/src/style')))
@@ -75,17 +66,15 @@ app.use(cookieParser());
 app
   .use(passport.initialize())
   .use(passport.session());
-require('./passport/init.js')(passport);
+require('./src/passport/init.js')(passport);
 
 // routers
-var usersRoutes = require('./routes/usersRoutes.js');
-var logRegRoutes = require('./routes/logRegRoutes.js');
-var mailHandler = require('./routes/mailHandler.js');
-var imageRouter = require('./routes/imagesRoutes.js');
+var usersRoutes = require('./src/routes/usersRoutes.js');
+var logRegRoutes = require('./src/routes/logRegRoutes.js');
+var mailHandler = require('./src/routes/mailHandler.js');
 
 // API endpoints
 app
-  .use('/images', imageRouter)
   .use('/', logRegRoutes)
   .use('/users', usersRoutes)
   .use('/email', mailHandler);

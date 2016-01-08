@@ -1,7 +1,7 @@
 'use strict';
 
 var logger = require('minilog')('Passport');
-var User = require('../models/users.js');
+var User = require('../models/User.js');
 var login = require('./login');
 var register = require('./register');
 var localStrategy = require('./localStrategy.js');
