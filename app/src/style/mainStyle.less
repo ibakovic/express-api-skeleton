@@ -43,6 +43,15 @@ body {
   padding: 0;
 }
 
+.row-flex, .row-flex > div {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    flex:1 1 auto;
+}
+
 #mainContainer {
   overflow: hidden;
   padding: 1%;
@@ -55,13 +64,16 @@ body {
   height: auto;
 }
 
-.row-flex, .row-flex > div[class*='col-'] {
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    flex:1 1 auto;
+@media screen and (min-width: 992px) {
+  .row-flex > div {
+    max-width: 32%;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .row-flex > div {
+    max-width: 48%;
+  }
 }
 
 .row-flex-wrap {
@@ -70,12 +82,12 @@ body {
     flex:0;
 }
 
-.row-flex > div[class*='col-'], .container-flex > div[class*='col-'] {
+.row-flex > div, .container-flex > div {
    margin: 5px;
 }
 
-.container-flex > div[class*='col-'] div,.row-flex > div[class*='col-'] div {
-  width:100%;
+.container-flex > div > div[class*='col-'],.row-flex > div > div[class*='col-'] {
+  width: 100%;
 }
 
 .flex-col {

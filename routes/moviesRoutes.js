@@ -15,51 +15,21 @@ var MongoImage = require('../models/mongoImages.js');
 var Message = require('../strings.json');
 var format = require('string-template');
 var logger = require('minilog')('moviesRoutes');
-var chain = require('connect-chain');
 
 var cpUpload = upload.fields([{
   name: 'image',
   maxCount: 1
 }]);
 
-function readFileFunction (err, data, resData, req, imagePath, res, next) {
-  if(err)
-    return next(err);
-  if(!data) {
-    resData.msg = 'Image not found';
-    resData.success = false;
-    return res.status(400).json(resData);
-  }
-  var newPath = format('{path}/{userId}/{movieTitle}', {
-    path: path,
-    userId: req.user.id,
-    movieTitle: req.body.title
-  });
-  mkdirp(newPath, function(err) {
-    if(err)
-      return next(err);
-    fs.appendFile(newPath + '/image.png', data, saveMovieAndImage(err, resData, req, data, imagePath, res, next));
-  });
-}
-
 function saveMovieAndImage(err, resData, req, data, imagePath, res, next) {
   if(err)
     return next(err);
-  var movie = new Movie({
-    title: req.body.title,
-    link: req.body.link,
-    addedBy: req.user.id,
-    created: getDate()
-  });
 
   movie.save(function(err, newMovie) {
     if(err)
       return next(err);
 
-    resData.msg = 'Movie saved';
-    resData.success = true;
-    resData.data = newMovie.toObject();
-    resData.data.image = data;
+
 
     fs.unlink(imagePath, function(err) {
       if(err)
@@ -138,9 +108,64 @@ function addMovie (req, res, next) {
 
     var imagePath = root + '/uploads/temp/' + req.body.imageId;
 
-    fs.readFile(imagePath, function(err, data) {
-      readFileFunction(err, data, resData, req, imagePath, res, next);
+    var newPath = format('{path}/{userId}/{movieTitle}', {
+      path: path,
+      userId: req.user.id,
+      movieTitle: req.body.title
     });
+    newPath += '/image.png';
+
+    function storeImage(source, destination, callback) {
+      var destDir = Path.dirname(destination);
+      mkdirp(destDir, function created(err) {
+        if (err) {
+          callback(err);
+          return;
+        }
+
+        fs.readFile(source, function read(err, data) {
+          if (err) {
+            callback(err);
+            return;
+          }
+
+          fs.writeFile(destination, data, callback);
+        });
+      });
+    }
+
+    function onAdded(err, movie) {
+      if (err) {
+        next(err);
+        return;
+      }
+
+      fs.unlink(imagePath, function deleted(err) {
+        if (err) {
+          next(err);
+          return;
+        }
+
+        return res.status(200).json({
+          msg: 'Movie saved',
+          success: true,
+          data: movie.toObject()
+        });
+      });
+    }
+
+    function onImageStored(err) {
+      var movie = new Movie({
+        title: req.body.title,
+        link: req.body.link,
+        addedBy: req.user.id,
+        created: getDate()
+      });
+
+      movie.save(onAdded);
+    }
+
+    storeImage(imagePath, newPath, onImageStored);
   });
 }
 
