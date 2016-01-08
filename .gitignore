@@ -28,3 +28,6 @@ nodeAppProject.sublime-workspace
 
 # ignore uploaded images
 uploads/
+
+# ignore blueprint
+apiBlueprint.apib

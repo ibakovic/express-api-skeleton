@@ -56,7 +56,11 @@ var MovieCollectionView = Backbone.View.extend({
 
   appendItem: function(movie) {
     var self = this;
-    var movieView = new MovieView({ model: movie });
+    var column = $('<div class="responseMovie col-sm-5 col-md-3"></div>');
+    var movieView = new MovieView({
+      el: column,
+      model: movie
+    });
 
     movieView.render();
 

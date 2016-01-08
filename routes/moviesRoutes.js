@@ -15,6 +15,7 @@ var MongoImage = require('../models/mongoImages.js');
 var Message = require('../strings.json');
 var format = require('string-template');
 var logger = require('minilog')('moviesRoutes');
+var chain = require('connect-chain');
 
 var cpUpload = upload.fields([{
   name: 'image',
