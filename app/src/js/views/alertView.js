@@ -3,7 +3,7 @@
 var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('lodash');
-var alertTemplate = require('../../../templates/alertTemplate.handlebars');
+var alertTemplate = require('../../../../templates/alertTemplate.handlebars');
 
 var AlertView = Backbone.View.extend({
   template: alertTemplate,
@@ -14,17 +14,23 @@ var AlertView = Backbone.View.extend({
     'click .alertOk': 'alertOk'
   },
 
-  initialize: function(options) {
-    _.bindAll(this, 'render', 'alertOk', 'getMessage');
-    this.options = options;
+  initialize: function() {
+    _.bindAll(this, 'render', 'show', 'hide', 'alertOk', 'getMessage');
   },
 
   render: function() {
     var self =this;
     var html = this.template(self.properties);
-    this.$el.css({'display': 'block'});
-    this.options.content.html(html);
+    this.$el.html(html);
     return this;
+  },
+
+  show: function() {
+    this.$el.show();
+  },
+
+  hide: function() {
+    this.$el.hide();
   },
 
   getMessage: function(message, title) {

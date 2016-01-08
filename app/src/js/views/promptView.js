@@ -3,7 +3,7 @@
 var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('lodash');
-var promptTemplate = require('../../../templates/promptTemplate.handlebars');
+var promptTemplate = require('../../../../templates/promptTemplate.handlebars');
 
 var PromptView = Backbone.View.extend({
   template: promptTemplate,
@@ -15,16 +15,22 @@ var PromptView = Backbone.View.extend({
     'click .promptNo': 'promptNo'
   },
 
-  initialize: function(options) {
-    _.bindAll(this, 'render', 'getMessage', 'promptYes', 'promptNo');
-    this.options = options;
+  initialize: function() {
+    _.bindAll(this, 'render', 'show', 'hide', 'getMessage', 'promptYes', 'promptNo');
   },
 
   render: function() {
     var html = this.template(this.properties);
-    this.$el.css({'display': 'block'});
-    this.options.content.html(html);
+    this.$el.html(html);
     return this;
+  },
+
+  show: function() {
+    this.$el.show();
+  },
+
+  hide: function() {
+    this.$el.hide();
   },
 
   getMessage: function(message, title, id) {

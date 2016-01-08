@@ -21,6 +21,53 @@ var cpUpload = upload.fields([{
   maxCount: 1
 }]);
 
+function readFileFunction (err, data, resData, req, imagePath, res, next) {
+  if(err)
+    return next(err);
+  if(!data) {
+    resData.msg = 'Image not found';
+    resData.success = false;
+    return res.status(400).json(resData);
+  }
+  var newPath = format('{path}/{userId}/{movieTitle}', {
+    path: path,
+    userId: req.user.id,
+    movieTitle: req.body.title
+  });
+  mkdirp(newPath, function(err) {
+    if(err)
+      return next(err);
+    fs.appendFile(newPath + '/image.png', data, saveMovieAndImage(err, resData, req, data, imagePath, res, next));
+  });
+}
+
+function saveMovieAndImage(err, resData, req, data, imagePath, res, next) {
+  if(err)
+    return next(err);
+  var movie = new Movie({
+    title: req.body.title,
+    link: req.body.link,
+    addedBy: req.user.id,
+    created: getDate()
+  });
+
+  movie.save(function(err, newMovie) {
+    if(err)
+      return next(err);
+
+    resData.msg = 'Movie saved';
+    resData.success = true;
+    resData.data = newMovie.toObject();
+    resData.data.image = data;
+
+    fs.unlink(imagePath, function(err) {
+      if(err)
+        return next(err);
+      return res.status(200).json(resData);
+    });
+  });
+}
+
 /**
  * Gets current date
  * @return {String} Date in String format
@@ -90,49 +137,8 @@ function addMovie (req, res, next) {
 
     var imagePath = root + '/uploads/temp/' + req.body.imageId;
 
-    fs.readFile(imagePath, function (err, data) {
-      if(err)
-        return next(err);
-      if(!data) {
-        resData.msg = 'Image not found';
-        resData.success = false;
-        return res.status(400).json(resData);
-      }
-      var newPath = format('{path}/{userId}/{movieTitle}', {
-        path: path,
-        userId: req.user.id,
-        movieTitle: req.body.title
-      });
-      mkdirp(newPath, function(err) {
-        if(err)
-          return next(err);
-        fs.appendFile(newPath + '/image.png', data, function (err) {
-          if(err)
-            return next(err);
-          var movie = new Movie({
-            title: req.body.title,
-            link: req.body.link,
-            addedBy: req.user.id,
-            created: getDate()
-          });
-
-          movie.save(function(err, newMovie) {
-            if(err)
-              return next(err);
-
-            resData.msg = 'Movie saved';
-            resData.success = true;
-            resData.data = newMovie.toObject();
-            resData.data.image = data;
-
-            fs.unlink(imagePath, function(err) {
-              if(err)
-                return next(err);
-              return res.status(200).json(resData);
-            });
-          });
-        });
-      });
+    fs.readFile(imagePath, function(err, data) {
+      readFileFunction(err, data, resData, req, imagePath, res, next);
     });
   });
 }

@@ -4,7 +4,7 @@ var $ = require('jquery');
 var _ = require('lodash');
 var Backbone = require('backbone');
 var router = require('./backboneRouter.js');
-var userDetailsTemplate = require('../../../templates/userDetailsTemplate.handlebars');
+var userDetailsTemplate = require('../../../../templates/userDetailsTemplate.handlebars');
 
 var userDetailsView = Backbone.View.extend({
   events: {
@@ -17,7 +17,7 @@ var userDetailsView = Backbone.View.extend({
 
   initialize: function(options) {
     var self = this;
-    _.bindAll(this, 'render', 'updatePassword', 'deleteUser', 'hideUserDetails');
+    _.bindAll(this, 'render', 'show', 'hide', 'updatePassword', 'deleteUser', 'hideUserDetails');
     this.options = options;
   },
 
@@ -25,6 +25,14 @@ var userDetailsView = Backbone.View.extend({
     var html = this.template(this.model.toJSON());
     this.$el.html(html);
     return this.$el;
+  },
+
+  show: function() {
+    this.$el.show();
+  },
+
+  hide: function() {
+    this.$el.hide();
   },
 
   getUserId: function(userId) {

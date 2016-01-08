@@ -2,34 +2,38 @@
 @initPaddingValue: 1%;
 @costumWidth: 40%;
 
-.userDetailsHead {
-    margin: @initMarginValue;
-    font-size: 200%;
-}
+#userDetailsForm {
+  margin-top: 2%;
 
-.updatePasswordContainer {
-    margin: @initMarginValue;
-    margin-left: 25%;
-    padding-top: @initPaddingValue;
-    padding-bottom: @initPaddingValue;
-    background-color: #eee;
-    width: @costumWidth + 10%;
-    border-radius: 5px;
+  .userDetailsHead {
+      margin: @initMarginValue;
+      font-size: 200%;
+  }
 
-    #oldPassword, #updatePasswordText, #confirmPassword {
-        margin-bottom: @initMarginValue + 3%;
-        margin-left: 30%;
-        width: @costumWidth;
-    }
-    h5 {
-      margin-top: @initMarginValue + 5%;
-    }
-}
+  .updatePasswordContainer {
+      margin: @initMarginValue;
+      margin-left: 25%;
+      padding-top: @initPaddingValue;
+      padding-bottom: @initPaddingValue;
+      background-color: #eee;
+      width: @costumWidth + 10%;
+      border-radius: 5px;
 
-.detailsButtonContainer {
-    text-align: center;
-    #deleteUser, #hideUserDetails {
-        margin: @initMarginValue - 2%;
-        width: @costumWidth/4;
-    }
+      #oldPassword, #updatePasswordText, #confirmPassword {
+          margin-bottom: @initMarginValue + 3%;
+          margin-left: 30%;
+          width: @costumWidth;
+      }
+      h5 {
+        margin-top: @initMarginValue + 5%;
+      }
+  }
+
+  .detailsButtonContainer {
+      text-align: center;
+      #deleteUser, #hideUserDetails {
+          margin: @initMarginValue - 2%;
+          width: @costumWidth/4;
+      }
+  }
 }

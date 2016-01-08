@@ -5,8 +5,10 @@ var Backbone = require('backbone');
 var _ = require('lodash');
 var router = require('./backboneRouter.js');
 var MovieView = require('./movieView.js');
+var movieCollectionTemplate = require('../../../../templates/movieCollectionTemplate.handlebars');
 
 var MovieCollectionView = Backbone.View.extend({
+  template: movieCollectionTemplate,
   initialize: function(options) {
     var self = this;
     self.options = options;
@@ -14,7 +16,7 @@ var MovieCollectionView = Backbone.View.extend({
 
     self.collection = self.options.collection;
 
-    _.bindAll(this, 'render', 'afterRender', 'appendItem');
+    _.bindAll(this, 'render', 'afterRender', 'show', 'hide', 'appendItem');
 
     _.wrap(this.render, function(render) {
       render();
@@ -24,8 +26,10 @@ var MovieCollectionView = Backbone.View.extend({
 
   render: function() {
     var self = this;
+    var html = this.template();
 
     this.$el.empty();
+    this.$el.html(html);
     this.childrenViewsArray.forEach(function(view) {
       view.remove();
     });
@@ -42,6 +46,14 @@ var MovieCollectionView = Backbone.View.extend({
     self.listenTo(self.collection, 'change', self.render);
   },
 
+  show: function() {
+    this.$el.show();
+  },
+
+  hide: function() {
+    this.$el.hide();
+  },
+
   appendItem: function(movie) {
     var self = this;
     var movieView = new MovieView({ model: movie });
@@ -50,7 +62,7 @@ var MovieCollectionView = Backbone.View.extend({
 
     this.childrenViewsArray.push(movieView);
 
-    this.$el.append(movieView.$el);
+    this.$('#mainContainer').append(movieView.$el);
   }
 });
 

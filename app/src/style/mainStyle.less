@@ -7,11 +7,18 @@
 @import "addMovieStyle.less";
 @import "userInfoStyle.less";
 @import "confirmRegisterStyle.less";
+@import "promptStyle.less";
+@import "alertStyle.less";
 
 @baseColor: #EEEEEE;
 @defaultMarginTop: 50px;
 @defaultMargin: 2%;
-@defaultPadding: 1%;
+@defaultPadding: 1%;});
+          });
+        });
+      });
+    });
+  });
 @maxHeight: 100%;
 
 .mainProperties() {
@@ -28,43 +35,28 @@
 }
 
 html, body {
-  height: 100%;
+  height: auto;
   padding: 0;
   padding-bottom: 0;
 }
 
 body {
   min-height: 100%;
+  height: auto;
 }
 
 .container-fluid {
   padding: 0;
 }
 
-#promptForm {
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 2;
-    height: @maxHeight;
-    width: 100%;
-    display: none;
-    background-color: #3e3e3e;
-    background-color: rgba(0, 0, 0, 0.6);
-    #promptBox {
-      position: relative;
-      top: 100px;
-    }
-}
-
 #mainContainer {
-    overflow: hidden;
-    padding: 1%;
-    background: #EBEBEB none repeat scroll 0% 0%;
-    margin: 0;
-    margin-bottom: 0;
-    padding-top: 8%;
-    padding-left: 6%;
-    min-height: 100%;
-    height: auto;
+  overflow: hidden;
+  padding: 1%;
+  background: #EBEBEB none repeat scroll 0% 0%;
+  margin: 0;
+  margin-bottom: 0;
+  padding-top: 2%;
+  padding-left: 6%;
+  min-height: 100%;
+  height: auto;
 }
