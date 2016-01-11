@@ -3,7 +3,7 @@
 var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('lodash');
-var promptTemplate = require('../../templates/promptTemplate.handlebars');
+var promptTemplate = require('../../templates/prompt.hbs');
 
 var PromptView = Backbone.View.extend({
   template: promptTemplate,

@@ -5,7 +5,7 @@ var router = express.Router();
 var bCrypt = require('bcrypt-nodejs');
 var User = require('../models/User.js');
 var Message = require('../../strings.json');
-var moviesController = require('./moviesRoutes.js');
+var moviesController = require('./movies.js');
 var _ = require('lodash');
 var logger = require('minilog')('usersRoutes');
 

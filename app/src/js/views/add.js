@@ -4,8 +4,8 @@ var Backbone = require('backbone');
 var _ = require('lodash');
 var $ = require('jquery');
 var router = require('./backboneRouter.js');
-var UploadImageView = require('./uploadImageView.js');
-var addMovieTemplate = require('../../templates/addMovieTemplate.handlebars');
+var UploadImageView = require('./uploadImage.js');
+var addMovieTemplate = require('../../templates/addMovie.hbs');
 
 var AddView = Backbone.View.extend({
   template: addMovieTemplate,

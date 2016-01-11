@@ -4,7 +4,7 @@ var $ = require('jquery');
 var _ = require('lodash');
 var Backbone = require('backbone');
 var router = require('./backboneRouter.js');
-var userDetailsTemplate = require('../../templates/userInfoTemplate.handlebars');
+var userDetailsTemplate = require('../../templates/userInfo.hbs');
 
 var UserDetailsView = Backbone.View.extend({
   template: userDetailsTemplate,

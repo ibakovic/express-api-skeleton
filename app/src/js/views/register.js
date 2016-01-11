@@ -5,7 +5,7 @@ var Backbone = require('backbone');
 var _ = require('lodash');
 var router = require('./backboneRouter.js');
 var popsicle = require('popsicle');
-var registerTemplate = require('../../templates/registerTemplate.handlebars');
+var registerTemplate = require('../../templates/register.hbs');
 
 var RegisterView = Backbone.View.extend({
   template: registerTemplate,

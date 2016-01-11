@@ -5,7 +5,7 @@ var $ = require('jquery');
 var _ = require('lodash');
 var router = require('./backboneRouter.js');
 var popsicle = require('popsicle');
-var uploadimageTemplate = require('../../templates/uploadImageTemplate.handlebars');
+var uploadimageTemplate = require('../../templates/uploadImage.hbs');
 
 var UploadImageView = Backbone.View.extend({
   template: uploadimageTemplate,

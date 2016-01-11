@@ -18,10 +18,7 @@ todo.txt
 
 #ignore files created by browserify and less
 app/dist/bundle.js
-app/dist/main.css
-
-#ignore temporary images file
-uploads/temp
+app/dist/style.css
 
 # ignore sublime-workspace
 nodeAppProject.sublime-workspace

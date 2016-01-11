@@ -4,7 +4,7 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('lodash');
 var router = require('./backboneRouter.js');
-var userNavbarTemplate = require('../../templates/userNavbarTemplate.handlebars');
+var userNavbarTemplate = require('../../templates/userNavbar.hbs');
 
 var LogoutModel = Backbone.Model.extend({
   url: '/logout'

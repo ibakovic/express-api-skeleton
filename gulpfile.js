@@ -32,7 +32,7 @@ gulp.task('browserify', function() {
       transform: [browserifyHandlebars],
       paths: [ './app/src/js' ]
     }))
-    .pipe(gulp.dest('./app/dist/main.js'));
+    .pipe(gulp.dest('./app/dist/bundle.js'));
 });
 
 gulp.task('less', function () {
@@ -40,7 +40,7 @@ gulp.task('less', function () {
     .pipe(less({
       paths: [ './app/src/style' ]
     }))
-    .pipe(gulp.dest('./app/dist'));
+    .pipe(gulp.dest('./app/dist/style.css'));
 });
 
 gulp.task('lint', function() {

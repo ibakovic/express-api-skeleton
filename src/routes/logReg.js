@@ -1,6 +1,6 @@
 'use strict';
 
-var chain = require('connect-chain');
+var router = require('express').Router();
 var passport = require('passport');
 var nodemailer = require('nodemailer');
 var Verification = require('../models/RegistrationNotConfirmed.js');
@@ -9,10 +9,10 @@ var Message = require('../../strings.json');
 var bCrypt = require('bcrypt-nodejs');
 var _ = require('lodash');
 var format = require('string-template');
-var logger = require('minilog')('auth');
+var logger = require('minilog')('logRegRoutes');
 
 /**
-  * Creates token from user's login username
+  * Responses to a succesfull login
   * @param  {HttpRequest}              req
   * @param  {Httpresponse}             res
   * @param  {Function(req, res, next)} next
@@ -95,7 +95,21 @@ function registrationResponse(req, res, next) {
   });
 }
 
-module.exports = {
-  login:    chain(passport.authenticate('login'), successResponse),
-  register: chain(passport.authenticate('register'), registrationResponse)
-};
+/**
+ * Log out current user and destroy user's session
+ * @param  {HttpRequest}   req
+ * @param  {HttpResponse}  res
+ * @param  {Function(req, res, next)} next
+ */
+function logout(req, res, next) {
+  req.session.destroy(function(err) {
+    res.status(200).json({msg: 'Logging out...', redirect: ''});
+  });
+}
+
+router
+  .post('/login', passport.authenticate('login'), successResponse)
+  .post('/register', passport.authenticate('register'), registrationResponse)
+  .get('/logout', logout);
+
+module.exports = router;

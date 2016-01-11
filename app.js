@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var handlebars = require('express-handlebars');
 var passport = require('passport');
-var docs = require('./docs.js');
+var docs = require('./src/routes/docs.js');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var less = require('less');
@@ -33,21 +33,13 @@ app.use(session({
 // set handlebars engine and default view
 app.enable('view cache');
 app
-  .engine('handlebars', handlebars({defaultLayout: '../../app/dist/index.handlebars'}))
-  .set('view engine', 'handlebars');
-
-// serve frontend
-var hbFunc = require('./handlebars/hbFunc.js');
-
-app
-  .get('', hbFunc);
+  .engine('.hbs', handlebars({extname: '.hbs'}))
+  .set('view engine', '.hbs');
 
 // serve static assets
 app
   .use(express.static(Path.join(__dirname, 'app')))
-  .use(express.static(Path.join(__dirname, 'uploads')))
   .use(express.static(Path.join(__dirname, 'node_modules')))
-  .use(express.static(Path.join(__dirname, 'app/src/style')))
   .use(express.static(Path.join(__dirname, 'app/dist')))
   .use(express.static(Path.join(__dirname + '/jquery')))
   .use(favicon(__dirname + '/app/dist/favicon.ico'));
@@ -68,13 +60,17 @@ app
   .use(passport.session());
 require('./src/passport/init.js')(passport);
 
+// serve frontend
+var homePage = require('./src/routes/homePage.js');
+
 // routers
-var usersRoutes = require('./src/routes/usersRoutes.js');
-var logRegRoutes = require('./src/routes/logRegRoutes.js');
+var usersRoutes = require('./src/routes/users.js');
+var logRegRoutes = require('./src/routes/logReg.js');
 var mailHandler = require('./src/routes/mailHandler.js');
 
 // API endpoints
 app
+  .use('', homePage)
   .use('/', logRegRoutes)
   .use('/users', usersRoutes)
   .use('/email', mailHandler);
