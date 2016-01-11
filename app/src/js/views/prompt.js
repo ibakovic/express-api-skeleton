@@ -38,14 +38,20 @@ var PromptView = Backbone.View.extend({
     if(!message) {
       self.properties = {
         message: 'No message to display!',
-        title: 'Error!'
+        title: 'Error!',
+        id: ''
       };
     }
+
     this.properties = {
       message: message,
       title: title,
       id: id
     };
+    console.log(this.properties);
+
+    this.render();
+
     return message;
   },
 

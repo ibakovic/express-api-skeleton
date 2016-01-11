@@ -77,11 +77,11 @@ module.exports = {
   moviesView: moviesView,
   editView: editView,
   addView: addView,
-  alertView: alertView,
   registerView: registerView,
   promptView: promptView,
   userDetailsView: userDetailsView,
   confirmView: confirmView,
   userInfoView: userInfoView,
-  docsView: docsView
+  docsView: docsView,
+  alertView: alertView
 };

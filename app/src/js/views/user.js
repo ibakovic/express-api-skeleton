@@ -71,7 +71,8 @@ var UserView = Backbone.View.extend({
   },
 
   openDocs: function() {
-    router.navigate('docs' , {trigger: true});
+    //redirect to docs
+    //router.navigate('docs' , {trigger: true});
   }
 });
 

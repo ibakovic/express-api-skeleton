@@ -13,8 +13,6 @@ Backbone.Events.on('prompt', function(message, title, id) {
 
 Backbone.Events.on('alert', function(message, title) {
   views.alertView.getMessage(message, title);
-  views.alertView.render();
-  $('body').append(views.alertView.$el);
   views.alertView.show();
 });
 
@@ -46,54 +44,33 @@ $('document').ready(function() {
   views.confirmView.render();
   $('body').append(views.confirmView.$el);
   views.confirmView.hide();
-/*
-  views.docsView.render();
-  $('body').append(views.docsView.$el);
-  views.docsView.hide();
-*/
+
+  views.alertView.render();
+  $('body').append(views.alertView.$el);
+  views.alertView.hide();
+
   /////////////////////////////Rerouting
 
   router.on('route:loginPage', function() {
-    views.moviesView.hide();
-    views.userView.hide();
-    views.addView.hide();
-    views.editView.hide();
-    views.registerView.hide();
-    views.userDetailsView.hide();
-    views.alertView.hide();
-    views.confirmView.hide();
-    views.userInfoView.hide();
-    views.docsView.hide();
+    for(var view in views)
+      if(view != 'Movies' && view != 'User')
+        views[view].hide();
 
     views.loginView.show();
   });
 
   router.on('route:openRegister', function() {
-    views.moviesView.hide();
-    views.userView.hide();
-    views.addView.hide();
-    views.editView.hide();
-    views.loginView.hide();
-    views.userDetailsView.hide();
-    views.alertView.hide();
-    views.confirmView.hide();
-    views.userInfoView.hide();
-    views.docsView.hide();
+    for(var view in views)
+      if(view != 'Movies' && view != 'User')
+        views[view].hide();
 
     views.registerView.show();
   });
 
   router.on('route:confirmRegister', function(verId) {
-    views.moviesView.hide();
-    views.userView.hide();
-    views.addView.hide();
-    views.editView.hide();
-    views.loginView.hide();
-    views.userDetailsView.hide();
-    views.alertView.hide();
-    views.registerView.hide();
-    views.userInfoView.hide();
-    views.docsView.hide();
+    for(var view in views)
+      if(view != 'Movies' && view != 'User')
+        views[view].hide();
 
     views.confirmView.getVerId(verId);
     views.confirmView.render();
@@ -101,15 +78,9 @@ $('document').ready(function() {
   });
 
   router.on('route:startApp', function() {
-    views.loginView.hide();
-    views.editView.hide();
-    views.addView.hide();
-    views.registerView.hide();
-    views.userDetailsView.hide();
-    views.alertView.hide();
-    views.confirmView.hide();
-    views.userInfoView.hide();
-    views.docsView.hide();
+    for(var view in views)
+      if(view != 'Movies' && view != 'User')
+        views[view].hide();
 
     views.Movies.fetch({success: function(collection, response) {
       views.moviesView.render();
@@ -127,15 +98,9 @@ $('document').ready(function() {
   });
 
   router.on('route:updateMovieTitle', function(movieId) {
-    views.moviesView.hide();
-    views.addView.hide();
-    views.loginView.hide();
-    views.registerView.hide();
-    views.userDetailsView.hide();
-    views.alertView.hide();
-    views.confirmView.hide();
-    views.userInfoView.hide();
-    views.docsView.hide();
+    for(var view in views)
+      if(view != 'Movies' && view != 'User')
+        views[view].hide();
 
     if(views.Movies.length === 0) {
       views.Movies.fetch({success: function(collection, response) {
@@ -151,15 +116,9 @@ $('document').ready(function() {
   });
 
   router.on('route:addMovie', function(imageId) {
-    views.moviesView.hide();
-    views.loginView.hide();
-    views.editView.hide();
-    views.registerView.hide();
-    views.userDetailsView.hide();
-    views.alertView.hide();
-    views.confirmView.hide();
-    views.userInfoView.hide();
-    views.docsView.hide();
+    for(var view in views)
+      if(view != 'Movies' && view != 'User')
+        views[view].hide();
 
     views.addView.getImgId(imageId);
     views.userView.show();
@@ -167,15 +126,9 @@ $('document').ready(function() {
   });
 
   router.on('route:getUserDetails', function(userId) {
-    views.moviesView.hide();
-    views.loginView.hide();
-    views.editView.hide();
-    views.registerView.hide();
-    views.addView.hide();
-    views.alertView.hide();
-    views.confirmView.hide();
-    views.userInfoView.hide();
-    views.docsView.hide();
+    for(var view in views)
+      if(view != 'Movies' && view != 'User')
+        views[view].hide();
 
     if(!views.User.get('username')) {
       views.User.fetch({success: function(model, response) {
@@ -194,15 +147,9 @@ $('document').ready(function() {
   });
 
   router.on('route:userInfo', function(userId) {
-    views.moviesView.hide();
-    views.loginView.hide();
-    views.editView.hide();
-    views.registerView.hide();
-    views.addView.hide();
-    views.alertView.hide();
-    views.confirmView.hide();
-    views.userDetailsView.hide();
-    views.docsView.hide();
+    for(var view in views)
+      if(view != 'Movies' && view != 'User')
+        views[view].hide();
 
     if(!views.User.get('username')) {
       views.User.fetch({success: function(model, response) {
@@ -219,22 +166,18 @@ $('document').ready(function() {
     views.userView.show();
     views.userInfoView.show();
   });
-/*
-  router.on('route:docs', function() {
-    views.moviesView.hide();
-    views.loginView.hide();
-    views.editView.hide();
-    views.registerView.hide();
-    views.addView.hide();
-    views.alertView.hide();
-    views.confirmView.hide();
-    views.userDetailsView.hide();
-    views.userView.show();
-    console.log('Greetengs from docsView');
 
+  router.on('route:docs', function() {
+    for(var view in views)
+      if(view != 'Movies' && view != 'User')
+        views[view].hide();
+
+    views.userView.show();
+    views.docsView.render();
+    $('body').append(views.docsView.$el);
     views.docsView.show();
   });
-*/
+
   // Start Backbone history a necessary step for bookmarkable URL's
   Backbone.history.start();
 });

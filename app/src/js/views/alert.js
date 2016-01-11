@@ -19,7 +19,7 @@ var AlertView = Backbone.View.extend({
   },
 
   render: function() {
-    var self =this;
+    var self = this;
     var html = this.template(self.properties);
     this.$el.html(html);
     return this;
@@ -45,6 +45,9 @@ var AlertView = Backbone.View.extend({
       message: message,
       title: title
     };
+
+    this.render();
+
     return message;
   },
 
