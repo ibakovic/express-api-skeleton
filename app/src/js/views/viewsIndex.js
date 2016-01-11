@@ -12,6 +12,7 @@ var PromptView = require('./prompt.js');
 var UserDetailsView = require('./userDetails.js');
 var ConfirmView = require('./confirm.js');
 var UserInfoView = require('./userInfo.js');
+var DocsView = require('./docs.js');
 
 var currentUserId = document.cookie.split('=');
 
@@ -66,6 +67,7 @@ var confirmView = new ConfirmView();
 var userInfoView = new UserInfoView({
     model: User
   });
+var docsView = new DocsView();
 
 module.exports = {
   Movies: Movies,
@@ -80,5 +82,6 @@ module.exports = {
   promptView: promptView,
   userDetailsView: userDetailsView,
   confirmView: confirmView,
-  userInfoView: userInfoView
+  userInfoView: userInfoView,
+  docsView: docsView
 };

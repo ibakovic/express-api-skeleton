@@ -46,7 +46,11 @@ $('document').ready(function() {
   views.confirmView.render();
   $('body').append(views.confirmView.$el);
   views.confirmView.hide();
-
+/*
+  views.docsView.render();
+  $('body').append(views.docsView.$el);
+  views.docsView.hide();
+*/
   /////////////////////////////Rerouting
 
   router.on('route:loginPage', function() {
@@ -59,6 +63,7 @@ $('document').ready(function() {
     views.alertView.hide();
     views.confirmView.hide();
     views.userInfoView.hide();
+    views.docsView.hide();
 
     views.loginView.show();
   });
@@ -73,6 +78,7 @@ $('document').ready(function() {
     views.alertView.hide();
     views.confirmView.hide();
     views.userInfoView.hide();
+    views.docsView.hide();
 
     views.registerView.show();
   });
@@ -87,6 +93,7 @@ $('document').ready(function() {
     views.alertView.hide();
     views.registerView.hide();
     views.userInfoView.hide();
+    views.docsView.hide();
 
     views.confirmView.getVerId(verId);
     views.confirmView.render();
@@ -102,6 +109,7 @@ $('document').ready(function() {
     views.alertView.hide();
     views.confirmView.hide();
     views.userInfoView.hide();
+    views.docsView.hide();
 
     views.Movies.fetch({success: function(collection, response) {
       views.moviesView.render();
@@ -127,6 +135,7 @@ $('document').ready(function() {
     views.alertView.hide();
     views.confirmView.hide();
     views.userInfoView.hide();
+    views.docsView.hide();
 
     if(views.Movies.length === 0) {
       views.Movies.fetch({success: function(collection, response) {
@@ -150,6 +159,7 @@ $('document').ready(function() {
     views.alertView.hide();
     views.confirmView.hide();
     views.userInfoView.hide();
+    views.docsView.hide();
 
     views.addView.getImgId(imageId);
     views.userView.show();
@@ -165,6 +175,7 @@ $('document').ready(function() {
     views.alertView.hide();
     views.confirmView.hide();
     views.userInfoView.hide();
+    views.docsView.hide();
 
     if(!views.User.get('username')) {
       views.User.fetch({success: function(model, response) {
@@ -191,6 +202,7 @@ $('document').ready(function() {
     views.alertView.hide();
     views.confirmView.hide();
     views.userDetailsView.hide();
+    views.docsView.hide();
 
     if(!views.User.get('username')) {
       views.User.fetch({success: function(model, response) {
@@ -207,7 +219,22 @@ $('document').ready(function() {
     views.userView.show();
     views.userInfoView.show();
   });
+/*
+  router.on('route:docs', function() {
+    views.moviesView.hide();
+    views.loginView.hide();
+    views.editView.hide();
+    views.registerView.hide();
+    views.addView.hide();
+    views.alertView.hide();
+    views.confirmView.hide();
+    views.userDetailsView.hide();
+    views.userView.show();
+    console.log('Greetengs from docsView');
 
+    views.docsView.show();
+  });
+*/
   // Start Backbone history a necessary step for bookmarkable URL's
   Backbone.history.start();
 });

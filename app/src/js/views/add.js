@@ -74,7 +74,6 @@ var AddView = Backbone.View.extend({
   },
 
   cancelAdd: function() {
-    //this.$el.hide();
     router.navigate('movies', {trigger: true});
   }
 });

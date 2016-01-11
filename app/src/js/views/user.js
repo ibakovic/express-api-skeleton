@@ -17,13 +17,14 @@ var UserView = Backbone.View.extend({
     'click #getUserInfo': 'getUserInfo',
     'click #addMovieButton': 'openAddMovieForm',
     'click #logout': 'logout',
-    'click #homePage': 'homePage'
+    'click #homePage': 'homePage',
+    'click #openDocs': 'openDocs'
   },
 
   initialize: function(options) {
     var self = this;
     this.options = options;
-    _.bindAll(this, 'render', 'show', 'hide', 'getUserInfo', 'openAddMovieForm', 'logout', 'homePage');
+    _.bindAll(this, 'render', 'show', 'hide', 'getUserInfo', 'openAddMovieForm', 'logout', 'homePage', 'openDocs');
 
     this.listenTo(self.model, 'change', self.render);
   },
@@ -67,6 +68,10 @@ var UserView = Backbone.View.extend({
 
   homePage: function() {
     router.navigate('movies', {trigger: true});
+  },
+
+  openDocs: function() {
+    router.navigate('docs' , {trigger: true});
   }
 });
 
