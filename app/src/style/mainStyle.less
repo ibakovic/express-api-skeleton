@@ -43,15 +43,6 @@ body {
   padding: 0;
 }
 
-.row-flex, .row-flex > div {
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    flex:1 1 auto;
-}
-
 #mainContainer {
   overflow: hidden;
   padding: 1%;
@@ -60,8 +51,17 @@ body {
   margin-bottom: 0;
   padding-top: 2%;
   padding-left: 1%;
-  min-height: 100%;
   height: auto;
+  min-height: 100%;
+}
+
+.row-flex, .row-flex > div {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  flex:1 1 auto;
 }
 
 @media screen and (min-width: 992px) {

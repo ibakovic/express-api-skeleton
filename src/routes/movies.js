@@ -158,7 +158,7 @@ function addMovie (req, res, next) {
         }
 
         return res.status(200).json({
-          msg: 'Movie saved',
+          msg: Message.MovieAdded,
           success: true,
           data: movie.toObject()
         });
@@ -244,7 +244,7 @@ function showMovie (req, res, next) {
           return next(err);
 
         if(!image) {
-          resData.msg = 'Image not found';
+          resData.msg = Message.ImageNotFound;
           resData.success = false;
           status = 400;
           return res.status(status).json(resData);
@@ -388,7 +388,7 @@ function isAuthenticate(req, res, next) {
     next();
   }
   else {
-    logger.error('error', 'You must be logged in to do that.');
+    logger.error('error', Message.NotLoggedIn);
     res.redirect('');
   }
 }
