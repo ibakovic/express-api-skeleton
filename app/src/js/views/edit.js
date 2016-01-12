@@ -54,6 +54,7 @@ var EditView = Backbone.View.extend({
 
     movie.save(null, {
       success: function(model, response) {
+        $('#titleUpdate').val('');
         router.navigate('movies', {trigger: true});
       },
       error: function(model, response) {

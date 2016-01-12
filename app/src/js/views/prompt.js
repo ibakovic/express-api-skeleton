@@ -20,7 +20,8 @@ var PromptView = Backbone.View.extend({
   },
 
   render: function() {
-    var html = this.template(this.properties);
+    var self = this;
+    var html = this.template(self.properties);
     this.$el.html(html);
     return this;
   },

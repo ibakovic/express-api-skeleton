@@ -47,6 +47,7 @@ var MovieCollectionView = Backbone.View.extend({
   },
 
   show: function() {
+    this.render();
     this.$el.show();
   },
 

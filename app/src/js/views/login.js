@@ -45,8 +45,9 @@ var LoginView = Backbone.View.extend({
       }
     })
     .then(function completeLogin(res) {
-      if(res.status === 200)
+      if(res.status === 200) {
         return router.navigate('movies', {trigger: true});
+      }
 
       Backbone.Events.trigger('alert', 'Log in failed!', 'Log in');
     });
@@ -57,6 +58,7 @@ var LoginView = Backbone.View.extend({
   },
 
   hide: function() {
+    $('#password').val('');
     this.$el.hide();
   },
 

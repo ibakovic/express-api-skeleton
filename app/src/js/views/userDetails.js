@@ -28,10 +28,14 @@ var userDetailsView = Backbone.View.extend({
   },
 
   show: function() {
+    this.render();
     this.$el.show();
   },
 
   hide: function() {
+    $('#oldPassword').val('');
+    $('#updatePasswordText').val('');
+    $('#confirmPassword').val('');
     this.$el.hide();
   },
 

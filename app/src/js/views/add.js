@@ -65,6 +65,9 @@ var AddView = Backbone.View.extend({
         model.set({'imageUrl': response.data.addedBy + '/' + title});
         Backbone.Events.trigger('movie:add', model);
 
+        $('#addTitle').val('');
+        $('#addLink').val('');
+
         //self.$el.hide();
         router.navigate('movies', {trigger: true});
       },

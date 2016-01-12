@@ -58,6 +58,7 @@ var RegisterView = Backbone.View.extend({
   },
 
   hide: function() {
+    $('#registerPassword').val('');
     this.$el.hide();
   },
 

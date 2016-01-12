@@ -1,3 +1,5 @@
+'use strict';
+
 var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('lodash');
@@ -12,66 +14,49 @@ var PromptView = require('./prompt.js');
 var UserDetailsView = require('./userDetails.js');
 var ConfirmView = require('./confirm.js');
 var UserInfoView = require('./userInfo.js');
-var DocsView = require('./docs.js');
+var models = require('../models/models.js');
 
 var currentUserId = document.cookie.split('=');
 
-var MovieModel = Backbone.Model.extend({
-  urlRoot: '/users/movies'
-});
-
-var MovieCollection = Backbone.Collection.extend({
-  model: MovieModel,
-  url: '/users/movies',
-
-  parse: function(response) {
-    return response.data;
-  }
-});
-
-var Movies = new MovieCollection();
-
-var UserModel = Backbone.Model.extend({
-  url: '/users',
-  parse: function(response) {
-    return response.data;
-  }
-});
-
-var User = new UserModel();
-
 var loginView = new LoginView();
+
 var userView = new UserView({
     cookieId: currentUserId[1],
-    model: User
+    model: models.User
   });
+
 var moviesView = new MovieView({
     cookieId: currentUserId[1],
-    collection: Movies
+    collection: models.Movies
   });
+
 var editView = new EditView({
     cookieId: currentUserId[1],
-    collection: Movies
+    collection: models.Movies
   });
+
 var addView = new AddView({
-    movieModel: MovieModel,
+    movieModel: models.MovieModel,
     userId: currentUserId[1]
   });
+
 var alertView = new AlertView();
+
 var registerView = new RegisterView();
+
 var promptView = new PromptView();
+
 var userDetailsView = new UserDetailsView({
-    model: User
+    model: models.User
   });
+
 var confirmView = new ConfirmView();
+
 var userInfoView = new UserInfoView({
-    model: User
+    model: models.User
   });
-var docsView = new DocsView();
 
 module.exports = {
-  Movies: Movies,
-  User: User,
   loginView: loginView,
   userView: userView,
   moviesView: moviesView,
@@ -82,6 +67,5 @@ module.exports = {
   userDetailsView: userDetailsView,
   confirmView: confirmView,
   userInfoView: userInfoView,
-  docsView: docsView,
   alertView: alertView
 };

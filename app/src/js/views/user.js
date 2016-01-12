@@ -35,6 +35,7 @@ var UserView = Backbone.View.extend({
   },
 
   show: function() {
+    this.render();
     this.$el.show();
   },
 
@@ -72,7 +73,7 @@ var UserView = Backbone.View.extend({
 
   openDocs: function() {
     //redirect to docs
-    //router.navigate('docs' , {trigger: true});
+    window.open('/docs');
   }
 });
 
