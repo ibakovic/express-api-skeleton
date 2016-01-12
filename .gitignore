@@ -17,7 +17,7 @@ coverage/
 todo.txt
 
 #ignore files created by browserify and less
-app/dist/bundle.js
+app/dist/index.js
 app/dist/style.css
 
 # ignore sublime-workspace
