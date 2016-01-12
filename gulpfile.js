@@ -32,15 +32,15 @@ gulp.task('browserify', function() {
       transform: [browserifyHandlebars],
       paths: [ './app/src/js' ]
     }))
-    .pipe(gulp.dest('./app/dist/bundle.js'));
+    .pipe(gulp.dest('./app/dist/'));
 });
 
 gulp.task('less', function () {
-  return gulp.src('./app/src/style/mainStyle.less')
+  return gulp.src('./app/src/style/style.less')
     .pipe(less({
       paths: [ './app/src/style' ]
     }))
-    .pipe(gulp.dest('./app/dist/style.css'));
+    .pipe(gulp.dest('./app/dist/'));
 });
 
 gulp.task('lint', function() {
