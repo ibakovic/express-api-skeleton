@@ -21,34 +21,35 @@ Backbone.Events.on('movie:add', function(model) {
   views.moviesView.appendItem(model);
 });
 
+function hideView(view) {
+  view.hide();
+}
+
 $('document').ready(function() {
   var $body = $('body');
 
-  for(var view in views) {
-    views[view].render();
-    $body.append(views[view].$el);
-    views[view].hide();
-  }
+  _.map(views, function(view) {
+    view.render();
+    $body.append(view.$el);
+    view.hide();
+  });
 
   /////////////////////////////Rerouting
 
   router.on('route:loginPage', function() {
-    for(var view in views)
-      views[view].hide();
+    _.map(views, hideView);
 
     views.loginView.show();
   });
 
   router.on('route:openRegister', function() {
-    for(var view in views)
-      views[view].hide();
+    _.map(views, hideView);
 
     views.registerView.show();
   });
 
   router.on('route:confirmRegister', function(verId) {
-    for(var view in views)
-      views[view].hide();
+    _.map(views, hideView);
 
     views.confirmView.getVerId(verId);
     views.confirmView.render();
@@ -56,8 +57,7 @@ $('document').ready(function() {
   });
 
   router.on('route:startApp', function() {
-    for(var view in views)
-      views[view].hide();
+    _.map(views, hideView);
 
     models.Movies.fetch({success: function(collection, response) {
       views.moviesView.show();
@@ -73,8 +73,7 @@ $('document').ready(function() {
   });
 
   router.on('route:updateMovieTitle', function(movieId) {
-    for(var view in views)
-      views[view].hide();
+    _.map(views, hideView);
 
     if(models.Movies.length === 0) {
       models.Movies.fetch({success: function(collection, response) {
@@ -90,8 +89,7 @@ $('document').ready(function() {
   });
 
   router.on('route:addMovie', function(imageId) {
-    for(var view in views)
-      views[view].hide();
+    _.map(views, hideView);
 
     views.addView.getImgId(imageId);
     views.userView.show();
@@ -99,8 +97,7 @@ $('document').ready(function() {
   });
 
   router.on('route:getUserDetails', function(userId) {
-    for(var view in views)
-      views[view].hide();
+    _.map(views, hideView);
 
     if(!models.User.get('username')) {
       models.User.fetch({success: function(model, response) {
@@ -115,8 +112,7 @@ $('document').ready(function() {
   });
 
   router.on('route:userInfo', function(userId) {
-    for(var view in views)
-      views[view].hide();
+    _.map(views, hideView);
 
     if(!models.User.get('username')) {
       models.User.fetch({success: function(model, response) {
