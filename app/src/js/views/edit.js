@@ -47,6 +47,11 @@ var EditView = Backbone.View.extend({
     var update = $('#titleUpdate').val().trim('string');
     var title = movie.get('title');
 
+    if(update === '') {
+      Backbone.Events.trigger('alert', 'Title update required!', 'Edit error');
+      return;
+    }
+
     movie.set({
       update: update,
       title: title

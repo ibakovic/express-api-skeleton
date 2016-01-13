@@ -27,10 +27,18 @@ var LoginView = Backbone.View.extend({
   },
 
   login: function() {
+    var username = $('#username').val().trim('string');
+    var password = $('#password').val().trim('string');
+
+    if(username === '' || password === '') {
+      Backbone.Events.trigger('alert', 'Username and password required!', 'Login error');
+      return;
+    }
+
     var self = this;
     var credentials = {
-      username: $('#username').val().trim('string'),
-      password: $('#password').val().trim('string')
+      username: username,
+      password: password
     };
 
     popsicle({

@@ -1,7 +1,6 @@
 'use strict';
 
 var router = require('express').Router();
-var nodemailer = require('nodemailer');
 var logger = require('minilog')('mailHandler');
 var Verification = require('../models/RegistrationNotConfirmed.js');
 var User = require('../models/User.js');

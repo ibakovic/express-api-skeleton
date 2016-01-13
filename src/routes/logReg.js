@@ -74,7 +74,7 @@ function registrationResponse(req, res, next) {
         transporter.sendMail(mailOptions, function(err, info) {
           if(err) {
             logger.error(err);
-            return res.status(400).json(Message.EmailNotSent);
+            return res.status(400).json({msg: Message.EmailNotSent});
           }
 
           res.status(200).json(Message.EmailSent);

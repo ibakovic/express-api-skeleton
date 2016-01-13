@@ -49,6 +49,11 @@ var AddView = Backbone.View.extend({
     var title = $('#addTitle').val().trim();
     var link = $('#addLink').val().trim();
 
+    if(title === '') {
+      Backbone.Events.trigger('alert', 'Title required!', 'Add movie error');
+      return;
+    }
+
     if(this.imgId === 'noImg')
       return Backbone.Events.trigger('alert', 'Please upload an image before submitting changes', 'Image not uploaded');
 

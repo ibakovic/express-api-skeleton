@@ -49,6 +49,11 @@ var userDetailsView = Backbone.View.extend({
     var updatedPassword = $('#updatePasswordText').val().trim();
     var confirmedPassword = $('#confirmPassword').val().trim();
 
+    if(oldPassword === '' || updatedPassword === '' || confirmedPassword === '') {
+      Backbone.Events.trigger('alert', 'All password fields must be filled before updating password!', 'Update password error');
+      return;
+    }
+
     if(updatedPassword !== confirmedPassword)
       return Backbone.Events.trigger('alert', 'New password not confirmed!', 'Password error');
 
