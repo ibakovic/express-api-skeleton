@@ -49,7 +49,6 @@ var PromptView = Backbone.View.extend({
       title: title,
       id: id
     };
-    console.log(this.properties);
 
     this.render();
 

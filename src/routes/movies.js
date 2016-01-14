@@ -382,14 +382,14 @@ function uploadImage(req, res, next){
   res.redirect("/#addMovie/" + req.files.image[0].filename);
 }
 
-
 function isAuthenticate(req, res, next) {
   if (req.isAuthenticated()) {
+    logger.log(req.isAuthenticated());
     next();
   }
   else {
-    logger.error('error', Message.NotLoggedIn);
-    res.redirect('');
+    logger.error(Message.NotLoggedIn, res);
+    res.redirect('/');
   }
 }
 

@@ -123,8 +123,8 @@ function isAuthenticate(req, res, next) {
     next();
   }
   else {
-    logger.error('error', 'You must be logged in to do that.');
-    res.redirect('');
+    logger.error(Message.NotLoggedIn);
+    res.redirect('/');
   }
 }
 

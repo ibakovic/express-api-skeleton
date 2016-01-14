@@ -18,27 +18,29 @@ var models = require('../models/models.js');
 
 var currentUserId = document.cookie.split('=');
 
-var loginView = new LoginView();
+var loginView = new LoginView({
+  userId: currentUserId[1]
+});
 
 var userView = new UserView({
-    cookieId: currentUserId[1],
-    model: models.User
-  });
+  cookieId: currentUserId[1],
+  model: models.User
+});
 
 var moviesView = new MovieView({
-    cookieId: currentUserId[1],
-    collection: models.Movies
-  });
+  cookieId: currentUserId[1],
+  collection: models.Movies
+});
 
 var editView = new EditView({
-    cookieId: currentUserId[1],
-    collection: models.Movies
-  });
+  cookieId: currentUserId[1],
+  collection: models.Movies
+});
 
 var addView = new AddView({
-    movieModel: models.MovieModel,
-    userId: currentUserId[1]
-  });
+  movieModel: models.MovieModel,
+  userId: currentUserId[1]
+});
 
 var alertView = new AlertView();
 
@@ -53,8 +55,8 @@ var userDetailsView = new UserDetailsView({
 var confirmView = new ConfirmView();
 
 var userInfoView = new UserInfoView({
-    model: models.User
-  });
+  model: models.User
+});
 
 module.exports = {
   loginView: loginView,

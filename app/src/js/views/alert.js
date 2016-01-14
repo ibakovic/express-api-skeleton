@@ -11,11 +11,11 @@ var AlertView = Backbone.View.extend({
   properties: {},
 
   events: {
-    'click .alertOk': 'alertOk'
+    'click #closeAlert': 'closeAlert'
   },
 
   initialize: function() {
-    _.bindAll(this, 'render', 'show', 'hide', 'alertOk', 'getMessage');
+    _.bindAll(this, 'render', 'show', 'hide', 'getMessage', 'closeAlert');
   },
 
   render: function() {
@@ -51,7 +51,7 @@ var AlertView = Backbone.View.extend({
     return message;
   },
 
-  alertOk: function() {
+  closeAlert: function() {
     this.$el.hide();
   }
 });

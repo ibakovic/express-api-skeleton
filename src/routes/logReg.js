@@ -18,7 +18,8 @@ var logger = require('minilog')('logRegRoutes');
   * @param  {Function(req, res, next)} next
   */
 function successResponse(req, res, next) {
-    return res.status(200).cookie('user', req.user.id).json({msg: 'Logged in successfully!'});
+  logger.log(req.session);
+  return res.status(200).cookie('user', req.user.id).json({msg: 'Logged in successfully!'});
 }
 
 /**

@@ -54,10 +54,13 @@ var UserView = Backbone.View.extend({
   },
 
   logout: function() {
+    var self = this;
     var logOut = new LogoutModel();
 
     logOut.fetch({
       success: function(model, res, opt) {
+        document.cookie += '; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+
         Backbone.Events.trigger('alert', 'Logout success!', 'Logout');
         router.navigate('', {trigger: true});
       },

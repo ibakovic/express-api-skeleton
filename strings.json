@@ -31,7 +31,7 @@
     "VerificationIdMissing": "Verification ID is missing",
     "VerificationIdNotFound": "Verification ID is not found!",
 
-    "NotLoggedIn": "You are ot logged in!",
+    "NotLoggedIn": "You are not logged in!",
 
     "ImageNotFound": "Image not found!"
 }

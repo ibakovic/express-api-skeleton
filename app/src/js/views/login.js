@@ -9,6 +9,7 @@ var popsicle = require('popsicle');
 
 var LoginView = Backbone.View.extend({
   template: loginTemplate,
+  loggedIn: false,
 
   events: {
     'click #login': 'login',
@@ -36,10 +37,6 @@ var LoginView = Backbone.View.extend({
     }
 
     var self = this;
-    var credentials = {
-      username: username,
-      password: password
-    };
 
     popsicle({
       method: 'POST',

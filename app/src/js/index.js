@@ -37,18 +37,33 @@ $('document').ready(function() {
   /////////////////////////////Rerouting
 
   router.on('route:loginPage', function() {
+    if(document.cookie) {
+      router.navigate('movies', {trigger: true});
+      return;
+    }
+
     _.map(views, hideView);
 
     views.loginView.show();
   });
 
   router.on('route:openRegister', function() {
+    if(document.cookie) {
+      router.navigate('movies', {trigger: true});
+      return;
+    }
+
     _.map(views, hideView);
 
     views.registerView.show();
   });
 
   router.on('route:confirmRegister', function(verId) {
+    if(document.cookie) {
+      router.navigate('movies', {trigger: true});
+      return;
+    }
+
     _.map(views, hideView);
 
     views.confirmView.getVerId(verId);
@@ -57,15 +72,21 @@ $('document').ready(function() {
   });
 
   router.on('route:startApp', function() {
+    if(!document.cookie) {
+      router.navigate('', {trigger: true});
+      return;
+    }
+
     _.map(views, hideView);
 
-    models.Movies.fetch({success: function(collection, response) {
-      views.moviesView.show();
-      models.User.fetch({success: function(collection, response) {
-        views.userView.show();
-      }});
-    }});
-
+    models.Movies.fetch({
+      success: function(collection, response) {
+        views.moviesView.show();
+        models.User.fetch({success: function(collection, response) {
+          views.userView.show();
+        }});
+      }
+    });
   });
 
   router.on('route:returnToLogin', function(redirect) {
@@ -73,15 +94,25 @@ $('document').ready(function() {
   });
 
   router.on('route:updateMovieTitle', function(movieId) {
+    if(!document.cookie) {
+      router.navigate('', {trigger: true});
+      return;
+    }
+
     _.map(views, hideView);
 
     if(models.Movies.length === 0) {
-      models.Movies.fetch({success: function(collection, response) {
-        views.userView.show();
-        views.editView.getMovieId(movieId);
-        views.editView.show();
-        return;
-      }});
+      models.Movies.fetch({
+        success: function(collection, response) {
+          views.userView.show();
+          views.editView.getMovieId(movieId);
+          views.editView.show();
+          return;
+        },
+        error: function(collection, response) {
+          router.navigate('', {trigger: true});
+        }
+      });
     }
 
     views.editView.getMovieId(movieId);
@@ -89,22 +120,37 @@ $('document').ready(function() {
   });
 
   router.on('route:addMovie', function(imageId) {
+    if(!document.cookie) {
+      router.navigate('', {trigger: true});
+      return;
+    }
+
     _.map(views, hideView);
 
-    views.addView.getImgId(imageId);
     views.userView.show();
+    views.addView.getImgId(imageId);
     views.addView.show();
   });
 
   router.on('route:getUserDetails', function(userId) {
+    if(!document.cookie) {
+      router.navigate('', {trigger: true});
+      return;
+    }
+
     _.map(views, hideView);
 
     if(!models.User.get('username')) {
-      models.User.fetch({success: function(model, response) {
-        views.userView.show();
-        views.userDetailsView.show();
-        return;
-      }});
+      models.User.fetch({
+        success: function(model, response) {
+          views.userView.show();
+          views.userDetailsView.show();
+          return;
+        },
+        error: function(model, response) {
+          router.navigate('', {trigger: true});
+        }
+      });
     }
 
     views.userView.show();
@@ -112,14 +158,24 @@ $('document').ready(function() {
   });
 
   router.on('route:userInfo', function(userId) {
+    if(!document.cookie) {
+      router.navigate('', {trigger: true});
+      return;
+    }
+
     _.map(views, hideView);
 
     if(!models.User.get('username')) {
-      models.User.fetch({success: function(model, response) {
-        views.userView.show();
-        views.userInfoView.show();
-        return;
-      }});
+      models.User.fetch({
+        success: function(model, response) {
+          views.userView.show();
+          views.userInfoView.show();
+          return;
+        },
+        error: function(model, response) {
+          router.navigate('', {trigger: true});
+        }
+      });
     }
 
     views.userView.show();
