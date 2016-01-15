@@ -243,7 +243,7 @@ function showMovie (req, res, next) {
         resData.msg = Message.MovieFound;
         resData.success = true;
         resData.data = moviePopulated.toObject();
-        resData.imageUrl = moviePopulated.imageHash + '.png';
+        resData.imageUrl = req.protocol + "://" + req.get('host') + '/' + imageLink + '.png';
         status = 200;
 
         return res.status(status).json(resData);
