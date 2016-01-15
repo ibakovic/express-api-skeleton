@@ -11,7 +11,7 @@ var Router = Backbone.Router.extend({
     'login/:redirect': 'returnToLogin',
     'movies': 'startApp',
     'edit/:movieId': 'updateMovieTitle',
-    'addMovie/:imageId': 'addMovie',
+    'addMovie': 'addMovie',
     'userDetails/:userId': 'getUserDetails',
     'userInfo/:userId': 'userInfo'
   }

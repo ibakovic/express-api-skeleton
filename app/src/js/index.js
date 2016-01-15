@@ -1,6 +1,7 @@
 'use strict';
 
 var $ = require('jquery');
+//require('bootstrap');
 var Backbone = require('backbone');
 var _ = require('lodash');
 var router = require('./views/backboneRouter.js');
@@ -119,7 +120,7 @@ $('document').ready(function() {
     views.editView.show();
   });
 
-  router.on('route:addMovie', function(imageId) {
+  router.on('route:addMovie', function() {
     if(!document.cookie) {
       router.navigate('', {trigger: true});
       return;
@@ -128,7 +129,6 @@ $('document').ready(function() {
     _.map(views, hideView);
 
     views.userView.show();
-    views.addView.getImgId(imageId);
     views.addView.show();
   });
 

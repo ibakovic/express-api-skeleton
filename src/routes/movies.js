@@ -90,12 +90,10 @@ function addMovie (req, res, next) {
       return res.status(400).json(resData);
     }
 
-    var imagePath = root + 'uploads/temp/' + req.body.imageId;
+    var imagePath = root + 'uploads/temp/' + req.files.image[0].filename;
     var imageName = bCrypt.hashSync(req.user.id + req.body.title, bCrypt.genSaltSync(10), null).toString();
     imageName = imageName.replace(/\//g,'*');
     imageHash = imageName.replace(/\./g,'d');
-
-    logger.log(imageName);
 
     var newPath = format('{path}/public/{image}.png', {
       path: path,
@@ -145,11 +143,13 @@ function addMovie (req, res, next) {
           return;
         }
 
-        return res.status(200).json({
+        /*return res.status(200).json({
           msg: Message.MovieAdded,
           success: true,
           data: movie.toObject()
-        });
+        });*/
+
+      return res.redirect('/');
       });
     }
 
@@ -285,12 +285,7 @@ function deleteMovie (req, res, next) {
       if(err)
         return next(err);
 
-      fs.rmdir(imgPath, function(err) {
-        if(err)
-          return next(err);
-
-        return res.status(200).json(resData);
-      });
+      return res.status(200).json(resData);
     });
   });
 }
@@ -351,7 +346,9 @@ function updateMovie (req, res, next) {
 }
 
 function uploadImage(req, res, next){
-  res.redirect("/#addMovie/" + req.files.image[0].filename);
+  logger.log('Extracted filename:', req.files);
+  logger.log('Extracted body', req.body);
+  res.status(200).json({filename: req.files.image[0].filename});
 }
 
 function isAuthenticate(req, res, next) {
@@ -366,7 +363,7 @@ function isAuthenticate(req, res, next) {
 
 router
   .use(isAuthenticate)
-  .post('/', addMovie)
+  .post('/', cpUpload, addMovie)
   .post('/upload', cpUpload, uploadImage)
   .get('/', listMovies)
   .get('/:movieId', showMovie)

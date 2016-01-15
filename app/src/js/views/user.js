@@ -47,7 +47,7 @@ var UserView = Backbone.View.extend({
   },
 
   openAddMovieForm: function() {
-    router.navigate('addMovie/noImg', {trigger: true});
+    router.navigate('addMovie', {trigger: true});
   },
 
   logout: function() {

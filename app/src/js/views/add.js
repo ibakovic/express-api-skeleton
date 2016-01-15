@@ -4,20 +4,19 @@ var Backbone = require('backbone');
 var _ = require('lodash');
 var $ = require('jquery');
 var router = require('./backboneRouter.js');
-var UploadImageView = require('./uploadImage.js');
+var popsicle = require('popsicle');
 var addMovieTemplate = require('../../templates/addMovie.hbs');
 
 var AddView = Backbone.View.extend({
   template: addMovieTemplate,
 
   events: {
-    'click #goToUploadImage': 'uploadImage',
     'click #addMovie': 'addMovie',
     'click #cancelAdd': 'cancelAdd'
   },
 
   initialize: function(options) {
-    _.bindAll(this, 'render', 'show', 'hide', 'getImgId', 'uploadImage', 'addMovie', 'cancelAdd');
+    _.bindAll(this, 'render', 'show', 'hide', 'addMovie', 'cancelAdd');
     this.options = options;
   },
 
@@ -34,28 +33,19 @@ var AddView = Backbone.View.extend({
     this.$el.hide();
   },
 
-  getImgId: function(imgId) {
-    this.imgId = imgId;
-  },
-
-  uploadImage: function() {
-    var uploadImageView = new UploadImageView({el: $('#uploadImageContainer')});
-    uploadImageView.render();
-    uploadImageView.$el.show();
-  },
-
   addMovie: function() {
     var self = this;
     var title = $('#addTitle').val().trim();
     var link = $('#addLink').val().trim();
+    var image = $('#image').val();
 
     if(title === '') {
       Backbone.Events.trigger('alert', 'Title required!', 'Add movie error');
       return;
     }
 
-    if(this.imgId === 'noImg')
-      return Backbone.Events.trigger('alert', 'Please upload an image before submitting changes', 'Image not uploaded');
+    if(!image)
+      return Backbone.Events.trigger('alert', 'Please select an image before submitting changes', 'Image not uploaded');
 
     var Movie = new self.options.movieModel({
       title: title,
@@ -63,7 +53,7 @@ var AddView = Backbone.View.extend({
       addedBy: self.options.userId,
       imageId: self.imgId
     });
-
+/*
     Movie.save(null, {
       success: function(model, response) {
         model.set({'addedBy': response.data.addedBy});
@@ -78,7 +68,7 @@ var AddView = Backbone.View.extend({
       },
       error: function(model, response) {
         Backbone.Events.trigger('alert', response.msg, 'Failed to add your movie');
-    }});
+    }});*/
   },
 
   cancelAdd: function() {
