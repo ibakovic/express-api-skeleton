@@ -23,8 +23,9 @@
     "TokenCreated": "Token created",
 
     "EmailNotFound": "No e-mail to send verification mail to!",
-    "EmailNotSent": "Failed to send e-mail",
     "EmailSent": "E-mail sent",
+    "EmailNotSent": "Failed to send e-mail",
+    "EmailDuplicated": "You already have an account on this e-mail",
     "EmailSubject": "Verification for movieapp registration",
     "EmailText": "Click on this link to verify your registration: ",
 

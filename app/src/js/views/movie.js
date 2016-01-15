@@ -28,13 +28,13 @@ var MovieView = Backbone.View.extend({
 
     this.model.fetch({success: function(model, response) {
       var username = model.get('addedBy').username;
-
+      var imageUrl = 'http://localhost:8080/' + model.get('imageLink') + '.png';
       var template = self.template({
         title: model.get('title'),
         link: model.get('link'),
         movieId: model.get('id'),
         addedBy: username,
-        picture: model.get('image'),
+        pictureUrl: imageUrl,
         created: model.get('created')
       });
       self.$el.html(template);

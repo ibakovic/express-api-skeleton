@@ -4,11 +4,8 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('lodash');
 var router = require('./backboneRouter.js');
+var popsicle = require('popsicle');
 var userNavbarTemplate = require('../../templates/userNavbar.hbs');
-
-var LogoutModel = Backbone.Model.extend({
-  url: '/logout'
-});
 
 var UserView = Backbone.View.extend({
   template: userNavbarTemplate,
@@ -55,18 +52,22 @@ var UserView = Backbone.View.extend({
 
   logout: function() {
     var self = this;
-    var logOut = new LogoutModel();
 
-    logOut.fetch({
-      success: function(model, res, opt) {
-        document.cookie += '; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-
-        Backbone.Events.trigger('alert', 'Logout success!', 'Logout');
-        router.navigate('', {trigger: true});
-      },
-      error: function(model, res, opt) {
-        Backbone.Events.trigger('alert', 'Error!' + res, 'Logout');
+    popsicle({
+      method: 'GET',
+      url: '/logout',
+      headers: {
+        'Content-Type': 'application/json'
       }
+    })
+    .then(function logoutSuccess(res) {
+      document.cookie = 'user=' + self.options.model.get('id') + '; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+
+      Backbone.Events.trigger('alert', 'Logout success!', 'Logout');
+      router.navigate('', {trigger: true});
+    })
+    .catch(function logoutFailure(res) {
+      Backbone.Events.trigger('alert', 'Error!' + res, 'Logout');
     });
   },
 

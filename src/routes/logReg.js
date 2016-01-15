@@ -18,7 +18,6 @@ var logger = require('minilog')('logRegRoutes');
   * @param  {Function(req, res, next)} next
   */
 function successResponse(req, res, next) {
-  logger.log(req.session);
   return res.status(200).cookie('user', req.user.id).json({msg: 'Logged in successfully!'});
 }
 
@@ -30,6 +29,7 @@ function successResponse(req, res, next) {
   */
 function registrationResponse(req, res, next) {
   var resData = {};
+
   if(!req.body.emailTo) {
     resData.msg = Message.EmailNotFound;
     User.findOneAndRemove({username: req.body.username}, function(err, user) {
@@ -40,65 +40,94 @@ function registrationResponse(req, res, next) {
     return;
   }
 
-  var userQuery = {username: req.body.username};
-  function userFound(err, user) {
-    if(err)
-      return next(err);
-
-    if(!user) {
-      resData.msg = Message.UserNotFound;
-      return res.status(400).json(resData);
+  var emailQuery = {email: req.body.emailTo};
+  User.findOne(emailQuery, function(err, userData) {
+    if (err) {
+      next (err);
+      return;
     }
 
-    var verQuery = {userId: user.id};
-
-    function verificationFound(err, ver) {
-      if(err)
-        return next(err);
-
-      function verificationSaved(err, verified) {
+    if (userData) {
+      resData.msg = Message.EmailDuplicated;
+      User.findOneAndRemove({username: req.body.username}, function(err, user) {
         if(err)
           return next(err);
 
-        var url = req.protocol + "://" + req.get('host') + '/#confirm/' + id;
-        var transporter = nodemailer.createTransport({
-          host: 'mail.vip.hr'
-        });
-
-        var mailOptions = {
-          from: 'noreply@extensionengine.com',
-          to: req.body.emailTo,
-          subject: Message.EmailSubject,
-          text: Message.EmailText + url
-        };
-
-        transporter.sendMail(mailOptions, function(err, info) {
-          if(err) {
-            logger.error(err);
-            return res.status(400).json({msg: Message.EmailNotSent});
-          }
-
-          res.status(200).json(Message.EmailSent);
-        });
-      }
-
-      if(!ver) {
-        var id = bCrypt.hashSync(req.body.userId, bCrypt.genSaltSync(10), null).toString();
-        id = id.replace(/\//g,'*');
-
-        var verification = new Verification({
-          verId: id,
-          userId: user.id
-        });
-
-        verification.save(verificationSaved);
-      }
+        return res.status(400).json(resData);
+      });
+      return;
     }
 
-    Verification.findOne(verQuery, verificationFound);
-  }
+    var userQuery = {username: req.body.username};
+    function userFound(err, user) {
+      if(err)
+        return next(err);
 
-  User.findOne(userQuery, userFound);
+      if(!user) {
+        resData.msg = Message.UserNotFound;
+        res.status(400).json(resData);
+        return;
+      }
+
+      function verificationFound(err, ver) {
+        if(err)
+          return next(err);
+
+        function verificationSaved(err, verified) {
+          if(err)
+            return next(err);
+
+          var url = req.protocol + "://" + req.get('host') + '/#confirm/' + id;
+          var transporter = nodemailer.createTransport({
+            host: 'mail.vip.hr'
+          });
+
+          var mailOptions = {
+            from: 'noreply@extensionengine.com',
+            to: req.body.emailTo,
+            subject: Message.EmailSubject,
+            text: Message.EmailText + url
+          };
+
+          transporter.sendMail(mailOptions, function(err, info) {
+            if(err) {
+              logger.error(err);
+              return res.status(400).json({msg: Message.EmailNotSent});
+            }
+
+            resData.msg = Message.EmailSent;
+
+            res.status(200).json(resData);
+          });
+        }
+
+        if(!ver) {
+          var id = bCrypt.hashSync(req.body.userId, bCrypt.genSaltSync(10), null).toString();
+          id = id.replace(/\//g,'*');
+
+          var verification = new Verification({
+            verId: id,
+            userId: user.id
+          });
+
+          verification.save(verificationSaved);
+        }
+      }
+
+      var verQuery = {userId: user.id};
+
+      User.findOneAndUpdate(userQuery, emailQuery, function(err, user) {
+        if (err) {
+          next(err);
+          return;
+        }
+        Verification.findOne(verQuery, verificationFound);
+      });
+
+    }
+
+    User.findOne(userQuery, userFound);
+  });
 }
 
 /**

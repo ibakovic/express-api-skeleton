@@ -54,6 +54,11 @@ var userDetailsView = Backbone.View.extend({
       return;
     }
 
+    if(oldPassword === updatedPassword) {
+      Backbone.Events.trigger('alert', 'Your new password matches the old one!', 'Update password error');
+      return;
+    }
+
     if(updatedPassword !== confirmedPassword)
       return Backbone.Events.trigger('alert', 'New password not confirmed!', 'Password error');
 

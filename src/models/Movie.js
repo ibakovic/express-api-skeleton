@@ -12,6 +12,7 @@ var MovieSchema = new mongoose.Schema({
   },
   title: String,
   link: String,
+  imageLink: String,
   addedBy: {
     type: String,
     ref: 'User'

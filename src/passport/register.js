@@ -34,7 +34,7 @@ function createUser(username, password, done) {
     }
 
     // if there is no user
-    // with given email then create new one
+    // with given username then create new one
     var newUser = new User({
       username: username,
       password: createHash(password)

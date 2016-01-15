@@ -40,7 +40,7 @@ app
 app
   .use(express.static(Path.join(__dirname, 'node_modules')))
   .use(express.static(Path.join(__dirname, 'app/')))
-  .use(express.static(Path.join(__dirname + '/jquery')))
+  .use(express.static(Path.join(__dirname, 'uploads/public/')))
   .use(favicon(__dirname + '/app/dist/favicon.ico'));
 
 // HTTP traffic logging

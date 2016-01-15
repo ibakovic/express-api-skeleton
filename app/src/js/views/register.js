@@ -64,11 +64,15 @@ var RegisterView = Backbone.View.extend({
       }
     })
     .then(function completeRegister(res) {
-      Backbone.Events.trigger('alert', res.msg, 'Registration');
+      if (res.status === 400) {
+        Backbone.Events.trigger('alert', res.body.msg, 'Registration error');
+        return;
+      }
+      Backbone.Events.trigger('alert', res.body.msg, 'Registration');
       router.navigate('', {trigger: true});
     })
-    .catch(function errorConfirm() {
-      Backbone.Events.trigger('alert', 'Registration failed', 'Registration error');
+    .catch(function errorConfirm(res) {
+      Backbone.Events.trigger('alert', res.body.msg, 'Registration error');
     });
   },
 

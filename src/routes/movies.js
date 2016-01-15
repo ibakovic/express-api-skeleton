@@ -1,13 +1,14 @@
 'use script';
 
 var _ = require('lodash');
+var bCrypt = require('bcrypt-nodejs');
 var router = require('express').Router();
 var fs = require('fs');
 var multer = require('multer');
 var Path = require('path');
 var root = __dirname + '/../../';
 var upload = multer({ dest: root + '/uploads/temp' });
-var path = root + '/uploads';
+var path = root + 'uploads';
 var mkdirp = require('mkdirp');
 var Movie = require('../models/Movie.js');
 var User = require('../models/User.js');
@@ -15,29 +16,12 @@ var Message = require('../../strings.json');
 var format = require('string-template');
 var logger = require('minilog')('moviesRoutes');
 var async = require('async');
+var imageHash = '';
 
 var cpUpload = upload.fields([{
   name: 'image',
   maxCount: 1
 }]);
-
-function saveMovieAndImage(err, resData, req, data, imagePath, res, next) {
-  if(err)
-    return next(err);
-
-  movie.save(function(err, newMovie) {
-    if(err)
-      return next(err);
-
-
-
-    fs.unlink(imagePath, function(err) {
-      if(err)
-        return next(err);
-      return res.status(200).json(resData);
-    });
-  });
-}
 
 /**
  * Gets current date
@@ -106,14 +90,17 @@ function addMovie (req, res, next) {
       return res.status(400).json(resData);
     }
 
-    var imagePath = root + '/uploads/temp/' + req.body.imageId;
+    var imagePath = root + 'uploads/temp/' + req.body.imageId;
+    var imageName = bCrypt.hashSync(req.user.id + req.body.title, bCrypt.genSaltSync(10), null).toString();
+    imageName = imageName.replace(/\//g,'*');
+    imageHash = imageName.replace(/\./g,'d');
 
-    var newPath = format('{path}/{userId}/{movieTitle}', {
+    logger.log(imageName);
+
+    var newPath = format('{path}/public/{image}.png', {
       path: path,
-      userId: req.user.id,
-      movieTitle: req.body.title
+      image: imageHash
     });
-    newPath += '/image.png';
 
     function storeImage(source, destination, callback) {
       var destDir = Path.dirname(destination);
@@ -139,6 +126,7 @@ function addMovie (req, res, next) {
         title: req.body.title,
         link: req.body.link,
         addedBy: req.user.id,
+        imageLink: imageHash,
         created: getDate()
       });
 
@@ -232,11 +220,13 @@ function showMovie (req, res, next) {
       return res.status(status).json(resData);
     }
 
-    User.populate(movie, {path: 'addedBy', model: 'User'}, function(err, movie){
-      var imagePath = format('{path}/{userId}/{title}/image.png', {
+
+    User.populate(movie, {path: 'addedBy', model: 'User'}, function(err, moviePopulated){
+      var imageLink = moviePopulated.imageLink;
+
+      var imagePath = format('{path}/public/{image}.png', {
         path: path,
-        userId: req.user.id,
-        title: movie.title
+        image: imageLink
       });
 
       fs.readFile(imagePath, function(err, image) {
@@ -252,8 +242,8 @@ function showMovie (req, res, next) {
 
         resData.msg = Message.MovieFound;
         resData.success = true;
-        resData.data = movie.toObject();
-        resData.image = 'data:image/png;base64, ' + image.toString('base64');
+        resData.data = moviePopulated.toObject();
+        resData.imageUrl = moviePopulated.imageHash + '.png';
         status = 200;
 
         return res.status(status).json(resData);
@@ -286,13 +276,12 @@ function deleteMovie (req, res, next) {
       return res.status(400).json(resData);
     }
 
-    var imgPath = format('{path}/{userId}/{movieTitle}', {
+    var imgPath = format('{path}/public/{image}.png', {
       path: path,
-      userId: req.user.id,
-      movieTitle: movie.title
+      image: movie.imageLink
     });
 
-    fs.unlink(imgPath + '/image.png', function(err) {
+    fs.unlink(imgPath, function(err) {
       if(err)
         return next(err);
 
@@ -356,24 +345,7 @@ function updateMovie (req, res, next) {
       resData.msg = Message.MovieUpdated;
       resData.success = true;
 
-      var oldPath = format('{path}/{userId}/{movieTitle}', {
-        path: path,
-        userId: req.user.id,
-        movieTitle: req.body.title
-      });
-
-      var newPath = format('{path}/{userId}/{movieTitle}', {
-        path: path,
-        userId: req.user.id,
-        movieTitle: req.body.update
-      });
-
-      fs.rename(oldPath, newPath, function(err) {
-        if(err)
-          return next(err);
-
-        return res.status(200).json(resData);
-      });
+      return res.status(200).json(resData);
     });
   });
 }
@@ -384,7 +356,6 @@ function uploadImage(req, res, next){
 
 function isAuthenticate(req, res, next) {
   if (req.isAuthenticated()) {
-    logger.log(req.isAuthenticated());
     next();
   }
   else {
