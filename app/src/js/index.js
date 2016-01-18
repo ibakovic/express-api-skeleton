@@ -1,7 +1,8 @@
 'use strict';
 
 var $ = require('jquery');
-//require('bootstrap');
+window.$ = window.jQuery = require('jquery');
+require('bootstrap');
 var Backbone = require('backbone');
 var _ = require('lodash');
 var router = require('./views/backboneRouter.js');
@@ -27,6 +28,7 @@ function hideView(view) {
 }
 
 $('document').ready(function() {
+  //////////////////////////////////// Render views
   var $body = $('body');
 
   _.map(views, function(view) {

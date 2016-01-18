@@ -35,40 +35,55 @@ var AddView = Backbone.View.extend({
 
   addMovie: function() {
     var self = this;
-    var title = $('#addTitle').val().trim();
-    var link = $('#addLink').val().trim();
-    var image = $('#image').val();
 
-    if(title === '') {
-      Backbone.Events.trigger('alert', 'Title required!', 'Add movie error');
-      return;
+    function sendData() {
+      var currentUserId = document.cookie.split('=');
+      var title = $('#addTitle').val().trim();
+      var link = $('#addLink').val().trim();
+      var image = $('#image').val();
+
+      if(title === '') {
+        Backbone.Events.trigger('alert', 'Title required!', 'Add movie error');
+        return;
+      }
+
+      if(!image)
+        return Backbone.Events.trigger('alert', 'Please select an image before submitting changes', 'Image not uploaded');
+
+      var XHR = new XMLHttpRequest();
+
+      // We bind the FormData object and the form element
+      var FD  = new FormData(form);
+
+      // We define what will happen if the data are successfully sent
+      /*XHR.addEventListener("load", function(event) {
+        //
+      });*/
+
+      // We define what will happen in case of error
+      XHR.addEventListener("error", function(event) {
+        Backbone.Events.trigger('alert', response.msg, 'Failed to add your movie');
+      });
+
+      // We setup our request
+      XHR.open("POST", "http://localhost:8080/users/movies");
+
+      // The data sent are the one the user provide in the form
+      XHR.send(FD);
+
+      location.reload();
+      router.navigate('movies', {trigger: true});
     }
 
-    if(!image)
-      return Backbone.Events.trigger('alert', 'Please select an image before submitting changes', 'Image not uploaded');
+    // We need to access the form element
+    var form = document.getElementById("addMovieForm");
 
-    var Movie = new self.options.movieModel({
-      title: title,
-      link: link,
-      addedBy: self.options.userId,
-      imageId: self.imgId
+    // to takeover its submit event.
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      sendData();
     });
-/*
-    Movie.save(null, {
-      success: function(model, response) {
-        model.set({'addedBy': response.data.addedBy});
-        model.set({'imageUrl': response.data.addedBy + '/' + title});
-        Backbone.Events.trigger('movie:add', model);
-
-        $('#addTitle').val('');
-        $('#addLink').val('');
-
-        //self.$el.hide();
-        router.navigate('movies', {trigger: true});
-      },
-      error: function(model, response) {
-        Backbone.Events.trigger('alert', response.msg, 'Failed to add your movie');
-    }});*/
   },
 
   cancelAdd: function() {

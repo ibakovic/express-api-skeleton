@@ -5,6 +5,7 @@ var Backbone = require('backbone');
 var _ = require('lodash');
 var router = require('./backboneRouter.js');
 var popsicle = require('popsicle');
+var cookie = require('js-cookie');
 var userNavbarTemplate = require('../../templates/userNavbar.hbs');
 
 var UserView = Backbone.View.extend({
@@ -32,6 +33,7 @@ var UserView = Backbone.View.extend({
   },
 
   show: function() {
+    var self = this;
     this.render();
     this.$el.show();
   },
@@ -61,8 +63,7 @@ var UserView = Backbone.View.extend({
       }
     })
     .then(function logoutSuccess(res) {
-      document.cookie = 'user=' + self.options.model.get('id') + '; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-
+      cookie.remove('user', self.options.model.get('id'));
       Backbone.Events.trigger('alert', 'Logout success!', 'Logout');
       router.navigate('', {trigger: true});
     })

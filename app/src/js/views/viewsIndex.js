@@ -38,7 +38,6 @@ var editView = new EditView({
 });
 
 var addView = new AddView({
-  movieModel: models.MovieModel,
   userId: currentUserId[1]
 });
 

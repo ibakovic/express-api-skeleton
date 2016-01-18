@@ -30,6 +30,7 @@
     "gulp": "^3.9.0",
     "handlebars": "^4.0.4",
     "jquery": "^2.1.4",
+    "js-cookie": "^2.1.0",
     "lodash": "^3.10.1",
     "minilog": "^2.1.0",
     "mkdirp": "^0.5.1",

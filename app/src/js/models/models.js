@@ -28,6 +28,5 @@ var User = new UserModel();
 
 module.exports = {
   Movies: Movies,
-  User: User,
-  MovieModel: MovieModel
+  User: User
 };
