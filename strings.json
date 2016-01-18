@@ -34,5 +34,6 @@
 
     "NotLoggedIn": "You are not logged in!",
 
-    "ImageNotFound": "Image not found!"
+    "ImageNotFound": "Image not found!",
+    "NotImageExtension": "Uploaded file is not an image!"
 }

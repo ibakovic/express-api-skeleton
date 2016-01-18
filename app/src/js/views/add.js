@@ -52,20 +52,20 @@ var AddView = Backbone.View.extend({
 
       var XHR = new XMLHttpRequest();
 
-      // We bind the FormData object and the form element
+      // Bind the FormData object and the form element
       var FD  = new FormData(form);
 
-      // We define what will happen if the data are successfully sent
-      /*XHR.addEventListener("load", function(event) {
-        //
-      });*/
-
-      // We define what will happen in case of error
-      XHR.addEventListener("error", function(event) {
-        Backbone.Events.trigger('alert', response.msg, 'Failed to add your movie');
+      // Define what will happen if the data are successfully sent
+      XHR.addEventListener("load", function(event) {
+        console.log('event success', event.target.responseText);
       });
 
-      // We setup our request
+      // Define what will happen in case of error
+      XHR.addEventListener("error", function(event) {
+        Backbone.Events.trigger('alert', 'An error has occured', 'Failed to add your movie');
+      });
+
+      // Detup request
       XHR.open("POST", "http://localhost:8080/users/movies");
 
       // The data sent are the one the user provide in the form
@@ -75,7 +75,7 @@ var AddView = Backbone.View.extend({
       router.navigate('movies', {trigger: true});
     }
 
-    // We need to access the form element
+    // Access the form element
     var form = document.getElementById("addMovieForm");
 
     // to takeover its submit event.

@@ -7,7 +7,7 @@ var fs = require('fs');
 var multer = require('multer');
 var Path = require('path');
 var root = __dirname + '/../../';
-var upload = multer({ dest: root + '/uploads/temp' });
+var upload = multer({ dest: root + 'uploads/temp' });
 var path = root + 'uploads';
 var mkdirp = require('mkdirp');
 var Movie = require('../models/Movie.js');
@@ -90,14 +90,27 @@ function addMovie (req, res, next) {
       return res.status(400).json(resData);
     }
 
+    var extension = req.files.image[0].originalname.split('.')[1];
+    var regex = /png|gif|tiff|jpeg|jpg/i;
+
+    if(!regex.test(extension)) {
+      resData.msg = Message.NotImageExtension;
+      resData.status = false;
+      res.status(400).json(resData);
+      return;
+    }
+
+    logger.log('requested files options', extension);
+
     var imagePath = root + 'uploads/temp/' + req.files.image[0].filename;
     var imageName = bCrypt.hashSync(req.user.id + req.body.title, bCrypt.genSaltSync(10), null).toString();
     imageName = imageName.replace(/\//g,'*');
     imageHash = imageName.replace(/\./g,'d');
 
-    var newPath = format('{path}/public/{image}.png', {
+    var newPath = format('{path}/public/{image}.{ext}', {
       path: path,
-      image: imageHash
+      image: imageHash,
+      ext: extension
     });
 
     function storeImage(source, destination, callback) {
@@ -125,6 +138,7 @@ function addMovie (req, res, next) {
         link: req.body.link,
         addedBy: req.user.id,
         imageLink: imageHash,
+        imageType: extension,
         created: getDate()
       });
 
@@ -224,9 +238,10 @@ function showMovie (req, res, next) {
     User.populate(movie, {path: 'addedBy', model: 'User'}, function(err, moviePopulated){
       var imageLink = moviePopulated.imageLink;
 
-      var imagePath = format('{path}/public/{image}.png', {
+      var imagePath = format('{path}/public/{image}.{ext}', {
         path: path,
-        image: imageLink
+        image: imageLink,
+        ext: movie.imageType
       });
 
       fs.readFile(imagePath, function(err, image) {
@@ -243,7 +258,7 @@ function showMovie (req, res, next) {
         resData.msg = Message.MovieFound;
         resData.success = true;
         resData.data = moviePopulated.toObject();
-        resData.imageUrl = req.protocol + "://" + req.get('host') + '/' + imageLink + '.png';
+        resData.imageUrl = req.protocol + "://" + req.get('host') + '/' + imageLink + '.' + moviePopulated.imageType;
         status = 200;
 
         return res.status(status).json(resData);
