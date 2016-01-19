@@ -104,22 +104,20 @@ $('document').ready(function() {
 
     _.map(views, hideView);
 
-    if(models.Movies.length === 0) {
-      models.Movies.fetch({
-        success: function(collection, response) {
-          views.userView.show();
-          views.editView.getMovieId(movieId);
-          views.editView.show();
-          return;
-        },
-        error: function(collection, response) {
-          router.navigate('', {trigger: true});
-        }
-      });
-    }
+    models.Movies.fetch({
+      success: function(collection, response) {
+        views.editView.getMovieId(movieId);
+        views.editView.show();
 
-    views.editView.getMovieId(movieId);
-    views.editView.show();
+        models.User.fetch({success: function(collection, response) {
+          views.userView.show();
+        }});
+        return;
+      },
+      error: function(collection, response) {
+        router.navigate('', {trigger: true});
+      }
+    });
   });
 
   router.on('route:addMovie', function() {
