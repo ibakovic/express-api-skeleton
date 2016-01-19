@@ -68,9 +68,23 @@ var AddView = Backbone.View.extend({
 
       // Define what will happen if the data are successfully sent
       XHR.addEventListener("load", function(event) {
-        var response = event.target.response.split(':')[3];
-        console.log(response);
-        //Backbone.Events.trigger('movie:add', response);
+        var response = event.target.response.split('"data":')[1].split('"');
+        var movieParams = {
+          title: response[3],
+          link: response[7],
+          addedBy: {
+            username: response[13],
+            id: response[23]
+          },
+          imageLink: response[27],
+          imageType: response[31],
+          created: response[35],
+          id: response[39]
+        };
+
+        var Movie = new self.options.model(movieParams);
+
+        Backbone.Events.trigger('movie:add', Movie);
         //router.navigate('movies', {trigger: true});
       });
 

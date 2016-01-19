@@ -20,7 +20,6 @@ Backbone.Events.on('alert', function(message, title) {
 });
 
 Backbone.Events.on('movie:add', function(model) {
-  console.log('Add movie model', model);
   views.moviesView.appendItem(model);
 });
 

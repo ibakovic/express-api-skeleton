@@ -37,6 +37,7 @@ var MovieView = Backbone.View.extend({
         pictureUrl: imageUrl,
         created: model.get('created')
       });
+
       self.$el.html(template);
     }});
   },

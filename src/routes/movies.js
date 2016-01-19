@@ -152,19 +152,20 @@ function addMovie (req, res, next) {
         return;
       }
 
-      fs.unlink(imagePath, function deleted(err) {
-        if (err) {
-          next(err);
-          return;
-        }
+      User.populate(movie, {path: 'addedBy', model: 'User'}, function(err, moviePopulated) {
 
-        return res.status(200).json({
-          msg: Message.MovieAdded,
-          success: true,
-          data: movie.toObject()
+        fs.unlink(imagePath, function deleted(err) {
+          if (err) {
+            next(err);
+            return;
+          }
+
+          return res.status(200).json({
+            msg: Message.MovieAdded,
+            success: true,
+            data: moviePopulated.toObject()
+          });
         });
-
-      return res.redirect('/');
       });
     }
 
@@ -234,7 +235,6 @@ function showMovie (req, res, next) {
 
       return res.status(status).json(resData);
     }
-
 
     User.populate(movie, {path: 'addedBy', model: 'User'}, function(err, moviePopulated){
       var imageLink = moviePopulated.imageLink;
