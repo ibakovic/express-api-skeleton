@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var bCrypt = require('bcrypt-nodejs');
+var shortid = require('shortid');
 var router = require('express').Router();
 var fs = require('fs');
 var multer = require('multer');
@@ -103,7 +104,7 @@ function addMovie (req, res, next) {
     logger.log('requested files options', extension);
 
     var imagePath = root + 'uploads/temp/' + req.files.image[0].filename;
-    var imageName = bCrypt.hashSync(req.user.id + req.body.title, bCrypt.genSaltSync(10), null).toString();
+    var imageName = shortid.generate();
     imageName = imageName.replace(/\//g,'*');
     imageHash = imageName.replace(/\./g,'d');
 
@@ -157,11 +158,11 @@ function addMovie (req, res, next) {
           return;
         }
 
-        /*return res.status(200).json({
+        return res.status(200).json({
           msg: Message.MovieAdded,
           success: true,
           data: movie.toObject()
-        });*/
+        });
 
       return res.redirect('/');
       });
@@ -258,7 +259,7 @@ function showMovie (req, res, next) {
         resData.msg = Message.MovieFound;
         resData.success = true;
         resData.data = moviePopulated.toObject();
-        resData.imageUrl = req.protocol + "://" + req.get('host') + '/' + imageLink + '.' + moviePopulated.imageType;
+        resData.imageUrl = req.protocol + "://" + req.get('host') + '/public/' + imageLink + '.' + moviePopulated.imageType;
         status = 200;
 
         return res.status(status).json(resData);

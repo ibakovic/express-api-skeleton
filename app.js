@@ -38,9 +38,8 @@ app
 
 // serve static assets
 app
-  .use(express.static(Path.join(__dirname, 'node_modules')))
-  .use(express.static(Path.join(__dirname, 'app/')))
-  .use(express.static(Path.join(__dirname, 'uploads/public/')))
+  .use(express.static(Path.join(__dirname, 'app/dist/')))
+  .use(express.static(Path.join(__dirname, 'uploads/')))
   .use(favicon(__dirname + '/app/dist/favicon.ico'));
 
 // HTTP traffic logging
@@ -59,9 +58,6 @@ app
   .use(passport.session());
 require('./src/passport/init.js')(passport);
 
-// serve frontend
-var homePage = require('./src/routes/homePage.js');
-
 // routers
 var usersRoutes = require('./src/routes/users.js');
 var logRegRoutes = require('./src/routes/logReg.js');
@@ -69,7 +65,6 @@ var mailHandler = require('./src/routes/mailHandler.js');
 
 // API endpoints
 app
-  .use('/', homePage)
   .use('/', logRegRoutes)
   .use('/users', usersRoutes)
   .use('/email', mailHandler);

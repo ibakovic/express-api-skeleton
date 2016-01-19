@@ -26,6 +26,7 @@ var AddView = Backbone.View.extend({
   },
 
   show: function() {
+    this.render();
     this.$el.show();
   },
 
@@ -35,21 +36,31 @@ var AddView = Backbone.View.extend({
 
   addMovie: function() {
     var self = this;
+    var currentUserId = document.cookie.split('=');
+    var title = $('#addTitle').val().trim();
+    var link = $('#addLink').val().trim();
+    var image = $('#image').val();
+
+    if(title === '') {
+      Backbone.Events.trigger('alert', 'Title required!', 'Add movie error');
+      return;
+    }
+
+    if(!image) {
+      Backbone.Events.trigger('alert', 'Please select an image before submitting changes', 'Image not uploaded');
+      return;
+    }
+
+    var extension = image.split('.')[1];
+    var regex = /png|gif|tiff|jpeg|jpg/i;
+
+    // Check if the submitted file is an image
+    if(!regex.test(extension)) {
+      Backbone.Events.trigger('alert', 'Your file is not an image!', 'Add movie error');
+      return;
+    }
 
     function sendData() {
-      var currentUserId = document.cookie.split('=');
-      var title = $('#addTitle').val().trim();
-      var link = $('#addLink').val().trim();
-      var image = $('#image').val();
-
-      if(title === '') {
-        Backbone.Events.trigger('alert', 'Title required!', 'Add movie error');
-        return;
-      }
-
-      if(!image)
-        return Backbone.Events.trigger('alert', 'Please select an image before submitting changes', 'Image not uploaded');
-
       var XHR = new XMLHttpRequest();
 
       // Bind the FormData object and the form element
@@ -57,7 +68,10 @@ var AddView = Backbone.View.extend({
 
       // Define what will happen if the data are successfully sent
       XHR.addEventListener("load", function(event) {
-        console.log('event success', event.target.responseText);
+        var response = event.target.response.split(':')[3];
+        console.log(response);
+        //Backbone.Events.trigger('movie:add', response);
+        //router.navigate('movies', {trigger: true});
       });
 
       // Define what will happen in case of error
@@ -71,7 +85,7 @@ var AddView = Backbone.View.extend({
       // The data sent are the one the user provide in the form
       XHR.send(FD);
 
-      location.reload();
+      //location.reload();
       router.navigate('movies', {trigger: true});
     }
 
