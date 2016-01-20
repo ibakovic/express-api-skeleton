@@ -301,9 +301,9 @@ function deleteMovie (req, res, next) {
       return res.status(400).json(resData);
     }
 
-    var imgPath = format('{path}/public/{image}.png', {
+    var imgPath = format('{path}/public/{image}', {
       path: path,
-      image: movie.imageLink
+      image: movie.image
     });
 
     fs.unlink(imgPath, function(err) {
