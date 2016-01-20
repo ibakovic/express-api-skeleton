@@ -92,7 +92,6 @@ function addMovie (req, res, next) {
     }
 
     var extension = req.files.image[0].originalname.split('.')[1];
-    logger.log('////////////////files:', extension);
     var regex = /png|gif|tiff|jpeg|jpg/i;
 
     if(!regex.test(extension)) {
@@ -102,15 +101,23 @@ function addMovie (req, res, next) {
       return;
     }
 
-    var imagePath = root + 'uploads/temp/' + req.files.image[0].filename;
+    //var imagePath = root + 'uploads/temp/' + req.files.image[0].filename;
+    var imagePath = format('{root}uploads/temp/{filename}', {
+      root: root,
+      filename: req.files.image[0].filename
+    });
     var imageName = shortid.generate();
     imageName = imageName.replace(/\//g,'*');
     imageHash = imageName.replace(/\./g,'d');
 
-    var newPath = format('{path}/public/{image}.{ext}', {
-      path: path,
-      image: imageHash,
+    imageHash = format('{imageName}.{ext}', {
+      imageName: imageHash,
       ext: extension
+    });
+
+    var newPath = format('{path}/public/{image}', {
+      path: path,
+      image: imageHash
     });
 
     function storeImage(source, destination, callback) {
@@ -137,12 +144,9 @@ function addMovie (req, res, next) {
         title: req.body.title,
         link: req.body.link,
         addedBy: req.user.id,
-        imageLink: imageHash,
-        imageType: extension,
+        image: imageHash,
         created: getDate()
       });
-
-      logger.log('/////////////////moviePopulated', movie);
 
       movie.save(onAdded);
     }
@@ -243,7 +247,7 @@ function showMovie (req, res, next) {
       resData.msg = Message.MovieFound;
       resData.success = true;
       resData.data = moviePopulated.toObject();
-      resData.imageUrl = '/public/' + movieObject.imageLink + '.' + movieObject.imageType;
+      resData.imageUrl = '/public/' + movieObject.image;
       status = 200;
 
       return res.status(status).json(resData);

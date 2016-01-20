@@ -73,76 +73,16 @@ var AddView = Backbone.View.extend({
       body: form
     })
     .then(function AddMovieSuccess(res) {
-      console.log(res);
+      if(!res.body.success) {
+        Backbone.Events.trigger('alert', res.body.msg, 'Add movie error');
+        return;
+      }
+
       router.navigate('movies', {trigger: true});
     })
     .error(function AddMovieError(res) {
-      alert(res.msg);
+      Backbone.Events.trigger('alert', res.body.msg, 'Add movie error');
     });
-
-/*Content-Disposition: form-data; name="image"; filename="Background.png"
-Content-Type: image/png*/
-
-/*
-    popsicle({
-      method: 'POST',
-      url: '/users/movies',
-      body: form
-    });
-    .then(function completeAddMovie(res) {
-      if(!res.success) {
-        Backbone.Events.trigger('alert', res.msg, 'Add movie error');
-        return;
-      }
-      var movieParams = res.data;
-
-      var Movie = new self.options.model(movieParams);
-
-      Backbone.Events.trigger('movie:add', Movie);
-      console.log('success', Movie);
-      router.navigate('movies', {trigger: true});
-    });
-*/
-    /*function sendData(form) {
-      var XHR = new XMLHttpRequest();
-
-      // Bind the FormData object and the form element
-      var FD  = new FormData(form);
-
-      // Define what will happen if the data are successfully sent
-      function loadd() {
-        console.log('Entering loadd');
-        var response = JSON.parse(XHR.responseText);
-        if(!response.success) {
-          Backbone.Events.trigger('alert', response.msg, 'Add movie error');
-          return;
-        }
-        var movieParams = response.data;
-
-        var Movie = new self.options.model(movieParams);
-
-        Backbone.Events.trigger('movie:add', Movie);
-        console.log('success', Movie);
-        router.navigate('movies', {trigger: true});
-      }
-
-      // Define what will happen in case of error
-      XHR.addEventListener("error", function(event) {
-        Backbone.Events.trigger('alert', 'An error has occured', 'Failed to add your movie');
-      });
-
-      // Setup request
-      XHR.open("POST", "http://localhost:8080/users/movies");
-
-      // The data sent are the ones the user provided in the form
-      XHR.send(FD);
-
-      XHR.onload = loadd;
-      //router.navigate('movies', {trigger: true});
-    }
-
-    var $form = this.$el.find('#addMovieForm');
-    sendData($form[0]);*/
   },
 
   cancelAdd: function() {
