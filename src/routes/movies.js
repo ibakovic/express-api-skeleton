@@ -92,6 +92,7 @@ function addMovie (req, res, next) {
     }
 
     var extension = req.files.image[0].originalname.split('.')[1];
+    logger.log('////////////////files:', extension);
     var regex = /png|gif|tiff|jpeg|jpg/i;
 
     if(!regex.test(extension)) {
@@ -100,8 +101,6 @@ function addMovie (req, res, next) {
       res.status(400).json(resData);
       return;
     }
-
-    logger.log('requested files options', extension);
 
     var imagePath = root + 'uploads/temp/' + req.files.image[0].filename;
     var imageName = shortid.generate();
@@ -142,6 +141,8 @@ function addMovie (req, res, next) {
         imageType: extension,
         created: getDate()
       });
+
+      logger.log('/////////////////moviePopulated', movie);
 
       movie.save(onAdded);
     }
@@ -237,12 +238,22 @@ function showMovie (req, res, next) {
     }
 
     User.populate(movie, {path: 'addedBy', model: 'User'}, function(err, moviePopulated){
-      var imageLink = moviePopulated.imageLink;
+      var movieObject = moviePopulated.toObject();
+
+      resData.msg = Message.MovieFound;
+      resData.success = true;
+      resData.data = moviePopulated.toObject();
+      resData.imageUrl = '/public/' + movieObject.imageLink + '.' + movieObject.imageType;
+      status = 200;
+
+      return res.status(status).json(resData);
+
+      /*var imageLink = moviePopulated.imageLink;
 
       var imagePath = format('{path}/public/{image}.{ext}', {
         path: path,
-        image: imageLink,
-        ext: movie.imageType
+        image: moviePopulated.imageLink,
+        ext: moviePopulated.imageType
       });
 
       fs.readFile(imagePath, function(err, image) {
@@ -256,14 +267,8 @@ function showMovie (req, res, next) {
           return res.status(status).json(resData);
         }
 
-        resData.msg = Message.MovieFound;
-        resData.success = true;
-        resData.data = moviePopulated.toObject();
-        resData.imageUrl = req.protocol + "://" + req.get('host') + '/public/' + imageLink + '.' + moviePopulated.imageType;
-        status = 200;
 
-        return res.status(status).json(resData);
-      });
+      });*/
     });
   });
 }

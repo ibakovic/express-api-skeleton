@@ -37,21 +37,21 @@ var AddView = Backbone.View.extend({
   addMovie: function() {
     var self = this;
     var currentUserId = document.cookie.split('=');
-    var title = $('#addTitle').val().trim();
-    var link = $('#addLink').val().trim();
-    var image = $('#image').val();
+    var $title = $('#addTitle').val().trim();
+    var $link = $('#addLink').val().trim();
+    var $image = $('#image').val();
 
-    if(title === '') {
+    if($title === '') {
       Backbone.Events.trigger('alert', 'Title required!', 'Add movie error');
       return;
     }
 
-    if(!image) {
+    if(!$image) {
       Backbone.Events.trigger('alert', 'Please select an image before submitting changes', 'Image not uploaded');
       return;
     }
 
-    var extension = image.split('.')[1];
+    var extension = $image.split('.')[1];
     var regex = /png|gif|tiff|jpeg|jpg/i;
 
     // Check if the submitted file is an image
@@ -60,58 +60,89 @@ var AddView = Backbone.View.extend({
       return;
     }
 
-    function sendData() {
+    var $form = this.$el.find('#addMovieForm');
+
+    var form = popsicle.form({
+      title: $title,
+      link: $link,
+      image: $form[0][0].files[0]
+    });
+
+    popsicle.post({
+      url: '/users/movies',
+      body: form
+    })
+    .then(function AddMovieSuccess(res) {
+      console.log(res);
+      router.navigate('movies', {trigger: true});
+    })
+    .error(function AddMovieError(res) {
+      alert(res.msg);
+    });
+
+/*Content-Disposition: form-data; name="image"; filename="Background.png"
+Content-Type: image/png*/
+
+/*
+    popsicle({
+      method: 'POST',
+      url: '/users/movies',
+      body: form
+    });
+    .then(function completeAddMovie(res) {
+      if(!res.success) {
+        Backbone.Events.trigger('alert', res.msg, 'Add movie error');
+        return;
+      }
+      var movieParams = res.data;
+
+      var Movie = new self.options.model(movieParams);
+
+      Backbone.Events.trigger('movie:add', Movie);
+      console.log('success', Movie);
+      router.navigate('movies', {trigger: true});
+    });
+*/
+    /*function sendData(form) {
       var XHR = new XMLHttpRequest();
 
       // Bind the FormData object and the form element
       var FD  = new FormData(form);
 
       // Define what will happen if the data are successfully sent
-      XHR.addEventListener("load", function(event) {
-        var response = event.target.response.split('"data":')[1].split('"');
-        var movieParams = {
-          title: response[3],
-          link: response[7],
-          addedBy: {
-            username: response[13],
-            id: response[23]
-          },
-          imageLink: response[27],
-          imageType: response[31],
-          created: response[35],
-          id: response[39]
-        };
+      function loadd() {
+        console.log('Entering loadd');
+        var response = JSON.parse(XHR.responseText);
+        if(!response.success) {
+          Backbone.Events.trigger('alert', response.msg, 'Add movie error');
+          return;
+        }
+        var movieParams = response.data;
 
         var Movie = new self.options.model(movieParams);
 
         Backbone.Events.trigger('movie:add', Movie);
-        //router.navigate('movies', {trigger: true});
-      });
+        console.log('success', Movie);
+        router.navigate('movies', {trigger: true});
+      }
 
       // Define what will happen in case of error
       XHR.addEventListener("error", function(event) {
         Backbone.Events.trigger('alert', 'An error has occured', 'Failed to add your movie');
       });
 
-      // Detup request
+      // Setup request
       XHR.open("POST", "http://localhost:8080/users/movies");
 
-      // The data sent are the one the user provide in the form
+      // The data sent are the ones the user provided in the form
       XHR.send(FD);
 
-      //location.reload();
-      router.navigate('movies', {trigger: true});
+      XHR.onload = loadd;
+      //router.navigate('movies', {trigger: true});
     }
 
-    // Access the form element
-    var form = document.getElementById("addMovieForm");
-
-    // to takeover its submit event.
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
-
-      sendData();
-    });
+    var $form = this.$el.find('#addMovieForm');
+    sendData($form[0]);*/
   },
 
   cancelAdd: function() {

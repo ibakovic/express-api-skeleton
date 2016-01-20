@@ -44,7 +44,6 @@ var EditView = Backbone.View.extend({
   updateMovie: function() {
     var self = this;
     var movie = this.collection.findWhere({id: self.movieId});
-    console.log('collection', this.collection);
     var update = $('#titleUpdate').val().trim('string');
     var title = movie.get('title');
 
