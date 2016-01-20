@@ -22,10 +22,35 @@ var loginView = new LoginView({
   userId: currentUserId[1]
 });
 
+var alertView = new AlertView();
+
+var addView = new AddView({
+  userId: currentUserId[1]
+});
+
+var registerView = new RegisterView();
+
+var promptView = new PromptView();
+
+var confirmView = new ConfirmView();
+
+//////////////////////require User.fetch
+
+var userInfoView = new UserInfoView({
+  model: models.User
+});
+
+var userDetailsView = new UserDetailsView({
+    model: models.User
+  });
+
 var userView = new UserView({
   cookieId: currentUserId[1],
   model: models.User
 });
+
+/////////////////////////////////////////
+////////////Reuire Movies.fetch()
 
 var moviesView = new MovieView({
   cookieId: currentUserId[1],
@@ -35,27 +60,6 @@ var moviesView = new MovieView({
 var editView = new EditView({
   cookieId: currentUserId[1],
   collection: models.Movies
-});
-
-var addView = new AddView({
-  userId: currentUserId[1],
-  model: models.MovieModel
-});
-
-var alertView = new AlertView();
-
-var registerView = new RegisterView();
-
-var promptView = new PromptView();
-
-var userDetailsView = new UserDetailsView({
-    model: models.User
-  });
-
-var confirmView = new ConfirmView();
-
-var userInfoView = new UserInfoView({
-  model: models.User
 });
 
 module.exports = {

@@ -19,8 +19,9 @@ var EditView = Backbone.View.extend({
   initialize: function(options) {
     var self = this;
     self.options = options;
-    self.collection = self.options.collection;
+    //self.collection = self.options.collection;
     _.bindAll(this, 'render', 'show', 'hide', 'cancel', 'updateMovie');
+    //self.listenTo(self.collection, 'remove add change sync', self.render);
   },
 
   render: function() {
@@ -54,7 +55,7 @@ var EditView = Backbone.View.extend({
 
     movie.set({
       update: update,
-      title: title
+      title: update
     });
 
     movie.save(null, {
@@ -64,7 +65,7 @@ var EditView = Backbone.View.extend({
       },
       error: function(model, response) {
         var msg = response.responseText.split('"');
-        Backbone.Events.trigger('alert', msg[3], 'Update error');
+        Backbone.Events.trigger('alert', 'Error updating movie', 'Update error');
       }
     });
   },

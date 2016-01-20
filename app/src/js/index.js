@@ -82,14 +82,11 @@ $('document').ready(function() {
 
     _.map(views, hideView);
 
-    models.Movies.fetch({
-      success: function(collection, response) {
-        views.moviesView.show();
-        models.User.fetch({success: function(collection, response) {
-          views.userView.show();
-        }});
-      }
-    });
+    views.moviesView.listen();
+    views.moviesView.show();
+    models.User.fetch({success: function(collection, response) {
+      views.userView.show();
+    }});
   });
 
   router.on('route:returnToLogin', function(redirect) {
@@ -104,20 +101,12 @@ $('document').ready(function() {
 
     _.map(views, hideView);
 
-    models.Movies.fetch({
-      success: function(collection, response) {
-        views.editView.getMovieId(movieId);
-        views.editView.show();
+    views.editView.getMovieId(movieId);
+    views.editView.show();
 
-        models.User.fetch({success: function(collection, response) {
-          views.userView.show();
-        }});
-        return;
-      },
-      error: function(collection, response) {
-        router.navigate('', {trigger: true});
-      }
-    });
+    models.User.fetch({success: function(collection, response) {
+      views.userView.show();
+    }});
   });
 
   router.on('route:addMovie', function() {

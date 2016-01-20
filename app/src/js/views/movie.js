@@ -26,20 +26,18 @@ var MovieView = Backbone.View.extend({
   render: function() {
     var self = this;
 
-    this.model.fetch({success: function(model, response) {
-      var username = model.get('addedBy').username;
-      var imageUrl = response.imageUrl;
-      var template = self.template({
-        title: model.get('title'),
-        link: model.get('link'),
-        movieId: model.get('id'),
-        addedBy: username,
-        pictureUrl: imageUrl,
-        created: model.get('created')
-      });
+    var username = this.model.get('addedBy').username;
+    var imageUrl = /public/ + this.model.get('image');
+    var template = this.template({
+      title: self.model.get('title'),
+      link: self.model.get('link'),
+      movieId: self.model.get('id'),
+      addedBy: username,
+      pictureUrl: imageUrl,
+      created: self.model.get('created')
+    });
 
-      self.$el.html(template);
-    }});
+    self.$el.html(template);
   },
 
   removeView: function() {

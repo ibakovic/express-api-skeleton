@@ -36,22 +36,21 @@ var AddView = Backbone.View.extend({
 
   addMovie: function() {
     var self = this;
-    var currentUserId = document.cookie.split('=');
     var $title = $('#addTitle').val().trim();
     var $link = $('#addLink').val().trim();
-    var $image = $('#image').val();
+    var $image = $('#image');
 
     if($title === '') {
       Backbone.Events.trigger('alert', 'Title required!', 'Add movie error');
       return;
     }
 
-    if(!$image) {
+    if(!$image.val()) {
       Backbone.Events.trigger('alert', 'Please select an image before submitting changes', 'Image not uploaded');
       return;
     }
 
-    var extension = $image.split('.')[1];
+    var extension = $image.val().split('.')[1];
     var regex = /png|gif|tiff|jpeg|jpg/i;
 
     // Check if the submitted file is an image
@@ -60,12 +59,10 @@ var AddView = Backbone.View.extend({
       return;
     }
 
-    var $form = this.$el.find('#addMovieForm');
-
     var form = popsicle.form({
       title: $title,
       link: $link,
-      image: $form[0][0].files[0]
+      image: $image[0].files[0]
     });
 
     popsicle.post({

@@ -14,14 +14,7 @@ var MovieCollectionView = Backbone.View.extend({
     self.options = options;
     self.childrenViewsArray = [];
 
-    self.collection = self.options.collection;
-
-    _.bindAll(this, 'render', 'afterRender', 'show', 'hide', 'appendItem');
-
-    _.wrap(this.render, function(render) {
-      render();
-      self.afterRender();
-    });
+    _.bindAll(this, 'render', 'show', 'hide', 'appendItem', 'listen');
   },
 
   render: function() {
@@ -36,14 +29,6 @@ var MovieCollectionView = Backbone.View.extend({
 
     this.collection.models.forEach(function(movie) {self.appendItem(movie);});
     return self;
-  },
-
-  afterRender: function() {
-    var self = this;
-    //listen after render
-    self.listenTo(self.collection, 'remove add change', self.render);
-    self.listenTo(self.collection, 'add', self.render);
-    self.listenTo(self.collection, 'change', self.render);
   },
 
   show: function() {
@@ -66,6 +51,11 @@ var MovieCollectionView = Backbone.View.extend({
     this.childrenViewsArray.push(movieView);
 
     this.$('#mainContainer').append(movieView.$el);
+  },
+
+  listen: function() {
+    var self = this;
+    self.listenTo(self.collection, 'add change sync request update create', self.render);
   }
 });
 

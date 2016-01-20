@@ -26,6 +26,8 @@ var UserModel = Backbone.Model.extend({
 
 var User = new UserModel();
 
+Movies.fetch();
+
 module.exports = {
   Movies: Movies,
   User: User,

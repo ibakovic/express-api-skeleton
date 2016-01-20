@@ -101,11 +101,11 @@ function addMovie (req, res, next) {
       return;
     }
 
-    //var imagePath = root + 'uploads/temp/' + req.files.image[0].filename;
     var imagePath = format('{root}uploads/temp/{filename}', {
       root: root,
       filename: req.files.image[0].filename
     });
+
     var imageName = shortid.generate();
     imageName = imageName.replace(/\//g,'*');
     imageHash = imageName.replace(/\./g,'d');
@@ -247,7 +247,7 @@ function showMovie (req, res, next) {
       resData.msg = Message.MovieFound;
       resData.success = true;
       resData.data = moviePopulated.toObject();
-      resData.imageUrl = '/public/' + movieObject.image;
+      resData.imageUrl = format('/public/{image}', {image: movieObject.image});
       status = 200;
 
       return res.status(status).json(resData);
