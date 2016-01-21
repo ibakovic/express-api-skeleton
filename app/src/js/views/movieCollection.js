@@ -14,7 +14,7 @@ var MovieCollectionView = Backbone.View.extend({
     self.options = options;
     self.childrenViewsArray = [];
 
-    _.bindAll(this, 'render', 'show', 'hide', 'appendItem', 'listen');
+    _.bindAll(this, 'render', 'show', 'hide', 'appendItem', 'listen', 'renderAddedItem', 'renderModifiedItem');
   },
 
   render: function() {
@@ -23,9 +23,12 @@ var MovieCollectionView = Backbone.View.extend({
 
     this.$el.empty();
     this.$el.html(html);
+    /*var i = 0;
     this.childrenViewsArray.forEach(function(view) {
+      i++;
+      console.log('Removing a movie view', i);
       view.remove();
-    });
+    });*/
 
     this.collection.models.forEach(function(movie) {self.appendItem(movie);});
     return self;
@@ -33,7 +36,6 @@ var MovieCollectionView = Backbone.View.extend({
 
   show: function() {
     this.listen();
-    this.render();
     this.$el.show();
   },
 
@@ -49,14 +51,27 @@ var MovieCollectionView = Backbone.View.extend({
 
     movieView.render();
 
-    this.childrenViewsArray.push(movieView);
+    //this.childrenViewsArray.push(movieView);
 
     this.$('#mainContainer').append(movieView.$el);
   },
 
   listen: function() {
+    this.listenTo(this.collection, 'reset', this.render);
+    this.collection.bind('addMovie', this.renderAddedItem);
+    this.listenToOnce(this.collection, 'change:title', this.renderModifiedItem);
+  },
+
+  renderAddedItem: function() {
+    var lastItem = this.collection.at(this.collection.length - 1);
+    this.appendItem(lastItem);
+    this.collection.off('addMovie');
+  },
+
+  renderModifiedItem: function() {
     var self = this;
-    self.listenTo(self.collection, 'add change sync request update create', self.render);
+    console.log('Item updated');
+    this.render();
   }
 });
 

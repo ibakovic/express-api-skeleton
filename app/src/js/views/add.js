@@ -79,6 +79,7 @@ var AddView = Backbone.View.extend({
       var Movie = new self.model(res.body.data);
 
       self.collection.add(Movie);
+      self.collection.trigger('addMovie');
 
       router.navigate('movies', {trigger: true});
     })

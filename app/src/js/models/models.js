@@ -27,7 +27,7 @@ var UserModel = Backbone.Model.extend({
 var User = new UserModel();
 
 if(document.cookie) {
-  Movies.fetch();
+  Movies.fetch({reset: true});
   User.fetch();
 }
 

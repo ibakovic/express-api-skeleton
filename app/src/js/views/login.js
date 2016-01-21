@@ -59,7 +59,7 @@ var LoginView = Backbone.View.extend({
 
         if(self.options.movieCollection.length === 0) {
           console.log('movie collection', self.options.movieCollection);
-          self.options.movieCollection.fetch();
+          self.options.movieCollection.fetch({reset: true});
         }
 
         return router.navigate('movies', {trigger: true});
