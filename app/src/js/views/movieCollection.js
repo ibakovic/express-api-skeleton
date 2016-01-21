@@ -59,7 +59,7 @@ var MovieCollectionView = Backbone.View.extend({
   listen: function() {
     this.listenTo(this.collection, 'reset', this.render);
     this.collection.bind('addMovie', this.renderAddedItem);
-    this.listenToOnce(this.collection, 'change:title', this.renderModifiedItem);
+    this.collection.bind('change:title', this.renderModifiedItem);
   },
 
   renderAddedItem: function() {
@@ -70,8 +70,17 @@ var MovieCollectionView = Backbone.View.extend({
 
   renderModifiedItem: function() {
     var self = this;
-    console.log('Item updated');
-    this.render();
+    console.log('Item updated', this.collection);
+    this.collection.models.forEach(function(model) {
+      if(model.hasChanged('title')) {
+        var element = '#' + model.previous('title');
+
+        $(element).text(model.get('title'));
+        $(element).attr('id', model.get('title'));
+      }
+    });
+
+    this.collection.off('change:title');
   }
 });
 

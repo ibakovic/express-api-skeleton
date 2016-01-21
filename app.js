@@ -62,10 +62,12 @@ require('./src/passport/init.js')(passport);
 var usersRoutes = require('./src/routes/users.js');
 var logRegRoutes = require('./src/routes/logReg.js');
 var mailHandler = require('./src/routes/mailHandler.js');
+var moviesRoute = require('./src/routes/movies.js');
 
 // API endpoints
 app
   .use('/', logRegRoutes)
+  .use('/movies', moviesRoute)
   .use('/users', usersRoutes)
   .use('/email', mailHandler);
 
