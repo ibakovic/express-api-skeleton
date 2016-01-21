@@ -18,10 +18,9 @@ var EditView = Backbone.View.extend({
 
   initialize: function(options) {
     var self = this;
-    self.options = options;
-    //self.collection = self.options.collection;
+    this.options = options;
     _.bindAll(this, 'render', 'show', 'hide', 'cancel', 'updateMovie');
-    //self.listenTo(self.collection, 'remove add change sync', self.render);
+    this.listenTo(self.collection, 'remove add change sync', self.render);
   },
 
   render: function() {
@@ -31,6 +30,9 @@ var EditView = Backbone.View.extend({
   },
 
   show: function() {
+    var self = this;
+    this.listenTo(self.collection, 'remove add change sync', self.render);
+
     this.$el.show();
   },
 

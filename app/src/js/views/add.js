@@ -45,6 +45,7 @@ var AddView = Backbone.View.extend({
       return;
     }
 
+    // Check if there is anything submitted
     if(!$image.val()) {
       Backbone.Events.trigger('alert', 'Please select an image before submitting changes', 'Image not uploaded');
       return;
@@ -74,6 +75,10 @@ var AddView = Backbone.View.extend({
         Backbone.Events.trigger('alert', res.body.msg, 'Add movie error');
         return;
       }
+
+      var Movie = new self.model(res.body.data);
+
+      self.collection.add(Movie);
 
       router.navigate('movies', {trigger: true});
     })

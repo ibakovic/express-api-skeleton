@@ -22,7 +22,7 @@ var UserView = Backbone.View.extend({
   initialize: function(options) {
     var self = this;
     this.options = options;
-    _.bindAll(this, 'render', 'show', 'hide', 'getUserInfo', 'openAddMovieForm', 'logout', 'homePage', 'openDocs');
+    _.bindAll(this, 'render', 'show', 'hide', 'getUserInfo', 'openAddMovieForm', 'logout', 'homePage', 'openDocs', 'listen');
 
     this.listenTo(self.model, 'change', self.render);
   },
@@ -33,7 +33,7 @@ var UserView = Backbone.View.extend({
   },
 
   show: function() {
-    var self = this;
+    this.listen();
     this.render();
     this.$el.show();
   },
@@ -79,6 +79,11 @@ var UserView = Backbone.View.extend({
   openDocs: function() {
     //redirect to docs
     window.open('/docs');
+  },
+
+  listen: function() {
+    var self = this;
+    this.listenTo(self.model, 'add', self.render);
   }
 });
 

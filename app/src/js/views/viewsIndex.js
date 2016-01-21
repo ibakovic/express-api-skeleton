@@ -19,14 +19,12 @@ var models = require('../models/models.js');
 var currentUserId = document.cookie.split('=');
 
 var loginView = new LoginView({
-  userId: currentUserId[1]
+  userId: currentUserId[1],
+  movieCollection: models.Movies,
+  userModel: models.User
 });
 
 var alertView = new AlertView();
-
-var addView = new AddView({
-  userId: currentUserId[1]
-});
 
 var registerView = new RegisterView();
 
@@ -60,6 +58,12 @@ var moviesView = new MovieView({
 var editView = new EditView({
   cookieId: currentUserId[1],
   collection: models.Movies
+});
+
+var addView = new AddView({
+  userId: currentUserId[1],
+  collection: models.Movies,
+  model: models.MovieModel
 });
 
 module.exports = {

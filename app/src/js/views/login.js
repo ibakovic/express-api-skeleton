@@ -51,6 +51,17 @@ var LoginView = Backbone.View.extend({
     })
     .then(function completeLogin(res) {
       if(res.status === 200) {
+
+        if(!self.options.userModel.get('username')) {
+          console.log('user model', self.options.userModel);
+          self.options.userModel.fetch();
+        }
+
+        if(self.options.movieCollection.length === 0) {
+          console.log('movie collection', self.options.movieCollection);
+          self.options.movieCollection.fetch();
+        }
+
         return router.navigate('movies', {trigger: true});
       }
 

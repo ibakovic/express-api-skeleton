@@ -82,11 +82,9 @@ $('document').ready(function() {
 
     _.map(views, hideView);
 
-    views.moviesView.listen();
     views.moviesView.show();
-    models.User.fetch({success: function(collection, response) {
-      views.userView.show();
-    }});
+
+    views.userView.show();
   });
 
   router.on('route:returnToLogin', function(redirect) {
@@ -104,9 +102,8 @@ $('document').ready(function() {
     views.editView.getMovieId(movieId);
     views.editView.show();
 
-    models.User.fetch({success: function(collection, response) {
-      views.userView.show();
-    }});
+
+    views.userView.show();
   });
 
   router.on('route:addMovie', function() {
@@ -129,19 +126,6 @@ $('document').ready(function() {
 
     _.map(views, hideView);
 
-    if(!models.User.get('username')) {
-      models.User.fetch({
-        success: function(model, response) {
-          views.userView.show();
-          views.userDetailsView.show();
-          return;
-        },
-        error: function(model, response) {
-          router.navigate('', {trigger: true});
-        }
-      });
-    }
-
     views.userView.show();
     views.userDetailsView.show();
   });
@@ -153,19 +137,6 @@ $('document').ready(function() {
     }
 
     _.map(views, hideView);
-
-    if(!models.User.get('username')) {
-      models.User.fetch({
-        success: function(model, response) {
-          views.userView.show();
-          views.userInfoView.show();
-          return;
-        },
-        error: function(model, response) {
-          router.navigate('', {trigger: true});
-        }
-      });
-    }
 
     views.userView.show();
     views.userInfoView.show();
