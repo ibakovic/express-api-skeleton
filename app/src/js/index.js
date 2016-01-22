@@ -7,7 +7,6 @@ var Backbone = require('backbone');
 var _ = require('lodash');
 var router = require('./views/backboneRouter.js');
 var views = require('./views/viewsIndex.js');
-var models = require('./models/models.js');
 
 Backbone.Events.on('prompt', function(message, title, id) {
   views.promptView.getMessage(message, title, id);
@@ -47,6 +46,7 @@ $('document').ready(function() {
 
     _.map(views, hideView);
 
+    views.moviesView.show();
     views.loginView.show();
   });
 
@@ -82,7 +82,7 @@ $('document').ready(function() {
 
     _.map(views, hideView);
 
-    views.moviesView.show();
+    views.userMoviesView.show();
 
     views.userView.show();
   });

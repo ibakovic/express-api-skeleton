@@ -4,10 +4,10 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('lodash');
 var router = require('./backboneRouter.js');
-var MovieView = require('./movie.js');
-var movieCollectionTemplate = require('../../templates/movieCollection.hbs');
+var MovieView = require('./userMovie.js');
+var movieCollectionTemplate = require('../../templates/userMovieCollection.hbs');
 
-var MovieCollectionView = Backbone.View.extend({
+var UserMovieCollectionView = Backbone.View.extend({
   template: movieCollectionTemplate,
   initialize: function(options) {
     var self = this;
@@ -84,4 +84,4 @@ var MovieCollectionView = Backbone.View.extend({
   }
 });
 
-module.exports = MovieCollectionView;
+module.exports = UserMovieCollectionView;

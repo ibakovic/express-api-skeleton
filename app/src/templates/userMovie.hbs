@@ -3,7 +3,11 @@
     <img class="movieImage" src="{{pictureUrl}}" />
     <div>Link: <a href="{{link}}" class="movieId">{{movieId}}</a></div>
     <div class="created">{{created}} </div>
-    <div class="addedBy">{{addedBy}}</div>
+    <div class="addedBy btn btn-link">{{addedBy}}</div>
     <h4 id="{{title}}" class="movieTitle text-center">{{title}}</h4>
+  </div>
+  <div class="movieButtons text-center">
+    <button id="updateMovie" class="btn btn-default">Edit</button>
+    <button id="deleteMovie" class="btn btn-warning">Delete movie</button>
   </div>
 </div>

@@ -2,13 +2,11 @@
 
 var Backbone = require('backbone');
 
-var MovieModel = Backbone.Model.extend({
-  urlRoot: '/users/movies'
-});
+var MovieModel = Backbone.Model.extend({});
 
 var MovieCollection = Backbone.Collection.extend({
   model: MovieModel,
-  url: '/users/movies',
+  url: '/movies',
 
   parse: function(response) {
     return response.data;
@@ -16,6 +14,21 @@ var MovieCollection = Backbone.Collection.extend({
 });
 
 var Movies = new MovieCollection();
+
+var UserMovieModel = Backbone.Model.extend({
+  urlRoot: '/users/movies'
+});
+
+var UserMovieCollection = Backbone.Collection.extend({
+  model: UserMovieModel,
+  url: '/users/movies',
+
+  parse: function(response) {
+    return response.data;
+  }
+});
+
+var UserMovies = new UserMovieCollection();
 
 var UserModel = Backbone.Model.extend({
   url: '/users',
@@ -26,13 +39,16 @@ var UserModel = Backbone.Model.extend({
 
 var User = new UserModel();
 
+Movies.fetch({reset: true});
+
 if(document.cookie) {
-  Movies.fetch({reset: true});
+  UserMovies.fetch({reset: true});
   User.fetch();
 }
 
 module.exports = {
-  Movies: Movies,
+  UserMovies: UserMovies,
   User: User,
-  MovieModel: MovieModel
+  UserMovieModel: UserMovieModel,
+  Movies: Movies
 };

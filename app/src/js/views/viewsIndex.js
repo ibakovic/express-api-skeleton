@@ -4,7 +4,7 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 var _ = require('lodash');
 var LoginView = require('./login.js');
-var MovieView = require('./movieCollection.js');
+var UserMovieView = require('./userMovieCollection.js');
 var UserView = require('./user.js');
 var EditView = require('./edit.js');
 var AddView = require('./add.js');
@@ -14,13 +14,14 @@ var PromptView = require('./prompt.js');
 var UserDetailsView = require('./userDetails.js');
 var ConfirmView = require('./confirm.js');
 var UserInfoView = require('./userInfo.js');
+var MoviesView = require('./moviesCollection.js');
 var models = require('../models/models.js');
 
 var currentUserId = document.cookie.split('=');
 
 var loginView = new LoginView({
   userId: currentUserId[1],
-  movieCollection: models.Movies,
+  movieCollection: models.UserMovies,
   userModel: models.User
 });
 
@@ -48,28 +49,37 @@ var userView = new UserView({
 });
 
 /////////////////////////////////////////
-////////////Reuire Movies.fetch()
+////////////Reuire UserMovies.fetch()
 
-var moviesView = new MovieView({
+var userMoviesView = new UserMovieView({
   cookieId: currentUserId[1],
-  collection: models.Movies
+  collection: models.UserMovies
 });
 
 var editView = new EditView({
   cookieId: currentUserId[1],
-  collection: models.Movies
+  collection: models.UserMovies
 });
 
 var addView = new AddView({
   userId: currentUserId[1],
-  collection: models.Movies,
-  model: models.MovieModel
+  collection: models.UserMovies,
+  model: models.UserMovieModel
+});
+
+//////////////////////////////////////////
+////////////////
+
+var moviesView = new MoviesView({
+  userId: currentUserId[1],
+  collection: models.Movies
 });
 
 module.exports = {
   loginView: loginView,
   userView: userView,
   moviesView: moviesView,
+  userMoviesView: userMoviesView,
   editView: editView,
   addView: addView,
   registerView: registerView,
