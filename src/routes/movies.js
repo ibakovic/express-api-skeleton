@@ -7,6 +7,13 @@ var _ = require('lodash');
 var logger = require('minilog')('moviesRoute');
 var message = require('../../strings.json');
 
+/**
+ * List all movies
+ * @param  {HttpRequest}   req
+ * @param  {HttpResponse}   res
+ * @param  {Function(req, res, next)} next
+ * @return {JSON}        Return list of movies or an error
+ */
 function getAllMovies(req, res, next) {
   Movie.find({}, function(err, movies) {
     if (err) {

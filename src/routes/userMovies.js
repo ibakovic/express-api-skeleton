@@ -251,28 +251,6 @@ function showMovie (req, res, next) {
       status = 200;
 
       return res.status(status).json(resData);
-
-      /*var imageLink = moviePopulated.imageLink;
-
-      var imagePath = format('{path}/public/{image}.{ext}', {
-        path: path,
-        image: moviePopulated.imageLink,
-        ext: moviePopulated.imageType
-      });
-
-      fs.readFile(imagePath, function(err, image) {
-        if(err)
-          return next(err);
-
-        if(!image) {
-          resData.msg = Message.ImageNotFound;
-          resData.success = false;
-          status = 400;
-          return res.status(status).json(resData);
-        }
-
-
-      });*/
     });
   });
 }
@@ -370,12 +348,13 @@ function updateMovie (req, res, next) {
   });
 }
 
-function uploadImage(req, res, next){
-  logger.log('Extracted filename:', req.files);
-  logger.log('Extracted body', req.body);
-  res.status(200).json({filename: req.files.image[0].filename});
-}
-
+/**
+ * Authenticates user
+ * @param  {HttpRequest}   req
+ * @param  {HttpResponse}   res
+ * @param  {Function(req, res, next)} next
+ * @return {Boolean}       If user is authenticated, next function is executed, else user is redirected to login page
+ */
 function isAuthenticate(req, res, next) {
   if (req.isAuthenticated()) {
     next();
@@ -389,7 +368,6 @@ function isAuthenticate(req, res, next) {
 router
   .use(isAuthenticate)
   .post('/', cpUpload, addMovie)
-  .post('/upload', cpUpload, uploadImage)
   .get('/', listMovies)
   .get('/:movieId', showMovie)
   .delete('/:movieId', deleteMovie)

@@ -6,6 +6,13 @@ var Verification = require('../models/RegistrationNotConfirmed.js');
 var User = require('../models/User.js');
 var Message = require('../../strings.json');
 
+/**
+ * Confirms registration by deleting user's expiration time
+ * @param  {HttpRequest}   req
+ * @param  {HttpResponse}   res
+ * @param  {Function(req, res, next)} next
+ * @return {json}        response with status 200 or 400 and data in json format
+ */
 function confirmRegistration(req, res, next) {
   var resData = {};
   if(!req.body.verId) {
