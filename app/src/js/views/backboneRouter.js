@@ -8,7 +8,7 @@ var Router = Backbone.Router.extend({
     '': 'loginPage',
     'register': 'openRegister',
     'confirm/:verId': 'confirmRegister',
-    'login/:redirect': 'returnToLogin',
+    'login': 'returnToLogin',
     'movies': 'startApp',
     'edit/:movieId': 'updateMovieTitle',
     'addMovie': 'addMovie',

@@ -67,7 +67,7 @@ var UserView = Backbone.View.extend({
       cookie.remove('user', self.options.model.get('id'));
       models.Movies.fetch({reset: true});
       Backbone.Events.trigger('alert', 'Logout success!', 'Logout');
-      router.navigate('', {trigger: true});
+      router.navigate('login', {trigger: true});
     })
     .catch(function logoutFailure(res) {
       Backbone.Events.trigger('alert', 'Error!' + res, 'Logout');

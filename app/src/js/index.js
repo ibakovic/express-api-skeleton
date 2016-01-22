@@ -87,8 +87,8 @@ $('document').ready(function() {
     views.userView.show();
   });
 
-  router.on('route:returnToLogin', function(redirect) {
-    document.location = redirect;
+  router.on('route:returnToLogin', function() {
+    document.location = '/';
   });
 
   router.on('route:updateMovieTitle', function(movieId) {
