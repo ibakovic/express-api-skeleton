@@ -5,12 +5,10 @@ var Backbone = require('backbone');
 var _ = require('lodash');
 var router = require('./backboneRouter.js');
 var MovieView = require('./userMovie.js');
-var movieTemplate = require('../../templates/userMovie.hbs');
 var movieCollectionTemplate = require('../../templates/userMovieCollection.hbs');
 
 var UserMovieCollectionView = Backbone.View.extend({
   template: movieCollectionTemplate,
-  movieTemplate: movieTemplate,
 
   initialize: function(options) {
     var self = this;
@@ -67,29 +65,20 @@ var UserMovieCollectionView = Backbone.View.extend({
     var lastItem = this.collection.at(this.collection.length - 1);
     this.appendItem(lastItem);
     this.collection.off('addMovie');
+    this.collection.off('change:title');
   },
 
   renderModifiedItem: function() {
     var self = this;
+
     this.collection.models.forEach(function(model) {
       if(model.hasChanged('title')) {
-        var username = model.get('addedBy').username;
-        var imageUrl = /public/ + model.get('image');
-
-        var html = self.movieTemplate({
-          title: model.get('title'),
-          link: model.get('link'),
-          movieId: model.get('id'),
-          addedBy: username,
-          pictureUrl: imageUrl,
-          created: model.get('created')
-        });
-
-        $('#' + model.get('id')).replaceWith(html);
+        $('#' + model.get('id')).find('.movieTitle').text(model.get('title'));
       }
     });
 
     this.collection.off('change:title');
+    this.collection.off('addMovie');
   }
 });
 
