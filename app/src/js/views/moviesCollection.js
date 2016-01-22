@@ -9,6 +9,8 @@ var allMoviesTemplate = require('../../templates/movieCollection.hbs');
 var AllMoviesView = Backbone.View.extend({
   template: allMoviesTemplate,
 
+  childrenViewsArray: [],
+
   events: {},
 
   initialize: function(options) {
@@ -20,11 +22,18 @@ var AllMoviesView = Backbone.View.extend({
     var self = this;
     var html = this.template();
 
-    this.$el.empty();
+    //this.$el.empty();
     this.$el.html(html);
 
+    var i = 0;
+
     this.collection.models.forEach(function(movie) {
+      if(i % 3 === 0) {
+        var newRow = $('<div class="moviesRows row row-flex row-flex-wrap"></div>');
+        self.$('#allMoviesContainer').append(newRow);
+      }
       self.appendMovie(movie);
+      i++;
     });
   },
 
@@ -39,11 +48,14 @@ var AllMoviesView = Backbone.View.extend({
   },
 
   appendMovie: function(movie) {
+    var self = this;
     var movieView = new MovieView({model: movie});
 
     movieView.render();
 
-    this.$('#allMoviesContainer').append(movieView.$el);
+    this.childrenViewsArray.push(movieView);
+
+    this.$('#allMoviesContainer').find('.moviesRows:last-child').append(movieView.$el);
   },
 
   listen: function() {
