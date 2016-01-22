@@ -25,7 +25,7 @@ var MovieView = Backbone.View.extend({
       link: self.model.get('link'),
       movieId: self.model.get('_id'),
       created: self.model.get('created'),
-      addedBy: self.model.get('addedBy'),
+      addedBy: username,
       title: self.model.get('title')
     });
 

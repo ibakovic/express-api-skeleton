@@ -26,7 +26,6 @@ var UserMovieCollectionView = Backbone.View.extend({
     /*var i = 0;
     this.childrenViewsArray.forEach(function(view) {
       i++;
-      console.log('Removing a movie view', i);
       view.remove();
     });*/
 

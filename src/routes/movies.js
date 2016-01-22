@@ -2,6 +2,9 @@
 
 var router = require('express').Router();
 var Movie = require('../models/Movie.js');
+var User = require('../models/User.js');
+var _ = require('lodash');
+var logger = require('minilog')('moviesRoute');
 var message = require('../../strings.json');
 
 function getAllMovies(req, res, next) {
@@ -20,10 +23,13 @@ function getAllMovies(req, res, next) {
       return;
     }
 
-    resData.data = movies;
-    resData.success = true;
+    User.populate(movies, {path: 'addedBy', model: 'User'}, function(err, movie){
+      resData.msg = message.MovieFound;
+      resData.success = true;
+      resData.data = _.invoke(movie, 'toObject');
 
-    res.status(200).json(resData);
+      res.status(200).json(resData);
+    });
   });
 }
 
