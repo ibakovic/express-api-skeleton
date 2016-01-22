@@ -6,6 +6,7 @@ var _ = require('lodash');
 var router = require('./backboneRouter.js');
 var popsicle = require('popsicle');
 var cookie = require('js-cookie');
+var models = require('../models/models.js');
 var userNavbarTemplate = require('../../templates/userNavbar.hbs');
 
 var UserView = Backbone.View.extend({
@@ -64,6 +65,7 @@ var UserView = Backbone.View.extend({
     })
     .then(function logoutSuccess(res) {
       cookie.remove('user', self.options.model.get('id'));
+      models.Movies.fetch({reset: true});
       Backbone.Events.trigger('alert', 'Logout success!', 'Logout');
       router.navigate('', {trigger: true});
     })

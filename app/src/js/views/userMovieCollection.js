@@ -70,7 +70,6 @@ var UserMovieCollectionView = Backbone.View.extend({
 
   renderModifiedItem: function() {
     var self = this;
-    console.log('Item updated', this.collection);
     this.collection.models.forEach(function(model) {
       if(model.hasChanged('title')) {
         var element = '#' + model.previous('title');
