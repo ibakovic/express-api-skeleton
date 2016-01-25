@@ -18,6 +18,7 @@ var format = require('string-template');
 var logger = require('minilog')('moviesRoutes');
 var async = require('async');
 var imageHash = '';
+var isAuthenticate = require('./isAuthenticated.js');
 
 var cpUpload = upload.fields([{
   name: 'image',
@@ -346,23 +347,6 @@ function updateMovie (req, res, next) {
       return res.status(200).json(resData);
     });
   });
-}
-
-/**
- * Authenticates user
- * @param  {HttpRequest}   req
- * @param  {HttpResponse}   res
- * @param  {Function(req, res, next)} next
- * @return {Boolean}       If user is authenticated, next function is executed, else user is redirected to login page
- */
-function isAuthenticate(req, res, next) {
-  if (req.isAuthenticated()) {
-    next();
-  }
-  else {
-    logger.error(Message.NotLoggedIn, res);
-    res.redirect('/');
-  }
 }
 
 router
