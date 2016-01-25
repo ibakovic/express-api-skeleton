@@ -80,7 +80,7 @@ body {
   }
 }
 
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 992px) and (max-width: 1099px) {
   .row-flex > div {
     max-width: 32%;
   }
@@ -109,15 +109,20 @@ body {
   margin-top: 15%;
 }
 
-.flex-col {
-  display: flex;
-  display: -webkit-flex;
-  flex: 1 100%;
-  flex-flow: column wrap;
-}
-
-.flex-grow {
-  display: flex;
-  -webkit-flex: 2;
-  flex: 2;
+@media screen and (min-width: 1100px) {
+  .row-flex {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    flex:0 0 345px;
+    flex-wrap: wrap;
+    div {
+      -moz-box-flex: 3;
+      -webkit-box-flex: 3;
+      box-flex: 3;
+      width: 345px;
+    }
+  }
 }
