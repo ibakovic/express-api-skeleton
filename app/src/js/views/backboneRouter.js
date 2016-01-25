@@ -5,7 +5,8 @@ var Backbone = require('backbone');
 
 var Router = Backbone.Router.extend({
   routes: {
-    '': 'loginPage',
+    '': 'allMovies',
+    'loginPage': 'loginPage',
     'register': 'openRegister',
     'confirm/:verId': 'confirmRegister',
     'login': 'returnToLogin',

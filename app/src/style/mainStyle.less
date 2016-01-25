@@ -57,16 +57,27 @@ body {
 }
 
 #allMoviesContainer {
-  margin-top: 3%;
+  margin-top: 0;
+  #loginRedirect {
+    position: absolute;
+    top: 10px;
+    right: 5%;
+  }
 }
 
-.row-flex, .row-flex > div {
+.row-flex {
   display: -webkit-box;
   display: -moz-box;
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
   flex:1 1 auto;
+  flex-wrap: wrap;
+  div {
+    -moz-box-flex: 3;
+    -webkit-box-flex: 3;
+    box-flex: 3;
+  }
 }
 
 @media screen and (min-width: 992px) {
@@ -89,18 +100,20 @@ body {
 
 .row-flex > div, .container-flex > div {
   margin: 5px;
+  width: 100%;
 }
 
 .container-flex > div > div[class*='col-'],.row-flex > div > div[class*='col-'] {
-  width: 100%;
+  min-width: 100%;
   margin: 5px;
+  margin-top: 15%;
 }
 
 .flex-col {
   display: flex;
   display: -webkit-flex;
   flex: 1 100%;
-  flex-flow: column nowrap;
+  flex-flow: column wrap;
 }
 
 .flex-grow {

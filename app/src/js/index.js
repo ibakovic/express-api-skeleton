@@ -38,7 +38,7 @@ $('document').ready(function() {
 
   /////////////////////////////Rerouting
 
-  router.on('route:loginPage', function() {
+  router.on('route:allMovies', function() {
     if(document.cookie) {
       router.navigate('movies', {trigger: true});
       return;
@@ -47,6 +47,16 @@ $('document').ready(function() {
     _.map(views, hideView);
 
     views.moviesView.show();
+  });
+
+  router.on('route:loginPage', function() {
+    if(document.cookie) {
+      router.navigate('movies', {trigger: true});
+      return;
+    }
+
+    _.map(views, hideView);
+
     views.loginView.show();
   });
 

@@ -25,15 +25,8 @@ var UserMovieCollectionView = Backbone.View.extend({
     this.$el.empty();
     this.$el.html(html);
 
-    var i = 0;
-
     this.collection.models.forEach(function(movie) {
-      if(i % 3 === 0) {
-        var newRow = $('<div class="userMoviesRows row row-flex row-flex-wrap"></div>');
-        self.$('#mainContainer').append(newRow);
-      }
       self.appendItem(movie);
-      i++;
     });
     return self;
   },
@@ -57,7 +50,7 @@ var UserMovieCollectionView = Backbone.View.extend({
 
     this.childrenViewsArray.push(movieView);
 
-    this.$('#mainContainer').find('.userMoviesRows:last-child').append(movieView.$el);
+    this.$('#mainContainer').append(movieView.$el);
   },
 
   listen: function() {

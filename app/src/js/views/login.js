@@ -13,12 +13,13 @@ var LoginView = Backbone.View.extend({
 
   events: {
     'click #login': 'login',
+    'click #cancelLogin': 'cancelLogin',
     'click #signUp': 'signUp'
   },
 
   initialize: function(options) {
     this.options = options;
-    _.bindAll(this, 'render', 'show', 'hide', 'login', 'signUp');
+    _.bindAll(this, 'render', 'show', 'hide', 'login', 'signUp', 'cancelLogin');
     var self = this;
   },
 
@@ -78,6 +79,10 @@ var LoginView = Backbone.View.extend({
 
   signUp: function() {
     router.navigate('register', {trigger: true});
+  },
+
+  cancelLogin: function() {
+    router.navigate('', {trigger: true});
   }
 });
 

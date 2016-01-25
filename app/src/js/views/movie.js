@@ -20,10 +20,12 @@ var MovieView = Backbone.View.extend({
     var username = this.model.get('addedBy').username;
     var imageUrl = '/public/' + this.model.get('image');
 
+    console.log(self.model);
+
     var html = this.template({
       pictureUrl: imageUrl,
       link: self.model.get('link'),
-      movieId: self.model.get('_id'),
+      movieId: self.model.get('id'),
       created: self.model.get('created'),
       addedBy: username,
       title: self.model.get('title')

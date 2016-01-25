@@ -3,6 +3,7 @@
 var $ = require('jquery');
 var _ = require('lodash');
 var Backbone = require('backbone');
+var router = require('./backboneRouter.js');
 var MovieView = require('./movie.js');
 var allMoviesTemplate = require('../../templates/movieCollection.hbs');
 
@@ -11,11 +12,13 @@ var AllMoviesView = Backbone.View.extend({
 
   childrenViewsArray: [],
 
-  events: {},
+  events: {
+    'click #loginRedirect': 'loginRedirect'
+  },
 
   initialize: function(options) {
     this.options = options;
-    _.bindAll(this, 'render', 'show', 'hide', 'appendMovie');
+    _.bindAll(this, 'render', 'show', 'hide', 'appendMovie', 'loginRedirect');
   },
 
   render: function() {
@@ -25,15 +28,8 @@ var AllMoviesView = Backbone.View.extend({
     //this.$el.empty();
     this.$el.html(html);
 
-    var i = 0;
-
     this.collection.models.forEach(function(movie) {
-      if(i % 3 === 0) {
-        var newRow = $('<div class="moviesRows row row-flex row-flex-wrap"></div>');
-        self.$('#allMoviesContainer').append(newRow);
-      }
       self.appendMovie(movie);
-      i++;
     });
   },
 
@@ -55,11 +51,15 @@ var AllMoviesView = Backbone.View.extend({
 
     this.childrenViewsArray.push(movieView);
 
-    this.$('#allMoviesContainer').find('.moviesRows:last-child').append(movieView.$el);
+    this.$('#allMoviesContainer').append(movieView.$el);
   },
 
   listen: function() {
     this.listenTo(this.collection, 'reset', this.render);
+  },
+
+  loginRedirect: function() {
+    router.navigate('loginPage', {trigger: true});
   }
 });
 
