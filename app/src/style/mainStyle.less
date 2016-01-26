@@ -37,6 +37,7 @@ html, body {
 }
 
 body {
+  background: #EBEBEB none repeat scroll 0% 0%;
   height: 100%;
 }
 
@@ -47,7 +48,6 @@ body {
 #mainContainer, #allMoviesContainer {
   overflow: hidden;
   padding: 1%;
-  background: #EBEBEB none repeat scroll 0% 0%;
   margin: 0;
   margin-bottom: 0;
   padding-top: 2%;
@@ -80,18 +80,6 @@ body {
   }
 }
 
-@media screen and (min-width: 992px) and (max-width: 1099px) {
-  .row-flex > div {
-    max-width: 32%;
-  }
-}
-
-@media screen and (min-width: 768px) and (max-width: 991px) {
-  .row-flex > div {
-    max-width: 48%;
-  }
-}
-
 .row-flex-wrap {
   -webkit-flex-flow: row wrap;
   align-content: flex-start;
@@ -100,7 +88,6 @@ body {
 
 .row-flex > div, .container-flex > div {
   margin: 5px;
-  width: 100%;
 }
 
 .container-flex > div > div[class*='col-'],.row-flex > div > div[class*='col-'] {
@@ -109,8 +96,21 @@ body {
   margin-top: 15%;
 }
 
-@media screen and (min-width: 1100px) {
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .row-flex > div {
+    max-width: 350px;
+  }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1139px) {
+  .row-flex > div {
+    max-width: 32%;
+  }
+}
+
+@media screen and (min-width: 1140px) {
   .row-flex {
+    max-width: 1150px;
     display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
@@ -119,9 +119,6 @@ body {
     flex:0 0 345px;
     flex-wrap: wrap;
     div {
-      -moz-box-flex: 3;
-      -webkit-box-flex: 3;
-      box-flex: 3;
       width: 345px;
     }
   }

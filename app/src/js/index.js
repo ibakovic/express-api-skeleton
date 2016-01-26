@@ -109,6 +109,8 @@ $('document').ready(function() {
 
     _.map(views, hideView);
 
+    views.userMoviesView.listen();
+
     views.editView.getMovieId(movieId);
     views.editView.show();
 
@@ -124,6 +126,8 @@ $('document').ready(function() {
 
     _.map(views, hideView);
 
+    views.userMoviesView.listen();
+
     views.userView.show();
     views.addView.show();
   });
@@ -136,6 +140,8 @@ $('document').ready(function() {
 
     _.map(views, hideView);
 
+    views.userMoviesView.listen();
+
     views.userView.show();
     views.userDetailsView.show();
   });
@@ -147,6 +153,8 @@ $('document').ready(function() {
     }
 
     _.map(views, hideView);
+
+    views.userMoviesView.listen();
 
     views.userView.show();
     views.userInfoView.show();

@@ -20,8 +20,6 @@ var MovieView = Backbone.View.extend({
     var username = this.model.get('addedBy').username;
     var imageUrl = '/public/' + this.model.get('image');
 
-    console.log(self.model);
-
     var html = this.template({
       pictureUrl: imageUrl,
       link: self.model.get('link'),
